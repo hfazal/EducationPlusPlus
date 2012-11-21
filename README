@@ -1,0 +1,17 @@
+How to Import the Education++ Module into your copy of Moodle
+=============================================================
+
+1 Place the module folder ("education++" - make sure it is all lowercase)
+  into the /mod folder of the Moodle directory on your Moodle server.
+
+2 Go to Settings > Site Administration > Development > XMLDB editor
+  and modify the module's tables.
+
+3 Visit Settings > Site Administration > Notifications, you should find
+  the module's tables successfully created
+
+4 Go to Site Administration > Plugins > Activity modules > Manage activities
+  and you should find that education++ has been added to the list of 
+  installed modules.
+
+
