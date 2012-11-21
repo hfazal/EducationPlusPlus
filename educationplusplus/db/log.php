@@ -23,7 +23,7 @@
  * in the previous 1.9 NEWMODULE.
  *
  * @package    mod
- * @subpackage education++
+ * @subpackage educationplusplus
  * @copyright  2011 Your Name <your@email.adress>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,8 +33,8 @@ defined('MOODLE_INTERNAL') || die();
 global $DB;
 
 $logs = array(
-    array('module'=>'education++', 'action'=>'add', 'mtable'=>'education++', 'field'=>'name'),
-    array('module'=>'education++', 'action'=>'update', 'mtable'=>'education++', 'field'=>'name'),
-    array('module'=>'education++', 'action'=>'view', 'mtable'=>'education++', 'field'=>'name'),
-    array('module'=>'education++', 'action'=>'view all', 'mtable'=>'education++', 'field'=>'name')
+    array('module'=>'educationplusplus', 'action'=>'add', 'mtable'=>'educationplusplus', 'field'=>'name'),
+    array('module'=>'educationplusplus', 'action'=>'update', 'mtable'=>'educationplusplus', 'field'=>'name'),
+    array('module'=>'educationplusplus', 'action'=>'view', 'mtable'=>'educationplusplus', 'field'=>'name'),
+    array('module'=>'educationplusplus', 'action'=>'view all', 'mtable'=>'educationplusplus', 'field'=>'name')
 );

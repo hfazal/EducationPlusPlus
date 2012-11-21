@@ -17,13 +17,13 @@
 
 
 /**
- * Defines the version of education++
+ * Defines the version of educationplusplus
  *
  * This code fragment is called by moodle_needs_upgrading() and
  * /admin/index.php
  *
  * @package    mod
- * @subpackage education++
+ * @subpackage educationplusplus
  * @copyright  2011 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,4 +34,4 @@ $module->version   = 1;               // If version == 0 then module will not be
 $module->version   = 2012112000;      // The current module version (Date: YYYYMMDDXX)
 $module->requires  = 2010031900;      // Requires this Moodle version
 $module->cron      = 0;               // Period for cron to check this module (secs)
-$module->component = 'mod_education++'; // To check on upgrade, that module sits in correct place
+$module->component = 'mod_educationplusplus'; // To check on upgrade, that module sits in correct place

@@ -16,17 +16,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @see uninstall_plugin()
+ * This file replaces the legacy STATEMENTS section in db/install.xml,
+ * lib.php/modulename_install() post installation hook and partially defaults.php
  *
  * @package    mod
- * @subpackage education++
+ * @subpackage educationplusplus
  * @copyright  2011 Your Name <your@email.adress>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Custom uninstallation procedure
+ * Post installation procedure
+ *
+ * @see upgrade_plugins_modules()
  */
-function xmldb_education++_uninstall() {
-    return true;
+function xmldb_educationplusplus_install() {
+}
+
+/**
+ * Post installation recovery procedure
+ *
+ * @see upgrade_plugins_modules()
+ */
+function xmldb_educationplusplus_install_recovery() {
 }

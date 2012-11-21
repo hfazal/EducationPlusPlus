@@ -16,16 +16,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of interface functions and constants for module education++
+ * Library of interface functions and constants for module educationplusplus
  *
  * All the core Moodle functions, neeeded to allow the module to work
  * integrated in Moodle should be placed here.
- * All the education++ specific functions, needed to implement all the module
+ * All the educationplusplus specific functions, needed to implement all the module
  * logic, should go to locallib.php. This will help to save some memory when
  * Moodle is performing actions across all modules.
  *
  * @package    mod
- * @subpackage education++
+ * @subpackage educationplusplus
  * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -46,7 +46,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed true if the feature is supported, null if unknown
  */
-function education++_supports($feature) {
+function educationplusplus_supports($feature) {
     switch($feature) {
         case FEATURE_MOD_INTRO:         return true;
         default:                        return null;
@@ -54,51 +54,51 @@ function education++_supports($feature) {
 }
 
 /**
- * Saves a new instance of the education++ into the database
+ * Saves a new instance of the educationplusplus into the database
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @param object $education++ An object from the form in mod_form.php
- * @param mod_education++_mod_form $mform
- * @return int The id of the newly inserted education++ record
+ * @param object $educationplusplus An object from the form in mod_form.php
+ * @param mod_educationplusplus_mod_form $mform
+ * @return int The id of the newly inserted educationplusplus record
  */
-function education++_add_instance(stdClass $education++, mod_education++_mod_form $mform = null) {
+function educationplusplus_add_instance(stdClass $educationplusplus, mod_educationplusplus_mod_form $mform = null) {
     global $DB;
 
-    $education++->timecreated = time();
+    $educationplusplus->timecreated = time();
 
     # You may have to add extra stuff in here #
 
-    return $DB->insert_record('education++', $education++);
+    return $DB->insert_record('educationplusplus', $educationplusplus);
 }
 
 /**
- * Updates an instance of the education++ in the database
+ * Updates an instance of the educationplusplus in the database
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @param object $education++ An object from the form in mod_form.php
- * @param mod_education++_mod_form $mform
+ * @param object $educationplusplus An object from the form in mod_form.php
+ * @param mod_educationplusplus_mod_form $mform
  * @return boolean Success/Fail
  */
-function education++_update_instance(stdClass $education++, mod_education++_mod_form $mform = null) {
+function educationplusplus_update_instance(stdClass $educationplusplus, mod_educationplusplus_mod_form $mform = null) {
     global $DB;
 
-    $education++->timemodified = time();
-    $education++->id = $education++->instance;
+    $educationplusplus->timemodified = time();
+    $educationplusplus->id = $educationplusplus->instance;
 
     # You may have to add extra stuff in here #
 
-    return $DB->update_record('education++', $education++);
+    return $DB->update_record('educationplusplus', $educationplusplus);
 }
 
 /**
- * Removes an instance of the education++ from the database
+ * Removes an instance of the educationplusplus from the database
  *
  * Given an ID of an instance of this module,
  * this function will permanently delete the instance
@@ -107,16 +107,16 @@ function education++_update_instance(stdClass $education++, mod_education++_mod_
  * @param int $id Id of the module instance
  * @return boolean Success/Failure
  */
-function education++_delete_instance($id) {
+function educationplusplus_delete_instance($id) {
     global $DB;
 
-    if (! $education++ = $DB->get_record('education++', array('id' => $id))) {
+    if (! $educationplusplus = $DB->get_record('educationplusplus', array('id' => $id))) {
         return false;
     }
 
     # Delete any dependent records here #
 
-    $DB->delete_records('education++', array('id' => $education++->id));
+    $DB->delete_records('educationplusplus', array('id' => $educationplusplus->id));
 
     return true;
 }
@@ -130,7 +130,7 @@ function education++_delete_instance($id) {
  *
  * @return stdClass|null
  */
-function education++_user_outline($course, $user, $mod, $education++) {
+function educationplusplus_user_outline($course, $user, $mod, $educationplusplus) {
 
     $return = new stdClass();
     $return->time = 0;
@@ -145,20 +145,20 @@ function education++_user_outline($course, $user, $mod, $education++) {
  * @param stdClass $course the current course record
  * @param stdClass $user the record of the user we are generating report for
  * @param cm_info $mod course module info
- * @param stdClass $education++ the module instance record
+ * @param stdClass $educationplusplus the module instance record
  * @return void, is supposed to echp directly
  */
-function education++_user_complete($course, $user, $mod, $education++) {
+function educationplusplus_user_complete($course, $user, $mod, $educationplusplus) {
 }
 
 /**
  * Given a course and a time, this module should find recent activity
- * that has occurred in education++ activities and print it out.
+ * that has occurred in educationplusplus activities and print it out.
  * Return true if there was output, or false is there was none.
  *
  * @return boolean
  */
-function education++_print_recent_activity($course, $viewfullnames, $timestart) {
+function educationplusplus_print_recent_activity($course, $viewfullnames, $timestart) {
     return false;  //  True if anything was printed, otherwise false
 }
 
@@ -167,7 +167,7 @@ function education++_print_recent_activity($course, $viewfullnames, $timestart) 
  *
  * This callback function is supposed to populate the passed array with
  * custom activity records. These records are then rendered into HTML via
- * {@link education++_print_recent_mod_activity()}.
+ * {@link educationplusplus_print_recent_mod_activity()}.
  *
  * @param array $activities sequentially indexed array of objects with the 'cmid' property
  * @param int $index the index in the $activities to use for the next record
@@ -178,15 +178,15 @@ function education++_print_recent_activity($course, $viewfullnames, $timestart) 
  * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
  * @return void adds items into $activities and increases $index
  */
-function education++_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
+function educationplusplus_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
 }
 
 /**
- * Prints single activity item prepared by {@see education++_get_recent_mod_activity()}
+ * Prints single activity item prepared by {@see educationplusplus_get_recent_mod_activity()}
 
  * @return void
  */
-function education++_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
+function educationplusplus_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
 }
 
 /**
@@ -197,7 +197,7 @@ function education++_print_recent_mod_activity($activity, $courseid, $detail, $m
  * @return boolean
  * @todo Finish documenting this function
  **/
-function education++_cron () {
+function educationplusplus_cron () {
     return true;
 }
 
@@ -207,7 +207,7 @@ function education++_cron () {
  * @example return array('moodle/site:accessallgroups');
  * @return array
  */
-function education++_get_extra_capabilities() {
+function educationplusplus_get_extra_capabilities() {
     return array();
 }
 
@@ -216,21 +216,21 @@ function education++_get_extra_capabilities() {
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Is a given scale used by the instance of education++?
+ * Is a given scale used by the instance of educationplusplus?
  *
- * This function returns if a scale is being used by one education++
+ * This function returns if a scale is being used by one educationplusplus
  * if it has support for grading and scales. Commented code should be
  * modified if necessary. See forum, glossary or journal modules
  * as reference.
  *
- * @param int $education++id ID of an instance of this module
- * @return bool true if the scale is used by the given education++ instance
+ * @param int $educationplusplusid ID of an instance of this module
+ * @return bool true if the scale is used by the given educationplusplus instance
  */
-function education++_scale_used($education++id, $scaleid) {
+function educationplusplus_scale_used($educationplusplusid, $scaleid) {
     global $DB;
 
     /** @example */
-    if ($scaleid and $DB->record_exists('education++', array('id' => $education++id, 'grade' => -$scaleid))) {
+    if ($scaleid and $DB->record_exists('educationplusplus', array('id' => $educationplusplusid, 'grade' => -$scaleid))) {
         return true;
     } else {
         return false;
@@ -238,18 +238,18 @@ function education++_scale_used($education++id, $scaleid) {
 }
 
 /**
- * Checks if scale is being used by any instance of education++.
+ * Checks if scale is being used by any instance of educationplusplus.
  *
  * This is used to find out if scale used anywhere.
  *
  * @param $scaleid int
- * @return boolean true if the scale is used by any education++ instance
+ * @return boolean true if the scale is used by any educationplusplus instance
  */
-function education++_scale_used_anywhere($scaleid) {
+function educationplusplus_scale_used_anywhere($scaleid) {
     global $DB;
 
     /** @example */
-    if ($scaleid and $DB->record_exists('education++', array('grade' => -$scaleid))) {
+    if ($scaleid and $DB->record_exists('educationplusplus', array('grade' => -$scaleid))) {
         return true;
     } else {
         return false;
@@ -257,44 +257,44 @@ function education++_scale_used_anywhere($scaleid) {
 }
 
 /**
- * Creates or updates grade item for the give education++ instance
+ * Creates or updates grade item for the give educationplusplus instance
  *
  * Needed by grade_update_mod_grades() in lib/gradelib.php
  *
- * @param stdClass $education++ instance object with extra cmidnumber and modname property
+ * @param stdClass $educationplusplus instance object with extra cmidnumber and modname property
  * @return void
  */
-function education++_grade_item_update(stdClass $education++) {
+function educationplusplus_grade_item_update(stdClass $educationplusplus) {
     global $CFG;
     require_once($CFG->libdir.'/gradelib.php');
 
     /** @example */
     $item = array();
-    $item['itemname'] = clean_param($education++->name, PARAM_NOTAGS);
+    $item['itemname'] = clean_param($educationplusplus->name, PARAM_NOTAGS);
     $item['gradetype'] = GRADE_TYPE_VALUE;
-    $item['grademax']  = $education++->grade;
+    $item['grademax']  = $educationplusplus->grade;
     $item['grademin']  = 0;
 
-    grade_update('mod/education++', $education++->course, 'mod', 'education++', $education++->id, 0, null, $item);
+    grade_update('mod/educationplusplus', $educationplusplus->course, 'mod', 'educationplusplus', $educationplusplus->id, 0, null, $item);
 }
 
 /**
- * Update education++ grades in the gradebook
+ * Update educationplusplus grades in the gradebook
  *
  * Needed by grade_update_mod_grades() in lib/gradelib.php
  *
- * @param stdClass $education++ instance object with extra cmidnumber and modname property
+ * @param stdClass $educationplusplus instance object with extra cmidnumber and modname property
  * @param int $userid update grade of specific user only, 0 means all participants
  * @return void
  */
-function education++_update_grades(stdClass $education++, $userid = 0) {
+function educationplusplus_update_grades(stdClass $educationplusplus, $userid = 0) {
     global $CFG, $DB;
     require_once($CFG->libdir.'/gradelib.php');
 
     /** @example */
     $grades = array(); // populate array of grade objects indexed by userid
 
-    grade_update('mod/education++', $education++->course, 'mod', 'education++', $education++->id, 0, $grades);
+    grade_update('mod/educationplusplus', $educationplusplus->course, 'mod', 'educationplusplus', $educationplusplus->id, 0, $grades);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -312,14 +312,14 @@ function education++_update_grades(stdClass $education++, $userid = 0) {
  * @param stdClass $context
  * @return array of [(string)filearea] => (string)description
  */
-function education++_get_file_areas($course, $cm, $context) {
+function educationplusplus_get_file_areas($course, $cm, $context) {
     return array();
 }
 
 /**
- * File browsing support for education++ file areas
+ * File browsing support for educationplusplus file areas
  *
- * @package mod_education++
+ * @package mod_educationplusplus
  * @category files
  *
  * @param file_browser $browser
@@ -333,25 +333,25 @@ function education++_get_file_areas($course, $cm, $context) {
  * @param string $filename
  * @return file_info instance or null if not found
  */
-function education++_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
+function educationplusplus_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
     return null;
 }
 
 /**
- * Serves the files from the education++ file areas
+ * Serves the files from the educationplusplus file areas
  *
- * @package mod_education++
+ * @package mod_educationplusplus
  * @category files
  *
  * @param stdClass $course the course object
  * @param stdClass $cm the course module object
- * @param stdClass $context the education++'s context
+ * @param stdClass $context the educationplusplus's context
  * @param string $filearea the name of the file area
  * @param array $args extra arguments (itemid, path)
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
  */
-function education++_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options=array()) {
+function educationplusplus_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options=array()) {
     global $DB, $CFG;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -368,26 +368,26 @@ function education++_pluginfile($course, $cm, $context, $filearea, array $args, 
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Extends the global navigation tree by adding education++ nodes if there is a relevant content
+ * Extends the global navigation tree by adding educationplusplus nodes if there is a relevant content
  *
  * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
  *
- * @param navigation_node $navref An object representing the navigation tree node of the education++ module instance
+ * @param navigation_node $navref An object representing the navigation tree node of the educationplusplus module instance
  * @param stdClass $course
  * @param stdClass $module
  * @param cm_info $cm
  */
-function education++_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
+function educationplusplus_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
 }
 
 /**
- * Extends the settings navigation with the education++ settings
+ * Extends the settings navigation with the educationplusplus settings
  *
- * This function is called when the context for the page is a education++ module. This is not called by AJAX
+ * This function is called when the context for the page is a educationplusplus module. This is not called by AJAX
  * so it is safe to rely on the $PAGE.
  *
  * @param settings_navigation $settingsnav {@link settings_navigation}
- * @param navigation_node $education++node {@link navigation_node}
+ * @param navigation_node $educationplusplusnode {@link navigation_node}
  */
-function education++_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $education++node=null) {
+function educationplusplus_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $educationplusplusnode=null) {
 }

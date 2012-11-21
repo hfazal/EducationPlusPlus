@@ -16,13 +16,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The main education++ configuration form
+ * The main educationplusplus configuration form
  *
  * It uses the standard core Moodle formslib. For more info about them, please
  * visit: http://docs.moodle.org/en/Development:lib/formslib.php
  *
  * @package    mod
- * @subpackage education++
+ * @subpackage educationplusplus
  * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,7 +34,7 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 /**
  * Module instance settings form
  */
-class mod_education++_mod_form extends moodleform_mod {
+class mod_educationplusplus_mod_form extends moodleform_mod {
 
     /**
      * Defines forms elements
@@ -48,7 +48,7 @@ class mod_education++_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('education++name', 'education++'), array('size'=>'64'));
+        $mform->addElement('text', 'name', get_string('educationplusplusname', 'educationplusplus'), array('size'=>'64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -56,18 +56,18 @@ class mod_education++_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'education++name', 'education++');
+        $mform->addHelpButton('name', 'educationplusplusname', 'educationplusplus');
 
         // Adding the standard "intro" and "introformat" fields
         $this->add_intro_editor();
 
         //-------------------------------------------------------------------------------
-        // Adding the rest of education++ settings, spreeading all them into this fieldset
+        // Adding the rest of educationplusplus settings, spreeading all them into this fieldset
         // or adding more fieldsets ('header' elements) if needed for better logic
-        $mform->addElement('static', 'label1', 'education++setting1', 'Your education++ fields go here. Replace me!');
+        $mform->addElement('static', 'label1', 'educationplusplussetting1', 'Your educationplusplus fields go here. Replace me!');
 
-        $mform->addElement('header', 'education++fieldset', get_string('education++fieldset', 'education++'));
-        $mform->addElement('static', 'label2', 'education++setting2', 'Your education++ fields go here. Replace me!');
+        $mform->addElement('header', 'educationplusplusfieldset', get_string('educationplusplusfieldset', 'educationplusplus'));
+        $mform->addElement('static', 'label2', 'educationplusplussetting2', 'Your educationplusplus fields go here. Replace me!');
 
         //-------------------------------------------------------------------------------
         // add standard elements, common to all modules

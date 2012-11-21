@@ -17,25 +17,25 @@
 
 
 /**
- * English strings for education++
+ * English strings for educationplusplus
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
  * @package    mod
- * @subpackage education++
+ * @subpackage educationplusplus
  * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'education++';
-$string['modulenameplural'] = 'education++s';
-$string['modulename_help'] = 'Use the education++ module for... | The education++ module allows...';
-$string['education++fieldset'] = 'Custom example fieldset';
-$string['education++name'] = 'education++ name';
-$string['education++name_help'] = 'This is the content of the help tooltip associated with the education++name field. Markdown syntax is supported.';
-$string['education++'] = 'education++';
-$string['pluginadministration'] = 'education++ administration';
-$string['pluginname'] = 'education++';
+$string['modulename'] = 'educationplusplus';
+$string['modulenameplural'] = 'educationpluspluss';
+$string['modulename_help'] = 'Use the educationplusplus module for... | The educationplusplus module allows...';
+$string['educationplusplusfieldset'] = 'Custom example fieldset';
+$string['educationplusplusname'] = 'educationplusplus name';
+$string['educationplusplusname_help'] = 'This is the content of the help tooltip associated with the educationplusplusname field. Markdown syntax is supported.';
+$string['educationplusplus'] = 'educationplusplus';
+$string['pluginadministration'] = 'educationplusplus administration';
+$string['pluginname'] = 'educationplusplus';

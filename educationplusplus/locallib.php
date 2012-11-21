@@ -16,27 +16,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file replaces the legacy STATEMENTS section in db/install.xml,
- * lib.php/modulename_install() post installation hook and partially defaults.php
+ * Internal library of functions for module educationplusplus
+ *
+ * All the educationplusplus specific functions, needed to implement the module
+ * logic, should go here. Never include this file from your lib.php!
  *
  * @package    mod
- * @subpackage education++
- * @copyright  2011 Your Name <your@email.adress>
+ * @subpackage educationplusplus
+ * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/**
- * Post installation procedure
- *
- * @see upgrade_plugins_modules()
- */
-function xmldb_education++_install() {
-}
+defined('MOODLE_INTERNAL') || die();
 
 /**
- * Post installation recovery procedure
+ * Does something really useful with the passed things
  *
- * @see upgrade_plugins_modules()
+ * @param array $things
+ * @return object
  */
-function xmldb_education++_install_recovery() {
-}
+//function educationplusplus_do_something_useful(array $things) {
+//    return new stdClass();
+//}

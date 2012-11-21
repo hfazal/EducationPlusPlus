@@ -22,12 +22,12 @@
  * if you like, and it can span multiple lines.
  *
  * @package    mod
- * @subpackage education++
+ * @subpackage educationplusplus
  * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/// Replace education++ with the name of your module and remove this line
+/// Replace educationplusplus with the name of your module and remove this line
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
@@ -38,19 +38,19 @@ $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 
 require_course_login($course);
 
-add_to_log($course->id, 'education++', 'view all', 'index.php?id='.$course->id, '');
+add_to_log($course->id, 'educationplusplus', 'view all', 'index.php?id='.$course->id, '');
 
 $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
 
-$PAGE->set_url('/mod/education++/index.php', array('id' => $id));
+$PAGE->set_url('/mod/educationplusplus/index.php', array('id' => $id));
 $PAGE->set_title(format_string($course->fullname));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($coursecontext);
 
 echo $OUTPUT->header();
 
-if (! $education++s = get_all_instances_in_course('education++', $course)) {
-    notice(get_string('noeducation++s', 'education++'), new moodle_url('/course/view.php', array('id' => $course->id)));
+if (! $educationpluspluss = get_all_instances_in_course('educationplusplus', $course)) {
+    notice(get_string('noeducationpluspluss', 'educationplusplus'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
 if ($course->format == 'weeks') {
@@ -64,25 +64,25 @@ if ($course->format == 'weeks') {
     $table->align = array('left', 'left', 'left');
 }
 
-foreach ($education++s as $education++) {
-    if (!$education++->visible) {
+foreach ($educationpluspluss as $educationplusplus) {
+    if (!$educationplusplus->visible) {
         $link = html_writer::link(
-            new moodle_url('/mod/education++.php', array('id' => $education++->coursemodule)),
-            format_string($education++->name, true),
+            new moodle_url('/mod/educationplusplus.php', array('id' => $educationplusplus->coursemodule)),
+            format_string($educationplusplus->name, true),
             array('class' => 'dimmed'));
     } else {
         $link = html_writer::link(
-            new moodle_url('/mod/education++.php', array('id' => $education++->coursemodule)),
-            format_string($education++->name, true));
+            new moodle_url('/mod/educationplusplus.php', array('id' => $educationplusplus->coursemodule)),
+            format_string($educationplusplus->name, true));
     }
 
     if ($course->format == 'weeks' or $course->format == 'topics') {
-        $table->data[] = array($education++->section, $link);
+        $table->data[] = array($educationplusplus->section, $link);
     } else {
         $table->data[] = array($link);
     }
 }
 
-echo $OUTPUT->heading(get_string('modulenameplural', 'education++'), 2);
+echo $OUTPUT->heading(get_string('modulenameplural', 'educationplusplus'), 2);
 echo html_writer::table($table);
 echo $OUTPUT->footer();
