@@ -37,6 +37,15 @@
 			}
 			return $this;
 		}
+		
+		// TOSTRING
+		public function __toString() {
+			$stringToReturn = $this->name . "<br/>" . $this->pointValue . " Point Value<br/>Expires on " . /*$this->expiryDate .*/ "<br/>";
+			for ($i=0; $i<count($this->requirementSet); $i++){
+				$stringToReturn = $stringToReturn . $this->requirementSet[$i] . "<br/>";
+			}
+			return $stringToReturn;
+		}
 	}
 	
 	class Requirement {
@@ -51,6 +60,7 @@
 			"="    | If Activity's Grade (in percent) is exactly $percentToAchieve
 		*/
 		
+		// CONSTRUCTOR
 		function __construct( $activity, $condition, $percentToAchieve ) {
 		//print "In constructor\n";
 			$this->activity = $activity;
@@ -58,36 +68,61 @@
 			$this->percentToAchieve = $percentToAchieve;
 		}
 
-	   function __destruct() {
-		   //print "Destroying";
-	   }
+		// DESTRUCTOR
+		function __destruct() {
+			//print "Destroying";
+		}
+		
+		// TOSTRING
+		public function __toString() {
+			//FIX TO ACCOMODATE OTHER CONDITIONS
+			$stringToReturn = "Get more than " . $this->percentToAchieve . " on " . $this->activity;
+			return $stringToReturn;
+		}
 	}
 	
 	class Activity {
 		private $name;
-		private $gradeInPercent;
+		private $weight;
 		
-	   function __construct( $name, $gradeInPercent ) {
-		   //print "In constructor\n";
-		   $this->name = $name;
-		   $this->gradeInPercent = $gradeInPercent;
-	   }
+		// CONSTRUCTOR
+		function __construct( $name, $weight ) {
+			//print "In constructor\n";
+			$this->name = $name;
+			$this->weight = $weight;
+		}
 
-	   function __destruct() {
-		   //print "Destroying " . $this->name . "\n";
-	   }
+		// DESTRUCTOR
+		function __destruct() {
+			//print "Destroying " . $this->name . "\n";
+		}
+		
+	   	// TOSTRING
+		public function __toString() {
+			$stringToReturn = $this->name;
+			return $stringToReturn;
+		}
 	}
 	
 	//TESTER AREA TO TEST YOUR CLASSES
-	//Activity
-	$act = new Activity("Midterm", 90);
+	//Activity 1
+	$act1 = new Activity("Test 1", 20);
 	
-	//Requirement
-	$req = new Requirement("Pass all Tests", 1000, "Pass all tests in this course and earn 1000 points", "x", new DateTime("now"), false);
-	print "A New Point Earning Scenario: " . $pes->name;
+	//Activity 2
+	$act2 = new Activity("Test 2", 20);
+	
+	//Requirement1
+	$req1 = new Requirement($act1, ">", 50);
+	
+	//Requirement2
+	$req2 = new Requirement($act2, ">", 50);
+	
+	//Array of Requirement Objects for a PES
+	$arrayOfRequirements = array($req1, $req2);
 	
 	//PointEarningScenario
-	$pes = new PointEarningScenario("Pass all Tests", 1000, "Pass all tests in this course and earn 1000 points", "x", new DateTime("now"), false);
-	print "A New Point Earning Scenario: " . $pes->name;
+	$pes = new PointEarningScenario("Pass all Tests", 1000, "Pass all tests in this course and earn 1000 points", $arrayOfRequirements, new DateTime("now"), false);
 	
+	// View the PES
+	print $pes;
 ?>
