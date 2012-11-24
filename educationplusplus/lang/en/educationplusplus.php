@@ -24,18 +24,18 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2011 Your Name
+ * @copyright  2011 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'educationplusplus';
-$string['modulenameplural'] = 'educationpluspluss';
-$string['modulename_help'] = 'Use the educationplusplus module for... | The educationplusplus module allows...';
+$string['modulename'] = 'Education++';
+$string['modulenameplural'] = 'Education++s';
+$string['modulename_help'] = 'The Education++ module allows for Students and Professors to have a learning experience like never before bringing the concept of Gamification to learning. Students can earn points for completing tasks that they can spend on rewards, ranging from bonus marks and bonus time on a test to dropping a quiz and earning schoolwide badges.';
 $string['educationplusplusfieldset'] = 'Custom example fieldset';
-$string['educationplusplusname'] = 'educationplusplus name';
-$string['educationplusplusname_help'] = 'This is the content of the help tooltip associated with the educationplusplusname field. Markdown syntax is supported.';
-$string['educationplusplus'] = 'educationplusplus';
-$string['pluginadministration'] = 'educationplusplus administration';
-$string['pluginname'] = 'educationplusplus';
+$string['educationplusplusname'] = 'Education++';
+$string['educationplusplusname_help'] = 'Education++';
+$string['educationplusplus'] = 'Education++';
+$string['pluginadministration'] = 'Education++ Administration';
+$string['pluginname'] = 'Education Plus Plus';

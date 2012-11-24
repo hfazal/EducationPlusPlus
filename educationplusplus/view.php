@@ -34,6 +34,7 @@ require_once(dirname(__FILE__).'/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
+$added = optional_param('newpes', 0, PARAM_INT);
 
 if ($id) {
     $cm         = get_coursemodule_from_id('educationplusplus', $id, 0, false, MUST_EXIST);
@@ -72,7 +73,14 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 }
 
 // Replace the following lines with you own code
-echo $OUTPUT->heading('Yay! It works!');
+echo $OUTPUT->heading('Education++');
+
+if($added){
+	echo $OUTPUT->heading('A NEW POINT EARNING SCENARIO HAS BEEN CREATED!!!!');
+}
+
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="createAPES.php?id='. $cm->id .'">Add a New Scenario in which Students can Earn Points</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="#">View all Scenarios in which Students can Earn Points</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();
