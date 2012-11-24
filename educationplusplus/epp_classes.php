@@ -9,7 +9,6 @@
 
 		// CONSTRUCTOR
 		function __construct( $name, $pointValue, $description, $requirementSet, $expiryDate, $deletedByProf ) {
-			//print "In constructor\n";
 			$this->name = $name;
 			$this->pointValue = $pointValue;
 			$this->description = $description;
@@ -20,7 +19,7 @@
 
 		// DESTRUCTOR
 		function __destruct() {
-		   //print "Destroying " . $this->name . "\n";
+		   // Nothing to do here
 		}
 	   
 		// GETTER
@@ -40,7 +39,7 @@
 		
 		// TOSTRING
 		public function __toString() {
-			$stringToReturn = $this->name . "<br/>" . $this->pointValue . " Point Value<br/>Expires on " . /*$this->expiryDate .*/ "<br/>";
+			$stringToReturn = $this->name . "<br/>" . $this->pointValue . " Point Value<br/>Expires on " . $this->expiryDate->format('m-d-Y') . "<br/>";
 			for ($i=0; $i<count($this->requirementSet); $i++){
 				$stringToReturn = $stringToReturn . $this->requirementSet[$i] . "<br/>";
 			}
@@ -50,19 +49,18 @@
 	
 	class Requirement {
 		private $activity;
-		private $condition;				//This is a string. See Rules for Condition below
+		private $condition;				//This is an integer. See Rules for Condition below
 		private $percentToAchieve;
 		
 		/* 	Rules for Condition:
-			"1"    | If Activity has been Completed ($percentToAchieve will be ignored)
-			">"    | If Activity's Grade (in percent) >= $percentToAchieve
-			">="   | If Activity's Grade (in percent) > $percentToAchieve
-			"="    | If Activity's Grade (in percent) is exactly $percentToAchieve
+			"0"  -> Complete  | If Activity has been Completed ($percentToAchieve will be ignored)
+			"1"  -> >         | If Activity's Grade (in percent) >= $percentToAchieve
+			"2"  -> >=        | If Activity's Grade (in percent) > $percentToAchieve
+			"3"  -> =         | If Activity's Grade (in percent) is exactly $percentToAchieve
 		*/
 		
 		// CONSTRUCTOR
 		function __construct( $activity, $condition, $percentToAchieve ) {
-		//print "In constructor\n";
 			$this->activity = $activity;
 			$this->condition = $condition;
 			$this->percentToAchieve = $percentToAchieve;
@@ -70,13 +68,27 @@
 
 		// DESTRUCTOR
 		function __destruct() {
-			//print "Destroying";
+			// Nothing to do here
 		}
 		
 		// TOSTRING
 		public function __toString() {
-			//FIX TO ACCOMODATE OTHER CONDITIONS
-			$stringToReturn = "Get more than " . $this->percentToAchieve . " on " . $this->activity;
+			switch ($this->condition) {
+				case 0:	// Complete
+					$stringToReturn = "Complete the activity " . $this->activity;
+					break;
+				case 1:	// >
+					$stringToReturn = "Get more than " . $this->percentToAchieve . "% on " . $this->activity;
+					break;
+				case 2:	// >=
+					$stringToReturn = "Get " . $this->percentToAchieve . " % or more on " . $this->activity;
+					break;
+				case 3:	// =
+					$stringToReturn = "Get exactly " . $this->percentToAchieve . "% on the activity " . $this->activity;
+					break;
+				default:
+					$stringToReturn = "ERROR";
+			}
 			return $stringToReturn;
 		}
 	}
@@ -87,14 +99,15 @@
 		
 		// CONSTRUCTOR
 		function __construct( $name, $weight ) {
-			//print "In constructor\n";
 			$this->name = $name;
-			$this->weight = $weight;
+			if (!empty($weight)){
+				$this->weight = $weight;
+			}
 		}
-
+		
 		// DESTRUCTOR
 		function __destruct() {
-			//print "Destroying " . $this->name . "\n";
+			// Nothing to do here
 		}
 		
 	   	// TOSTRING
