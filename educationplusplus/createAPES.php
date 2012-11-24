@@ -69,8 +69,23 @@ $PAGE->set_context($context);
 //$PAGE->set_focuscontrol('some-html-id');
 //$PAGE->add_body_class('educationplusplus-'.$somevar);
 
+// Retrieve All Assignments to Display as Options for Requirements
+// Retrieve from DB all Activities
+global $DB;
+$table = 'assign';
+$result = $DB->get_records($table,array('course'=>$course->id));
+$constructedSelectOptions;
+
 // Output starts here
 echo $OUTPUT->header();
+if ($result){
+	foreach ($result as $row){
+		$constructedSelectOptions = $constructedSelectOptions . '\n<option value="' . $row->id . '">' . $row->name . '</option>';
+		//var_dump($row);
+		//array_push($arrayOfAssignNames, $row->name);
+		//array_push($arrayOfAssignIDs, $row->id);
+	}
+}
 
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
@@ -85,7 +100,7 @@ counter = 0;
 function addRequirements(){
 	var newdiv = document.createElement(\'div\');
 
-	newdiv.innerHTML = \'<select id="reqAct[]" name="reqAct[]" style="margin-left:50px;">\n<option value="0">Test 1</option><option value="1">Test 2</option><option value="2">Quiz 1</option></select><select id="reqCond[]" name="reqCond[]"><option value="0">Completed</option><option value="1">&gt;</option><option value="2">&gt;=</option><option value="3">=</option></select><input type="text" id="reqGradeToAchieve[]" name="reqGradeToAchieve[]" style="width:50px;text-align:right;" placeholder="%">\';
+	newdiv.innerHTML = \'<select id="reqAct[]" name="reqAct[]" style="margin-left:50px;">' . $constructedSelectOptions . '</select><select id="reqCond[]" name="reqCond[]"><option value="0">Completed</option><option value="1">&gt;</option><option value="2">&gt;=</option><option value="3">=</option></select><input type="text" id="reqGradeToAchieve[]" name="reqGradeToAchieve[]" style="width:50px;text-align:right;" placeholder="%">\';
 	counter++;
 
 	document.getElementById("requirementsDIV").appendChild(newdiv);
@@ -117,7 +132,7 @@ addRequirements();
 		<hr/>
 		Requirement(s)<br/>
 		<div id="requirementsDIV" name="requirementsDIV">	
-			<select id="reqAct[]" name="reqAct[]" style="margin-left:50px;">\n<option value="0">Test 1</option><option value="1">Test 2</option><option value="2">Quiz 1</option></select><select id="reqCond[]" name="reqCond[]"><option value="0">Completed</option><option value="1">&gt;</option><option value="2">&gt;=</option><option value="3">=</option></select><input type="text" id="reqGradeToAchieve[]" name="reqGradeToAchieve[]" style="width:50px;text-align:right;" placeholder="%">
+			<select id="reqAct[]" name="reqAct[]" style="margin-left:50px;">' . $constructedSelectOptions . '</select><select id="reqCond[]" name="reqCond[]"><option value="0">Completed</option><option value="1">&gt;</option><option value="2">&gt;=</option><option value="3">=</option></select><input type="text" id="reqGradeToAchieve[]" name="reqGradeToAchieve[]" style="width:50px;text-align:right;" placeholder="%">
 		</div>
 		<br/><br/>
 		<input name="Submit" type="button" style="margin: 0 auto; display:block; border:1px solid #000000; height:20px; padding-left:2px; padding-right:2px; padding-top:0px; padding-bottom:2px; line-height:14px; background-color:#EFEFEF;" onclick="addRequirements()" value="Add Another Requirement"/>

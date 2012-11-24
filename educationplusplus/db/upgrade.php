@@ -27,7 +27,7 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2011 Your Name
+ * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -69,6 +69,7 @@ function xmldb_educationplusplus_upgrade($oldversion) {
     // PHP generation posibilities.
 
     // First example, some fields were added to install.xml on 2007/04/01
+	
     if ($oldversion < 2007040100) {
 
         // Define field course to be added to educationplusplus
