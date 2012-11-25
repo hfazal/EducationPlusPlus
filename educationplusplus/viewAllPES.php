@@ -120,10 +120,23 @@ echo "	<style>
 		</style>
 	";
 
+echo '	<script>
+			function confirmDelete(pes){
+				var x;
+				var r = confirm("Are you sure you want to delete this Scenario? Students will no longer be able to earn points this way.");
+				if (r==true){
+					pes = "deletePES.php?id=' . $cm->id .'&pes=" + pes;
+					window.location = pes;
+				}
+				else{}
+			}
+		</script>';
+	
+	
 if ($arrayOfPESObjects){
 	for ($i=0; $i < count($arrayOfPESObjects); $i++){
 		echo $OUTPUT->box_start();
-		echo '<div style="float:right"><a href="editPES.php?id=' . $cm->id .'&pes=' . $arrayOfIDsForPESObjects[$i] . '">edit</a> | <a href="deletePES.php?id=' . $cm->id .'&pes=' . $arrayOfIDsForPESObjects[$i] . '">delete</a></div>';
+		echo '<div style="float:right"><a href="editPES.php?id=' . $cm->id .'&pes=' . $arrayOfIDsForPESObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDelete(' . $arrayOfIDsForPESObjects[$i] . ')">delete</a></div>';
 		echo $arrayOfPESObjects[$i];
 		echo $OUTPUT->box_end();
 		echo "<br/>";
