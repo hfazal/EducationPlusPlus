@@ -117,8 +117,6 @@ global $DB;
 		$record->expirydate 	= $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
 		$record->deletedbyprof	= 0;
 		$idOfPES = $DB->insert_record('epp_pointearningscenario', $record, true);
-
-		echo $idOfPES . "ID OF PES MOTHER FUCKER";
 		
 		for ($i = 0; $i < count($requirementsActivity); $i++){
 			$newRequirement 						= new stdClass();
