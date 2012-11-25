@@ -49,9 +49,9 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="pointearningscenario"/>
         <FIELD NAME="pointearningscenario" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="PointEarningScenario this Requirement belongs to" PREVIOUS="id" NEXT="activity"/>
-		<FIELD NAME="activity" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Activity this Requirement references to" PREVIOUS="pointearningscenario" NEXT="condition"/>
-		<FIELD NAME="condition" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Condition for the Requirement (See class for description)" PREVIOUS="activity" NEXT="percenttoachieve"/>
-		<FIELD NAME="percenttoachieve" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Percent to achieve for above condition" PREVIOUS="condition"/>
+		<FIELD NAME="activity" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Activity this Requirement references to" PREVIOUS="pointearningscenario" NEXT="cond"/>
+		<FIELD NAME="cond" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Condition for the Requirement (See class for description)" PREVIOUS="activity" NEXT="percenttoachieve"/>
+		<FIELD NAME="percenttoachieve" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Percent to achieve for above condition" PREVIOUS="cond"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

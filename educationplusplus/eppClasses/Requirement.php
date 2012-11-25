@@ -33,7 +33,7 @@
 					$stringToReturn = "Get more than " . $this->percentToAchieve . "% on " . $this->activity;
 					break;
 				case 2:	// >=
-					$stringToReturn = "Get " . $this->percentToAchieve . " % or more on " . $this->activity;
+					$stringToReturn = "Get " . $this->percentToAchieve . "% or more on " . $this->activity;
 					break;
 				case 3:	// =
 					$stringToReturn = "Get exactly " . $this->percentToAchieve . "% on " . $this->activity;

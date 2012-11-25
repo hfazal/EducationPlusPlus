@@ -85,7 +85,7 @@ if ($allPES){
 		foreach ($allRequirements as $rowRequirements){
 			$activity = $DB->get_record('assign',array('id'=>$rowRequirements->activity));	
 		
-			array_push($arrayOfRequirements, new Requirement(new Activity($activity->name,null), intval($rowRequirements->condition), intval($rowRequirements->percenttoachieve)));
+			array_push($arrayOfRequirements, new Requirement(new Activity($activity->name,null), intval($rowRequirements->cond), intval($rowRequirements->percenttoachieve)));
 			// ( $activity, $condition, $percentToAchieve )
 		}
 		
@@ -119,7 +119,7 @@ for ($i=0; $i < count($arrayOfPESObjects); $i++){
 	echo "<br/>";
 }
 
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'&newpes=1">Click to return to the Education++ homepage</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();

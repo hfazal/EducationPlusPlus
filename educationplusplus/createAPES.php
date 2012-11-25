@@ -74,7 +74,7 @@ $PAGE->set_context($context);
 global $DB;
 $table = 'assign';
 $result = $DB->get_records($table,array('course'=>$course->id));
-$constructedSelectOptions;
+$constructedSelectOptions = "";
 
 // Output starts here
 echo $OUTPUT->header();
@@ -140,6 +140,9 @@ addRequirements();
 		<input name="Submit" type="submit" style="float:right; display:block; border:1px solid #000000; height:20px; padding-left:2px; padding-right:2px; padding-top:0px; padding-bottom:2px; line-height:14px; background-color:#EFEFEF;" value="Create New Point Earning Scenario"/>
 	</form>
 </div>');
+
+echo "<br/>";
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();
