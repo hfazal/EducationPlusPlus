@@ -15,3 +15,13 @@ How to Import the Education++ Module into your copy of Moodle
   installed modules.
 
 
+Note: If a change has been made to the database setup (db/install.xml), it wont 
+      be put into effect unless you uninstall and reinstall (Your other option
+      is to create a new entry in the update file, which is hard). To uninstall:
+
+1 Go to Settings > Site Administration > Plugins > Plugins overview
+
+2 Select uninstall Education Plus Plus. Confirm. 
+
+3 To reinstall, go to Settings > Site Administration > Notifications and select
+  update the Database (New Schema will be installed along with eduation++
