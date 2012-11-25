@@ -39,7 +39,7 @@ require 'eppClasses/Activity.php';
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
-$deleted = optional_param('delete', 0, PARAM_INT);
+$pes = optional_param('pes', 0, PARAM_INT);
 
 if ($id) {
     $cm         = get_coursemodule_from_id('educationplusplus', $id, 0, false, MUST_EXIST);
@@ -65,72 +65,25 @@ $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
-
-// Retrieve All Assignments to Display as Options for Requirements
-// Retrieve from DB all PES
 global $DB;
+
 $allPES = $DB->get_records('epp_pointearningscenario',array('course'=>$course->id));
 $arrayOfPESObjects = array();
 $arrayOfIDsForPESObjects = array();
 
 // Output starts here
 echo $OUTPUT->header();
-if ($allPES){
-	foreach ($allPES as $rowPES){
-		$allRequirements = $DB->get_records('epp_requirement',array('pointearningscenario'=>$rowPES->id));
-		$arrayOfRequirements = array();
-		
-		foreach ($allRequirements as $rowRequirements){
-			$activity = $DB->get_record('assign',array('id'=>$rowRequirements->activity));	
-		
-			array_push($arrayOfRequirements, new Requirement(new Activity($activity->name,null), intval($rowRequirements->cond), intval($rowRequirements->percenttoachieve)));
-			// ( $activity, $condition, $percentToAchieve )
-		}
-		
-		array_push($arrayOfPESObjects, new PointEarningScenario($rowPES->name, intval($rowPES->pointvalue), $rowPES->description, $arrayOfRequirements, new DateTime($rowPES->expirydate)));
-		//( $name, $pointValue, $description, $requirementSet, $expiryDate, $deletedByProf )
-		array_push($arrayOfIDsForPESObjects, $rowPES->id);
-	}
-}
-
-if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
-    echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
-}
 
 // Replace the following lines with you own code
 echo $OUTPUT->heading('Education++');
 
-if($deleted){
-	echo $OUTPUT->heading('The Scenario was Deleted');
-	echo "<br/>";
+if ($pes){
+	$DB->delete_records('epp_pointearningscenario', array('id'=>$pes));
+	$DB->delete_records('epp_requirement', array('pointearningscenario'=>$pes));
+	redirect("viewAllPES.php?id=" . $cm->id ."&delete=1");
 }
-
-//Styles for output: pesName, pesPointValue, pesExpiryDate, pesDescription, pesRequirements
-
-echo "	<style>
-			.pesName 			{ font-weight:bold; font-size:x-large; }
-			.pesPointValue 		{ font-style:italic; font-size:x-large; }
-			.pesExpiryDate		{ color:red; font-size:medium; }
-			.pesDescription		{ font-size:medium; }
-			.pesRequirements	{  }
-		</style>
-	";
-
-if ($arrayOfPESObjects){
-	for ($i=0; $i < count($arrayOfPESObjects); $i++){
-		echo $OUTPUT->box_start();
-		echo '<div style="float:right"><a href="editPES.php?id=' . $cm->id .'&pes=' . $arrayOfIDsForPESObjects[$i] . '">edit</a> | <a href="deletePES.php?id=' . $cm->id .'&pes=' . $arrayOfIDsForPESObjects[$i] . '">delete</a></div>';
-		echo $arrayOfPESObjects[$i];
-		echo $OUTPUT->box_end();
-		echo "<br/>";
-	}
-}
-else{
-	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="createAPES.php?id='. $cm->id .'">no scenarios to earn points were found. click here to make a scenario</a></div>');
+else {
+	echo $OUTPUT->box("This page cannot be accessed directly");
 	echo "<br/>";
 }
 

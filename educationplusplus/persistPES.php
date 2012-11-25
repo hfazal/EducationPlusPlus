@@ -105,7 +105,7 @@ global $DB;
 			array_push($formedRequirements, $req);
 		}
 
-		$newPES = new PointEarningScenario($pesName, $pesPointValue, $pesDescription, $formedRequirements, new DateTime($pesExpiryDate), false);
+		$newPES = new PointEarningScenario($pesName, $pesPointValue, $pesDescription, $formedRequirements, new DateTime($pesExpiryDate));
 		
 /* PERSIST TO epp_pointearningscenario AND epp_requirements */
 		$record 				= new stdClass();
@@ -115,7 +115,6 @@ global $DB;
 		$record->description	= $pesDescription;
 		$datetimeVersionOfExpiryDate = new DateTime ($pesExpiryDate);
 		$record->expirydate 	= $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
-		$record->deletedbyprof	= 0;
 		$idOfPES = $DB->insert_record('epp_pointearningscenario', $record, true);
 		
 		for ($i = 0; $i < count($requirementsActivity); $i++){

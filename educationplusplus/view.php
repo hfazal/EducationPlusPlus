@@ -83,7 +83,7 @@ if($added){
 echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
 						<h2>Point Earning Scenerio Tools</h2>
 						<a href="createAPES.php?id='. $cm->id .'">Add a New Scenario in which Students can Earn Points</a><br/>
-						<a href="viewAllPES.php?id='. $cm->id .'">View all Scenarios in which Students can Earn Points</a>
+						<a href="viewAllPES.php?id='. $cm->id .'">View, Edit or Delete a Scenarios in which Students can Earn Points</a>
 					</div>');
 echo "<br/>";
 echo $OUTPUT->box('	<div style="width:100%;text-align:center;">

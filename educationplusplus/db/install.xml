@@ -36,8 +36,7 @@
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name of this PointEarningScenario" PREVIOUS="course" NEXT="pointvalue"/>
         <FIELD NAME="pointvalue" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Point Value of this PointEarningScenario" PREVIOUS="name" NEXT="description"/>
 		<FIELD NAME="description" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Optional description of the PointEarningScenario" PREVIOUS="pointvalue" NEXT="expirydate"/>
-        <FIELD NAME="expirydate" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date of expiry for the PointEarningScenario to be completed" PREVIOUS="description" NEXT="deletedbyprof"/>
-        <FIELD NAME="deletedbyprof" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="This PointEarningScenario has been set as deleted by the profesor" PREVIOUS="expirydate" />
+        <FIELD NAME="expirydate" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date of expiry for the PointEarningScenario to be completed" PREVIOUS="description"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
