@@ -27,7 +27,7 @@
 		public function __toString() {
 			switch ($this->condition) {
 				case 0:	// Complete
-					$stringToReturn = "Complete the activity " . $this->activity;
+					$stringToReturn = "Complete " . $this->activity;
 					break;
 				case 1:	// >
 					$stringToReturn = "Get more than " . $this->percentToAchieve . "% on " . $this->activity;
@@ -36,7 +36,7 @@
 					$stringToReturn = "Get " . $this->percentToAchieve . " % or more on " . $this->activity;
 					break;
 				case 3:	// =
-					$stringToReturn = "Get exactly " . $this->percentToAchieve . "% on the activity " . $this->activity;
+					$stringToReturn = "Get exactly " . $this->percentToAchieve . "% on " . $this->activity;
 					break;
 				default:
 					$stringToReturn = "ERROR";

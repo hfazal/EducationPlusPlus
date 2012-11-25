@@ -37,7 +37,7 @@
         <FIELD NAME="pointvalue" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Point Value of this PointEarningScenario" PREVIOUS="name" NEXT="description"/>
 		<FIELD NAME="description" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Optional description of the PointEarningScenario" PREVIOUS="pointvalue" NEXT="expirydate"/>
         <FIELD NAME="expirydate" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date of expiry for the PointEarningScenario to be completed" PREVIOUS="description" NEXT="deletedbyprof"/>
-        <FIELD NAME="deletedbyprof" TYPE="binary" NOTNULL="true" SEQUENCE="false" COMMENT="This PointEarningScenario has been set as deleted by the profesor" PREVIOUS="expirydate" />
+        <FIELD NAME="deletedbyprof" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="This PointEarningScenario has been set as deleted by the profesor" PREVIOUS="expirydate" />
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -47,9 +47,9 @@
 	<!-- epp_requirement -->
 	<TABLE NAME="epp_requirement" COMMENT="EducationPlusPlus: A Requirement for a Point Earning Scenario" PREVIOUS="epp_pointearningscenario">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="pointearningscenatio"/>
-        <FIELD NAME="pointearningscenatio" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="PointEarningScenario this Requirement belongs to" PREVIOUS="id" NEXT="activity"/>
-		<FIELD NAME="activity" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Activity this Requirement references to" PREVIOUS="pointearningscenatio" NEXT="condition"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="pointearningscenario"/>
+        <FIELD NAME="pointearningscenario" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="PointEarningScenario this Requirement belongs to" PREVIOUS="id" NEXT="activity"/>
+		<FIELD NAME="activity" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Activity this Requirement references to" PREVIOUS="pointearningscenario" NEXT="condition"/>
 		<FIELD NAME="condition" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Condition for the Requirement (See class for description)" PREVIOUS="activity" NEXT="percenttoachieve"/>
 		<FIELD NAME="percenttoachieve" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Percent to achieve for above condition" PREVIOUS="condition"/>
       </FIELDS>

@@ -31,10 +31,12 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
+// Education++ Classes
 require 'eppClasses/PointEarningScenario.php';
 require 'eppClasses/Requirement.php';
 require 'eppClasses/Activity.php';
-	
+
+
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
 
@@ -53,11 +55,11 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'view', "view.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'createAPES', "createAPES.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
 
-$PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/educationplusplus/createAPES.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
@@ -67,46 +69,32 @@ $PAGE->set_context($context);
 //$PAGE->set_focuscontrol('some-html-id');
 //$PAGE->add_body_class('educationplusplus-'.$somevar);
 
-//Process PES
-$pesName = $_POST["pesName"];
-$pesPointValue = intval($_POST["pesPointValue"]);
-$pesDescription = $_POST["pesDescription"];
-$pesExpiryDate = $_POST["pesExpiryDate"];
-$requirementsActivity = array();
-$requirementsCondition = array();
-$requirementsPercentToAchieve = array();
-$requirementsCount;
-$formedRequirements = array();
-
-$reqAct = $_POST["reqAct"];
-$reqCond = $_POST["reqCond"];
-$reqGradeToAchieve = $_POST["reqGradeToAchieve"];
-
-foreach ($reqAct as $eachInput) {
-	array_push($requirementsActivity, $eachInput);
-}
-
-foreach ($reqCond as $eachInput) {
-	array_push($requirementsCondition, intval($eachInput));
-}
-
-foreach ($reqGradeToAchieve as $eachInput) {
-	array_push($requirementsPercentToAchieve, intval($eachInput));
-}
-
-$requirementsCount = count($requirementsActivity);
-
-for ($i = 0; $i < $requirementsCount; $i++){
-	$act = new Activity($requirementsActivity[$i], null);	//Fix this to draw info from DB
-	$req = new Requirement($act, $requirementsCondition[$i], $requirementsPercentToAchieve[$i]);
-	array_push($formedRequirements, $req);
-}
-
-$newPES = new PointEarningScenario($pesName, $pesPointValue, $pesDescription, $formedRequirements, new DateTime($pesExpiryDate), false);
-
+// Retrieve All Assignments to Display as Options for Requirements
+// Retrieve from DB all PES
+global $DB;
+$allPES = $DB->get_records('epp_pointearningscenario',array('course'=>$course->id));
+$arrayOfPESObjects = array();
 
 // Output starts here
 echo $OUTPUT->header();
+if ($allPES){
+	foreach ($allPES as $rowPES){
+		$allRequirements = $DB->get_records('epp_requirement',array('pointearningscenario'=>$rowPES->id));
+		$arrayOfRequirements = array();
+		
+		foreach ($allRequirements as $rowRequirements){
+			$activity = $DB->get_record('assign',array('id'=>$rowRequirements->activity));	
+		
+			array_push($arrayOfRequirements, new Requirement(new Activity($activity->name,null), intval($rowRequirements->condition), intval($rowRequirements->percenttoachieve)));
+			// ( $activity, $condition, $percentToAchieve )
+		}
+		
+		$deletionStatus = $rowPES->deletedbyprof == '0' ? false : true;
+		
+		array_push($arrayOfPESObjects, new PointEarningScenario($rowPES->name, intval($rowPES->pointvalue), $rowPES->description, $arrayOfRequirements, new DateTime($rowPES->expirydate), $deletionStatus));
+		//( $name, $pointValue, $description, $requirementSet, $expiryDate, $deletedByProf )
+	}
+}
 
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
@@ -115,11 +103,24 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 // Replace the following lines with you own code
 echo $OUTPUT->heading('Education++');
 
-echo $OUTPUT->box('A new Point Earning Scenario was successfully made [into a class, not saved YET]<br/>' . $newPES);
-echo "<br/>";
+//Styles for output: pesName, pesPointValue, pesExpiryDate, pesDescription, pesRequirements
+
+echo "	<style>
+			.pesName 			{ font-weight:bold; font-size:x-large; }
+			.pesPointValue 		{ font-style:italic; font-size:x-large; }
+			.pesExpiryDate		{ color:red; font-size:medium; }
+			.pesDescription		{ font-size:medium; }
+			.pesRequirements	{  }
+		</style>
+	";
+
+for ($i=0; $i < count($arrayOfPESObjects); $i++){
+	echo $OUTPUT->box($arrayOfPESObjects[$i]);
+	echo "<br/>";
+}
+
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'&newpes=1">Click to return to the Education++ homepage</a></div>');
-echo var_dump($newPES);
+
 // Finish the page
 echo $OUTPUT->footer();
 
-?>

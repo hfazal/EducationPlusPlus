@@ -39,10 +39,12 @@
 		
 		// TOSTRING
 		public function __toString() {
-			$stringToReturn = $this->name . "<br/>" . $this->pointValue . " Point Value<br/>Expires on " . $this->expiryDate->format('m-d-Y') . "<br/>";
+			$stringToReturn = "<span class='pesName'>" . $this->name . "</span> <span class='pesPointValue'>(" . $this->pointValue . " Points)</span><br/><span class='pesExpiryDate'>Expires on " . $this->expiryDate->format('m-d-Y') . "</span><br/><span class='pesDescription'>" . $this->description . "</span>";
+			$stringToReturn = $stringToReturn . "<ul>";
 			for ($i=0; $i<count($this->requirementSet); $i++){
-				$stringToReturn = $stringToReturn . $this->requirementSet[$i] . "<br/>";
+				$stringToReturn = $stringToReturn . "<li span='pesRequirements'>" . $this->requirementSet[$i] . "</li>";
 			}
+			$stringToReturn = $stringToReturn . "</ul>";
 			return $stringToReturn;
 		}
 	}
