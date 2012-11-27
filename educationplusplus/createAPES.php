@@ -81,9 +81,6 @@ echo $OUTPUT->header();
 if ($result){
 	foreach ($result as $row){
 		$constructedSelectOptions = $constructedSelectOptions . '\n<option value="' . $row->id . '">' . $row->name . '</option>';
-		//var_dump($row);
-		//array_push($arrayOfAssignNames, $row->name);
-		//array_push($arrayOfAssignIDs, $row->id);
 	}
 }
 
