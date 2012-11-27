@@ -64,10 +64,10 @@ class mod_educationplusplus_mod_form extends moodleform_mod {
         //-------------------------------------------------------------------------------
         // Adding the rest of educationplusplus settings, spreeading all them into this fieldset
         // or adding more fieldsets ('header' elements) if needed for better logic
-        $mform->addElement('static', 'label1', 'educationplusplussetting1', 'Your educationplusplus fields go here. Replace me!');
+        //$mform->addElement('static', 'label1', 'educationplusplussetting1', 'Your educationplusplus fields go here. Replace me!');
 
-        $mform->addElement('header', 'educationplusplusfieldset', get_string('educationplusplusfieldset', 'educationplusplus'));
-        $mform->addElement('static', 'label2', 'educationplusplussetting2', 'Your educationplusplus fields go here. Replace me!');
+        //$mform->addElement('header', 'educationplusplusfieldset', get_string('educationplusplusfieldset', 'educationplusplus'));
+        //$mform->addElement('static', 'label2', 'educationplusplussetting2', 'Your educationplusplus fields go here. Replace me!');
 
         //-------------------------------------------------------------------------------
         // add standard elements, common to all modules
