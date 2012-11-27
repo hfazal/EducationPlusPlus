@@ -37,6 +37,7 @@ require 'eppClasses/Activity.php';
 	
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
+$PESid = optional_param('pes', 0, PARAM_INT);
 
 if ($id) {
     $cm         = get_coursemodule_from_id('educationplusplus', $id, 0, false, MUST_EXIST);
@@ -108,18 +109,29 @@ global $DB;
 		$newPES = new PointEarningScenario($pesName, $pesPointValue, $pesDescription, $formedRequirements, new DateTime($pesExpiryDate));
 		
 /* PERSIST TO epp_pointearningscenario AND epp_requirements */
+		//var_dump($record);
+		
+		//$record = $DB->get_records('epp_pointearningscenario',array('id'=>$PESid));
 		$record 				= new stdClass();
+		$record->id				= intval($PESid);
 		$record->course  		= intval($course->id);
 		$record->name	 		= $pesName;
 		$record->pointvalue 	= intval($pesPointValue);
 		$record->description	= $pesDescription;
 		$datetimeVersionOfExpiryDate = new DateTime ($pesExpiryDate);
 		$record->expirydate 	= $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
-		$idOfPES = $DB->insert_record('epp_pointearningscenario', $record, true);
 		
+		//var_dump($record);
+		// UPDATE PES
+		$DB->update_record('epp_pointearningscenario', $record);
+		
+		// DELETE EXISTING REQUIREMENTS
+		$DB->delete_records('epp_requirement', array('pointearningscenario'=>$PESid));
+		
+		// CREATE NEW REQUIREMENTS
 		for ($i = 0; $i < count($requirementsActivity); $i++){
 			$newRequirement 						= new stdClass();
-			$newRequirement->pointearningscenario	= intval($idOfPES);
+			$newRequirement->pointearningscenario	= intval($PESid);
 			$newRequirement->activity 				= intval($requirementsActivity[$i]);
 			$newRequirement->cond	 				= intval($requirementsCondition[$i]);
 			$newRequirement->percenttoachieve		= intval($requirementsPercentToAchieve[$i]);
@@ -145,7 +157,7 @@ echo "	<style>
 			.pesRequirements	{  }
 		</style>
 	";
-echo $OUTPUT->box('The following Point Earning Scenario was successfully saved:<br/><br/>' . $newPES);
+echo $OUTPUT->box('The following Point Earning Scenario was successfully updated:<br/><br/>' . $newPES);
 echo "<br/>";
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'&newpes=1">Click to return to the Education++ homepage</a></div>');
 

@@ -154,7 +154,7 @@ if(!empty($idOfPesToEdit)){
 	</script>
 
 	<div id="form" style="width:400px;height:500px;overflow:auto;">
-		<form method="post" action="persistPES.php?id='. $cm->id .'" name="pes-creator" id="pes-creator" style="padding-left:10px;padding-right:10px;">
+		<form method="post" action="persistUpdatedPES.php?id='. $cm->id .'&pes=' . $idOfPesToEdit . '" name="pes-creator" id="pes-creator" style="padding-left:10px;padding-right:10px;">
 			<h3>Edit an Existing Point Earning Scenario</h3>
 			<table>
 				<tr>
