@@ -71,16 +71,49 @@ $PAGE->set_context($context);
 global $DB;
 $table_assign = 'assign';
 $table_assign_grade = 'assign_grades';
+$table_pes = 'epp_pointearningscenario';
+$table_req = 'epp_requirement';
+
+$pes = $DB->get_records($table_pes,array('course'=>$course->id));
+foreach($pes as $pointearningscenaio)
+    $req = $DB->get_records($table_req,array('pontearningscenario'=>$pes->id));
+
 $assign = $DB->get_records($table_assign,array('course'=>$course->id));
-foreach($assign as $assignments)
-$result = $DB->get_records($table_assign_grade,array('assignment'=>$assignments->id));
+foreach($assign as $assignments){
+    $result = $DB->get_records($table_assign_grade,array('assignment'=>$assignments->id));
+}
 $constructedSelectOptions = "";
 // Output starts here
 //echo var_dump($result);
 echo $OUTPUT->header();
 if ($result){
 	foreach ($result as $row){
-		$constructedSelectOptions = $constructedSelectOptions . '\n<option value="' . $row->id . '">' . $row->grader . '</option>';
+        foreach ($req as $requirement){
+            if ($result->id == $req->activity){
+                switch($req->cond){
+                case 0: // Complete
+                    //award points
+                    break;
+                case 1: // >
+                    if ($result->grade > $req->percenttoachieve){
+                        //award points
+                    }
+                    break;
+                case 2: // >=
+                     if ($result->grade >= $req->percenttoachieve){
+                        //award points
+                    }                   
+                    break;
+                case 3: // =
+                    if ($result->grade == $req->percenttoachieve){
+                        //award points
+                    } 
+                    break;
+                default:
+                    $stringToReturn = "ERROR in DB"; //Some sort of db storing error of condition
+                }
+            }
+        }
 		echo var_dump($row);
 		//array_push($arrayOfAssignNames, $row->name);
 		//array_push($arrayOfAssignIDs, $row->id);
