@@ -150,28 +150,59 @@ if(!empty($idOfPesToEdit)){
 
 		document.getElementById("requirementsDIV").appendChild(newdiv);
 	}
+	function validate(){
+		var name        = document.forms["pesform"]["pesName"].value;
+		var pv          = document.forms["pesform"]["pesPointValue"].value;
+		var expirydate  = document.forms["pesform"]["pesExpiryDate"].value;
+		var description = document.forms["pesform"]["pesDescription"].value;
+		var pass 		= true;
+		
+		$("#nameReq").css("display", "none");
+		$("#pvReq").css("display", "none");
+		$("#expReq").css("display", "none");
+		$("#desReq").css("display", "none");
+		
+		if (name==null || name==""){
+			$("#nameReq").css("display", "inline");
+			pass = false;
+		}
+		if (pv==null || pv==""){
+			$("#pvReq").css("display", "inline");
+			pass = false;
+		}
+		if (expirydate==null || expirydate==""){
+			$("#expReq").css("display", "inline");
+			pass = false;
+		}
+		if (description==null || description==""){
+			$("#desReq").css("display", "inline");
+			pass = false;
+		}
+		
+		return pass;
+	}
 	addRequirements();
 	</script>
 
-	<div id="form" style="width:400px;height:500px;overflow:auto;">
-		<form method="post" action="persistUpdatedPES.php?id='. $cm->id .'&pes=' . $idOfPesToEdit . '" name="pes-creator" id="pes-creator" style="padding-left:10px;padding-right:10px;">
+	<div id="form" style="width:400px;height:600px;overflow:auto;">
+		<form id="pesform" name="pesform" method="post" onsubmit="return validate()" action="persistUpdatedPES.php?id='. $cm->id .'&pes=' . $idOfPesToEdit . '" name="pes-creator" id="pes-creator" style="padding-left:10px;padding-right:10px;">
 			<h3>Edit an Existing Point Earning Scenario</h3>
 			<table>
 				<tr>
 					<td style="width:100px">Name</td>
-					<td><input type="text" value="' . $PES->name . '" style="margin-right:10px;width:200px;" id="pesName" name="pesName"></td>
+					<td><input type="text" value="' . $PES->name . '" style="margin-right:10px;width:200px;" id="pesName" name="pesName"><br/><span id="nameReq" style="color:red;display:none;">You Must Specify the Name of the Scenario</span></td>
 				</tr>
 				<tr>
 					<td>Point Value</td>
-					<td><input type="text" value="' . $PES->pointValue . '" style="margin-right:10px;width:200px;" id="pesPointValue" name="pesPointValue"></td>
+					<td><input type="text" value="' . $PES->pointValue . '" style="margin-right:10px;width:200px;" id="pesPointValue" name="pesPointValue"><br/><span id="pvReq" style="color:red;display:none;">You Must Specify a Point Value to Award</span></td>
 				</tr>
 				<tr>
 					<td>Expiry Date</td>
-					<td><input type="date" value="' . $PES->expiryDate->format('Y-m-d') . '" style="margin-right:10px;width:200px;" id="pesExpiryDate" name="pesExpiryDate"></td>
+					<td><input type="date" value="' . $PES->expiryDate->format('Y-m-d') . '" style="margin-right:10px;width:200px;" id="pesExpiryDate" name="pesExpiryDate"><br/><span id="expReq" style="color:red;display:none;">You Must Specify an Expiry Date</span></td>
 				</tr>
 				<tr>
 					<td style="vertical-align:top;">Description</td>
-					<td><textarea name="pesDescription" id="pesDescription" style="margin-right:10px;width:200px;">' . $PES->description . '</textarea></td>
+					<td><textarea name="pesDescription" id="pesDescription" style="margin-right:10px;width:200px;">' . $PES->description . '</textarea><br/><span id="desReq" style="color:red;display:none;">You Must Specify a Description</span></td>
 				</tr>
 			</table>
 			<hr/>
