@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2011 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -83,6 +83,27 @@ $reqCond = $_POST["reqCond"];
 $reqGradeToAchieve = $_POST["reqGradeToAchieve"];
 
 global $DB;
+$allPES = $DB->get_records('epp_pointearningscenario',array('course'=>$course->id));
+$arrayOfPESObjects = array();
+$arrayOfIDsForPESObjects = array();
+
+if ($allPES){
+	foreach ($allPES as $rowPES){
+		$allRequirements = $DB->get_records('epp_requirement',array('pointearningscenario'=>$rowPES->id));
+		$arrayOfRequirements = array();
+		
+		foreach ($allRequirements as $rowRequirements){
+			$activity = $DB->get_record('assign',array('id'=>$rowRequirements->activity));	
+		
+			array_push($arrayOfRequirements, new Requirement(new Activity($activity->name,null), intval($rowRequirements->cond), intval($rowRequirements->percenttoachieve)));
+			// ( $activity, $condition, $percentToAchieve )
+		}
+		
+		array_push($arrayOfPESObjects, new PointEarningScenario($rowPES->name, intval($rowPES->pointvalue), $rowPES->description, $arrayOfRequirements, new DateTime($rowPES->expirydate)));
+		//( $name, $pointValue, $description, $requirementSet, $expiryDate, $deletedByProf )
+		array_push($arrayOfIDsForPESObjects, $rowPES->id);
+	}
+}
 
 /* CREATE PES OBJECT */
 		foreach ($reqAct as $eachInput) {
@@ -108,10 +129,48 @@ global $DB;
 
 		$newPES = new PointEarningScenario($pesName, $pesPointValue, $pesDescription, $formedRequirements, new DateTime($pesExpiryDate));
 		
-/* PERSIST TO epp_pointearningscenario AND epp_requirements */
-		//var_dump($record);
-		
-		//$record = $DB->get_records('epp_pointearningscenario',array('id'=>$PESid));
+//CHECK FOR DUPLICATES
+$duplicateFound = false;
+for ($a=0; $a < count($arrayOfPESObjects); $a++){
+	if (count($arrayOfPESObjects[$a]->requirementSet == count($newPES->requirementSet))){
+		$matchesFoundCount = 0;
+		for ($b=0; $b < count($arrayOfPESObjects[$a]->requirementSet); $b++){			
+			$matchfound = false;
+			for ($c=0; $c < count($newPES->requirementSet); $c++){
+				if (strcmp(($newPES->requirementSet[$c]->activity->name), ($arrayOfPESObjects[$a]->requirementSet[$b]->activity->name))==0 &&
+					strcmp(($newPES->requirementSet[$c]->condition), ($arrayOfPESObjects[$a]->requirementSet[$b]->condition))==0 &&
+					strcmp(($newPES->requirementSet[$c]->percentToAchieve), ($arrayOfPESObjects[$a]->requirementSet[$b]->percentToAchieve))==0){
+					$matchfound = true;
+				}
+			}
+			if ($matchfound == true){
+				$matchesFoundCount++;
+			}
+		}
+		if ($matchesFoundCount == count($arrayOfPESObjects[$a]->requirementSet)){
+			//match
+			//check if fields changed
+			if ($arrayOfIDsForPESObjects[$a] != $PESid) {	//IF ITS NOT THE SAME PES, BUT REQUIREMENTS ARE THE SAME, DIE
+				$duplicateFound = true;
+			}
+			else{
+				if ($arrayOfPESObjects[$a]->name == $newPES->name && $arrayOfPESObjects[$a]->pointValue == $newPES->pointValue && $arrayOfPESObjects[$a]->description == $newPES->description && $arrayOfPESObjects[$a]->expiryDate == $newPES->expiryDate){
+					$duplicateFound = true;
+				}
+			}
+			
+		}
+		else {
+			//no match, wrong reqs
+		}
+	}
+	else{
+		//no match, wrong number of req
+	}
+}
+
+if ($duplicateFound == false){
+	/* PERSIST TO epp_pointearningscenario AND epp_requirements */
 		$record 				= new stdClass();
 		$record->id				= intval($PESid);
 		$record->course  		= intval($course->id);
@@ -121,7 +180,6 @@ global $DB;
 		$datetimeVersionOfExpiryDate = new DateTime ($pesExpiryDate);
 		$record->expirydate 	= $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
 		
-		//var_dump($record);
 		// UPDATE PES
 		$DB->update_record('epp_pointearningscenario', $record);
 		
@@ -137,6 +195,10 @@ global $DB;
 			$newRequirement->percenttoachieve		= intval($requirementsPercentToAchieve[$i]);
 			$DB->insert_record('epp_requirement', $newRequirement, false);
 		}
+}
+else{
+	//Nothing Saved
+}
 
 // Output starts here
 echo $OUTPUT->header();
@@ -157,9 +219,15 @@ echo "	<style>
 			.pesRequirements	{  }
 		</style>
 	";
-echo $OUTPUT->box('The following Point Earning Scenario was successfully updated:<br/><br/>' . $newPES);
+if ($duplicateFound == false){
+	echo $OUTPUT->box('The following Point Earning Scenario was successfully updated:<br/><br/>' . $newPES);
+}
+else { // ($duplicateFound == true)
+	echo $OUTPUT->box('The following Point Earning Scenario was <strong>NOT</strong> successfully updated, as a scenario with the same requirements already exists. If you did not update anything, your scenario has not changed:<br/><br/>' . $newPES);
+}
+
 echo "<br/>";
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'&newpes=1">Click to return to the Education++ homepage</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();
