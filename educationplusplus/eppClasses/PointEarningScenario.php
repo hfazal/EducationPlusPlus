@@ -5,16 +5,14 @@
 		private $description;
 		private $requirementSet;
 		private $expiryDate;
-		private $deletedByProf;
 
 		// CONSTRUCTOR
-		function __construct( $name, $pointValue, $description, $requirementSet, $expiryDate, $deletedByProf ) {
+		function __construct( $name, $pointValue, $description, $requirementSet, $expiryDate ) {
 			$this->name = $name;
 			$this->pointValue = $pointValue;
 			$this->description = $description;
 			$this->requirementSet = $requirementSet;
 			$this->expiryDate = $expiryDate;
-			$this->deletedByProf = $deletedByProf;
 		}
 
 		// DESTRUCTOR

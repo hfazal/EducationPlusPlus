@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2011 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -83,31 +83,85 @@ $reqGradeToAchieve = $_POST["reqGradeToAchieve"];
 
 global $DB;
 
-/* CREATE PES OBJECT */
-		foreach ($reqAct as $eachInput) {
-			array_push($requirementsActivity, $eachInput);
-		}
+$allPES = $DB->get_records('epp_pointearningscenario',array('course'=>$course->id));
+$arrayOfPESObjects = array();
+$arrayOfIDsForPESObjects = array();
 
-		foreach ($reqCond as $eachInput) {
-			array_push($requirementsCondition, intval($eachInput));
-		}
-
-		foreach ($reqGradeToAchieve as $eachInput) {
-			array_push($requirementsPercentToAchieve, intval($eachInput));
-		}
-
-		$requirementsCount = count($requirementsActivity);
-
-		for ($i = 0; $i < $requirementsCount; $i++){
-			$activityName = $DB->get_record('assign',array('id'=>intval($requirementsActivity[$i])));	
-			$act = new Activity($activityName->name, null);	//Fix this to draw info from DB
-			$req = new Requirement($act, $requirementsCondition[$i], $requirementsPercentToAchieve[$i]);
-			array_push($formedRequirements, $req);
-		}
-
-		$newPES = new PointEarningScenario($pesName, $pesPointValue, $pesDescription, $formedRequirements, new DateTime($pesExpiryDate));
+if ($allPES){
+	foreach ($allPES as $rowPES){
+		$allRequirements = $DB->get_records('epp_requirement',array('pointearningscenario'=>$rowPES->id));
+		$arrayOfRequirements = array();
 		
-/* PERSIST TO epp_pointearningscenario AND epp_requirements */
+		foreach ($allRequirements as $rowRequirements){
+			$activity = $DB->get_record('assign',array('id'=>$rowRequirements->activity));	
+		
+			array_push($arrayOfRequirements, new Requirement(new Activity($activity->name,null), intval($rowRequirements->cond), intval($rowRequirements->percenttoachieve)));
+			// ( $activity, $condition, $percentToAchieve )
+		}
+		
+		array_push($arrayOfPESObjects, new PointEarningScenario($rowPES->name, intval($rowPES->pointvalue), $rowPES->description, $arrayOfRequirements, new DateTime($rowPES->expirydate)));
+		//( $name, $pointValue, $description, $requirementSet, $expiryDate, $deletedByProf )
+		array_push($arrayOfIDsForPESObjects, $rowPES->id);
+	}
+}
+
+/* CREATE PES OBJECT */
+foreach ($reqAct as $eachInput) {
+	array_push($requirementsActivity, $eachInput);
+}
+
+foreach ($reqCond as $eachInput) {
+	array_push($requirementsCondition, intval($eachInput));
+}
+
+foreach ($reqGradeToAchieve as $eachInput) {
+	array_push($requirementsPercentToAchieve, intval($eachInput));
+}
+
+$requirementsCount = count($requirementsActivity);
+
+for ($i = 0; $i < $requirementsCount; $i++){
+	$activityName = $DB->get_record('assign',array('id'=>intval($requirementsActivity[$i])));	
+	$act = new Activity($activityName->name, null);	//Fix this to draw info from DB
+	$req = new Requirement($act, $requirementsCondition[$i], $requirementsPercentToAchieve[$i]);
+	array_push($formedRequirements, $req);
+}
+
+$newPES = new PointEarningScenario($pesName, $pesPointValue, $pesDescription, $formedRequirements, new DateTime($pesExpiryDate));
+
+//CHECK FOR DUPLICATES
+$duplicateFound = false;
+for ($a=0; $a < count($arrayOfPESObjects); $a++){
+	if (count($arrayOfPESObjects[$a]->requirementSet == count($newPES->requirementSet))){
+		$matchesFoundCount = 0;
+		for ($b=0; $b < count($arrayOfPESObjects[$a]->requirementSet); $b++){			
+			$matchfound = false;
+			for ($c=0; $c < count($newPES->requirementSet); $c++){
+				if (strcmp(($newPES->requirementSet[$c]->activity->name), ($arrayOfPESObjects[$a]->requirementSet[$b]->activity->name))==0 &&
+					strcmp(($newPES->requirementSet[$c]->condition), ($arrayOfPESObjects[$a]->requirementSet[$b]->condition))==0 &&
+					strcmp(($newPES->requirementSet[$c]->percentToAchieve), ($arrayOfPESObjects[$a]->requirementSet[$b]->percentToAchieve))==0){
+					$matchfound = true;
+				}
+			}
+			if ($matchfound == true){
+				$matchesFoundCount++;
+			}
+		}
+		if ($matchesFoundCount == count($arrayOfPESObjects[$a]->requirementSet)){
+			//match
+			$duplicateFound = true;
+		}
+		else {
+			//no match, wrong reqs
+		}
+	}
+	else{
+		//no match, wrong number of req
+	}
+}
+
+if ($duplicateFound == false){
+	//PERSIST TO epp_pointearningscenario AND epp_requirements
 		$record 				= new stdClass();
 		$record->course  		= intval($course->id);
 		$record->name	 		= $pesName;
@@ -125,7 +179,10 @@ global $DB;
 			$newRequirement->percenttoachieve		= intval($requirementsPercentToAchieve[$i]);
 			$DB->insert_record('epp_requirement', $newRequirement, false);
 		}
-
+}
+else{
+	//Nothing Saved
+}
 // Output starts here
 echo $OUTPUT->header();
 
@@ -145,9 +202,14 @@ echo "	<style>
 			.pesRequirements	{  }
 		</style>
 	";
-echo $OUTPUT->box('The following Point Earning Scenario was successfully saved:<br/><br/>' . $newPES);
+if ($duplicateFound == false){
+	echo $OUTPUT->box('The following Point Earning Scenario was successfully saved:<br/><br/>' . $newPES);
+}
+else { // ($duplicateFound == true)
+	echo $OUTPUT->box('The following Point Earning Scenario was <strong>NOT</strong> saved as a scenario with the same requirements already exists:<br/><br/>' . $newPES);
+}
 echo "<br/>";
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'&newpes=1">Click to return to the Education++ homepage</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();
