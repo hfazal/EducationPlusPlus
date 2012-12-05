@@ -74,6 +74,7 @@ $table_assign_grade = 'assign_grades';
 $table_pes = 'epp_pointearningscenario';
 $table_req = 'epp_requirement';
 $table_student = 'epp_student';
+$table_assign_submission = 'assign_submission';
 
 $pes = $DB->get_records($table_pes,array('course'=>$course->id));
 foreach($pes as $pointearningscenaio)
@@ -82,6 +83,8 @@ foreach($pes as $pointearningscenaio)
 $assign = $DB->get_records($table_assign,array('course'=>$course->id));
 foreach($assign as $assignments){
     $result = $DB->get_records($table_assign_grade,array('assignment'=>$assignments->id));
+	
+$submission =  $DB->get_records($table_assign_submission,array('assignment'=>$assign->id));
 }
 $constructedSelectOptions = "";
 // Output starts here
