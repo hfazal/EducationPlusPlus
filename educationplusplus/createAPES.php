@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2011 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -111,6 +111,7 @@ function validate(){
 	
 	$("#nameReq").css("display", "none");
 	$("#pvReq").css("display", "none");
+	$("#pvReqInt").css("display", "none");
 	$("#expReq").css("display", "none");
 	$("#desReq").css("display", "none");
 	
@@ -120,6 +121,14 @@ function validate(){
 	}
 	if (pv==null || pv==""){
 		$("#pvReq").css("display", "inline");
+		pass = false;
+	}
+	else if (!parseInt(pv)){
+		$("#pvReqInt").css("display", "inline");
+		pass = false;
+	}
+	else if (parseInt(pv) < 1){
+		$("#pvReqInt").css("display", "inline");
 		pass = false;
 	}
 	if (expirydate==null || expirydate==""){
@@ -146,7 +155,7 @@ addRequirements();
 			</tr>
 			<tr>
 				<td>Point Value</td>
-				<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="pesPointValue" name="pesPointValue"><br/><span id="pvReq" style="color:red;display:none;">You Must Specify a Point Value to Award</span></td>
+				<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="pesPointValue" name="pesPointValue"><br/><span id="pvReq" style="color:red;display:none;">You Must Specify a Point Value to Award</span><span id="pvReqInt" style="color:red;display:none;">You Must Specify a positive number for a Point Value</span></td>
 			</tr>
 			<tr>
 				<td>Expiry Date</td>
