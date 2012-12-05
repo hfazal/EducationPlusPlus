@@ -73,6 +73,7 @@ $table_assign = 'assign';
 $table_assign_grade = 'assign_grades';
 $table_pes = 'epp_pointearningscenario';
 $table_req = 'epp_requirement';
+$table_student = 'epp_student';
 
 $pes = $DB->get_records($table_pes,array('course'=>$course->id));
 foreach($pes as $pointearningscenaio)
@@ -97,16 +98,28 @@ if ($result){
                 case 1: // >
                     if ($result->grade > $req->percenttoachieve){
                         //award points
+                        $pes_award = $DB->get_record($table_pes,array('id'=>$req->pointearningscenaio));
+                        $student_award = $DB->get_record($table_student,array('student_id'=>$result->userid));
+                        $student_award->currentpointbalance += $pes_award->pointvalue; 
+                        $student_award->accumulatedpoints += $pes_award->pointvalue; 
                     }
                     break;
                 case 2: // >=
                      if ($result->grade >= $req->percenttoachieve){
                         //award points
+                        $pes_award = $DB->get_record($table_pes,array('id'=>$req->pointearningscenaio));
+                        $student_award = $DB->get_record($table_student,array('student_id'=>$result->userid));
+                        $student_award->currentpointbalance += $pes_award->pointvalue; 
+                        $student_award->accumulatedpoints += $pes_award->pointvalue; 
                     }                   
                     break;
                 case 3: // =
                     if ($result->grade == $req->percenttoachieve){
                         //award points
+                        $pes_award = $DB->get_record($table_pes,array('id'=>$req->pointearningscenaio));
+                        $student_award = $DB->get_record($table_student,array('student_id'=>$result->userid));
+                        $student_award->currentpointbalance += $pes_award->pointvalue; 
+                        $student_award->accumulatedpoints += $pes_award->pointvalue; 
                     } 
                     break;
                 default:
