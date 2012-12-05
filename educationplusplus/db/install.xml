@@ -56,5 +56,60 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
+	
+	<!-- epp_student -->
+	<TABLE NAME="epp_student" COMMENT="EducationPlusPlus: A Student" PREVIOUS="epp_requirement" NEXT="epp_incentive">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="firstname"/>
+        <FIELD NAME="firstname" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="First name of student" PREVIOUS="id" NEXT="lastname"/>
+		<FIELD NAME="lastname" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Last name of student" PREVIOUS="firstname" NEXT="username"/>
+		<FIELD NAME="username" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Username of student" PREVIOUS="lastname" NEXT="currentpointbalance"/>
+		<FIELD NAME="currentpointbalance" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Current point balance of student" PREVIOUS="username" NEXT="accumulatedpoints"/>
+		<FIELD NAME="accumulatedpoints" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Accumulated point balance of student" PREVIOUS="currentpointbalance" NEXT="leaderboardoptstatus"/>
+		<FIELD NAME="leaderboardoptstatus" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Leaderboard opt in status" PREVIOUS="accumulatedpoints"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+	
+	<!-- epp_incentive -->
+	<TABLE NAME="epp_incentive" COMMENT="EducationPlusPlus: An Incentive" PREVIOUS="epp_student" NEXT="epp_reward">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name of the incentive" PREVIOUS="id" NEXT="qtyperstudent"/>
+		<FIELD NAME="qtyperstudent" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Quantity allowed per student" PREVIOUS="name" NEXT="storevisibility"/>
+		<FIELD NAME="storevisibility" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Store visibility" PREVIOUS="qtyperstudent" NEXT="priceinpoints"/>
+		<FIELD NAME="priceinpoints" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Price of the insentive" PREVIOUS="storevisibility" NEXT="icon"/>
+		<FIELD NAME="icon" TYPE="binary" NOTNULL="false" SEQUENCE="false" COMMENT="Image for the incentive" PREVIOUS="priceinpoints" NEXT="deletebyprof"/>
+		<FIELD NAME="deletebyprof" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Whether the incentive has been deleted" PREVIOUS="icon"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+	
+	<!-- epp_reward -->
+	<TABLE NAME="epp_reward" COMMENT="EducationPlusPlus: A Reward Incentive" PREVIOUS="epp_incentive" NEXT="epp_badge">
+      <FIELDS>
+        <FIELD NAME="incentive_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" NEXT="prize"/>
+        <FIELD NAME="prize" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Prize to be claimed" PREVIOUS="incentive_id" NEXT="expirydate"/>
+		<FIELD NAME="expirydate" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date of expiry for the Reward to be claimed" PREVIOUS="prize"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="incentive_id"/>
+      </KEYS>
+    </TABLE>
+	
+	<!-- epp_badge -->
+	<TABLE NAME="epp_badge" COMMENT="EducationPlusPlus: A Reward Incentive" PREVIOUS="epp_reward" >
+      <FIELDS>
+        <FIELD NAME="incentive_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="incentive_id"/>
+      </KEYS>
+    </TABLE>
+
   </TABLES>
 </XMLDB>
