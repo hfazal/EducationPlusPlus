@@ -4,20 +4,24 @@ How to Import the Education++ Module into your copy of Moodle
 1 Place the module folder ("educationplusplus" - make sure it is all lowercase)
   into the /mod folder of the Moodle directory on your Moodle server.
 
-2 Go to Settings > Site Administration > Development > XMLDB editor
-  and modify the module's tables.
-
-3 Visit Settings > Site Administration > Notifications, you should find
+2 Go to Settings > Site Administration > Notifications, you should find
   the module's tables successfully created
 
-4 Go to Site Administration > Plugins > Activity modules > Manage activities
+3 Go to Site Administration > Plugins > Activity modules > Manage activities
   and you should find that educationplusplus has been added to the list of 
   installed modules.
 
+4 Add to a course by entering the course, turn edit mode on and add a new activity
+  and select Education++. We recommened you add it to General, but if you add an
+  Education++ to multiple weeks, no worries: your points and rewards are constant 
+  across the course
 
-Note: If a change has been made to the database setup (db/install.xml), it wont 
-      be put into effect unless you uninstall and reinstall (Your other option
-      is to create a new entry in the update file, which is hard). To uninstall:
+Developer Notes
+===============
+
+  If a change has been made to the database setup (db/install.xml), it wont 
+  be put into effect unless you uninstall and reinstall (Your other option
+  is to create a new entry in the update file, which is hard). To uninstall:
 
 1 Go to Settings > Site Administration > Plugins > Plugins overview
 
