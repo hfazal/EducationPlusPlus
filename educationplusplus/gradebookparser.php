@@ -84,7 +84,7 @@ $assign = $DB->get_records($table_assign,array('course'=>$course->id));
 foreach($assign as $assignments){
     $result = $DB->get_records($table_assign_grade,array('assignment'=>$assignments->id));
 	
-$submission =  $DB->get_records($table_assign_submission,array('assignment'=>$assign->id));
+$submission =  $DB->get_records($table_assign_submission,array('assignment'=>$assign->id)); //temp
 }
 $constructedSelectOptions = "";
 // Output starts here
