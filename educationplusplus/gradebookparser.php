@@ -99,7 +99,7 @@ if ($result){
                     //award points
                     break;
                 case 1: // >
-                    if ($result->grade > $req->percenttoachieve){
+                    if ($row->grade > $req->percenttoachieve){
                         //award points
                         $pes_award = $DB->get_record($table_pes,array('id'=>$req->pointearningscenaio));
                         $student_award = $DB->get_record($table_student,array('student_id'=>$result->userid));
@@ -108,7 +108,7 @@ if ($result){
                     }
                     break;
                 case 2: // >=
-                     if ($result->grade >= $req->percenttoachieve){
+                     if ($row->grade >= $req->percenttoachieve){
                         //award points
                         $pes_award = $DB->get_record($table_pes,array('id'=>$req->pointearningscenaio));
                         $student_award = $DB->get_record($table_student,array('student_id'=>$result->userid));
@@ -117,7 +117,7 @@ if ($result){
                     }                   
                     break;
                 case 3: // =
-                    if ($result->grade == $req->percenttoachieve){
+                    if ($row->grade == $req->percenttoachieve){
                         //award points
                         $pes_award = $DB->get_record($table_pes,array('id'=>$req->pointearningscenaio));
                         $student_award = $DB->get_record($table_student,array('student_id'=>$result->userid));
