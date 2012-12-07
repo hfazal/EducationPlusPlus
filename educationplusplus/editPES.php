@@ -222,8 +222,8 @@ if(!empty($idOfPesToEdit)){
 			<br/><br/>
 			<input name="AddAnother" type="button" style="margin: 0 auto; display:block; border:1px solid #000000; height:20px; padding-left:2px; padding-right:2px; padding-top:0px; padding-bottom:2px; line-height:14px; background-color:#EFEFEF;" onclick="addRequirements()" value="Add Another Requirement"/>
 			<br/>
-			<input name="Cancel" type="button" style="margin: 0 auto; display:block; border:1px solid #000000; height:20px; padding-left:2px; padding-right:2px; padding-top:0px; padding-bottom:2px; line-height:14px; background-color:#EFEFEF;" onclick="cancelEdit()" value="Cancel Edit"/>
-			<br/>
+			<!--<input name="Cancel" type="button" style="margin: 0 auto; display:block; border:1px solid #000000; height:20px; padding-left:2px; padding-right:2px; padding-top:0px; padding-bottom:2px; line-height:14px; background-color:#EFEFEF;" onclick="cancelEdit()" value="Cancel Edit"/>
+			<br/>-->
 			<input name="Submit" type="submit" style="margin: 0 auto; display:block; border:1px solid #000000; height:20px; padding-left:2px; padding-right:2px; padding-top:0px; padding-bottom:2px; line-height:14px; background-color:#EFEFEF;" value="Save Changes to Existing Point Earning Scenario"/>
 		</form>
 	</div>');
@@ -232,7 +232,7 @@ else {
 	echo $OUTPUT->box('This page cannot be accessed directly');
 }
 echo "<br/>";
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="viewAllPES.php?id='. $cm->id .'">Return to the Education++: Manage Scenarios Page (Cancel Updating this Scenario)</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();

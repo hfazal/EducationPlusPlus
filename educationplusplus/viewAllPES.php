@@ -102,7 +102,7 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 }
 
 // Replace the following lines with you own code
-echo $OUTPUT->heading('Education++');
+echo $OUTPUT->heading('Education++: Manage Point Earning Scenarios');
 
 if($deleted){
 	echo $OUTPUT->heading('The Scenario was Deleted');
@@ -132,7 +132,9 @@ echo '	<script>
 			}
 		</script>';
 	
-	
+
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="createAPES.php?id='. $cm->id .'">create a new scenario in which students can earn poitns</a></div>');
+echo "<br/>";
 if ($arrayOfPESObjects){
 	for ($i=0; $i < count($arrayOfPESObjects); $i++){
 		echo $OUTPUT->box_start();
@@ -143,11 +145,11 @@ if ($arrayOfPESObjects){
 	}
 }
 else{
-	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="createAPES.php?id='. $cm->id .'">no scenarios to earn points were found. click here to make a scenario</a></div>');
+	echo $OUTPUT->box('<div style="width:100%;text-align:center;">no scenarios to earn points were found.</div>');
 	echo "<br/>";
 }
 
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();

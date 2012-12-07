@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2011 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -82,13 +82,18 @@ if($added){
 
 echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
 						<h2>Point Earning Scenerio Tools</h2>
-						<a href="createAPES.php?id='. $cm->id .'">Add a New Scenario in which Students can Earn Points</a><br/>
-						<a href="viewAllPES.php?id='. $cm->id .'">View, Edit or Delete a Scenarios in which Students can Earn Points</a>
+						<a href="viewAllPES.php?id='. $cm->id .'">Manage Scenarios in which Students can Earn Points</a><br/>
+						<a href="#">Scan Gradebook to detect Met Scenarios</a>
 					</div>');
 echo "<br/>";
 echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
 						<h2>Notifications</h2>
 						<a href="createANotification.php?id='. $cm->id .'">Create a New Notification for all Users in this Class</a><br/>
+					</div>');
+echo "<br/>";
+echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
+						<h2>Reward Tools</h2>
+						<a href="viewAllRewards.php?id='. $cm->id .'">Manage Rewards in which Students can Spend Points on</a><br/>
 					</div>');
 // Finish the page
 echo $OUTPUT->footer();

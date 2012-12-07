@@ -179,7 +179,7 @@ addRequirements();
 </div>');
 
 echo "<br/>";
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="viewAllPES.php?id='. $cm->id .'">Return to the Education++: Manage Scenarios Page (Cancel Creation of this Scenario)</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();
