@@ -31,10 +31,10 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
-require 'eppClasses/Notification.php';
-	
+
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
+$added = optional_param('newpes', 0, PARAM_INT);
 
 if ($id) {
     $cm         = get_coursemodule_from_id('educationplusplus', $id, 0, false, MUST_EXIST);
@@ -51,10 +51,11 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'view', "view.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'createANotification', "createANotification.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
-$PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
+
+$PAGE->set_url('/mod/educationplusplus/createANotification.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
@@ -64,32 +65,9 @@ $PAGE->set_context($context);
 //$PAGE->set_focuscontrol('some-html-id');
 //$PAGE->add_body_class('educationplusplus-'.$somevar);
 
-//Process Notification
-$notificationTitle = $_POST["notificationTitle"];
-$notificationContent = $_POST["notificationContent"];
-$notificationExpiryDate = $_POST["notificationExpiryDate"];
 
+// Retrieve from DB all Notifications
 global $DB;
-
-$enrolment = $DB->get_record('enrol',array('courseid'=>$course->id, 'status'=>0));
-$userIds = $DB->get_records('user_enrolments',array('enrolid'=>$enrolment->id));
-
-/* CREATE NOTIFICATION OBJECT */
-$newNotification = new Notification(0, $notificationTitle, $notificationContent, 1, new DateTime($notificationExpiryDate));
-
-foreach ($userIds as $user)
-{
-	//PERSIST TO epp_notification AND epp_requirements
-		$record 				= new stdClass();
-		$record->student_id  	= intval($user->userid);
-		$record->course  		= intval($course->id);
-		$record->title		 	= $notificationTitle;
-		$record->content	 	= $notificationContent;
-		$record->read 			= 0;
-		$datetimeVersionOfExpiryDate = new DateTime ($notificationExpiryDate);
-		$record->expirydate 	= $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
-		$id = $DB->insert_record('epp_notifcation', $record, true);
-}
 
 // Output starts here
 echo $OUTPUT->header();
@@ -100,23 +78,60 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 
 // Replace the following lines with you own code
 echo $OUTPUT->heading('Education++');
-//Styles for output: pesName, pesPointValue, pesExpiryDate, pesDescription, pesRequirements
 
-echo "	<style>
-			.notificationTitle		{ font-weight:bold; font-size:x-large; }
-			.notificationContents	{ font-style:italic; font-size:x-large; }
-			.notificationExpiryDate	{ color:red; font-size:medium; }
-		</style>
-	";
+echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+<script>
 
-if ($id > 0)
-	echo $OUTPUT->box('The following Notification was successfully sent to all students:<br/><br/>' . $newNotification);
+function validate(){
+	var title       = document.forms["notificationForm"]["notificationTitle"].value;
+	var expirydate  = document.forms["notificationForm"]["notificationExpiryDate"].value;
+	var description = document.forms["notificationForm"]["notificationContent"].value;
+	var pass 		= true;
+	
+	$("#titleReq").css("display", "none");
+	$("#expReq").css("display", "none");
+	$("#contentReq").css("display", "none");
+	
+	if (title==null || title==""){
+		$("#titleReq").css("display", "inline");
+		pass = false;
+	}
+	if (expirydate==null || expirydate==""){
+		$("#expReq").css("display", "inline");
+		pass = false;
+	}
+	if (description==null || description==""){
+		$("#contentReq").css("display", "inline");
+		pass = false;
+	}
 
+	return pass;
+}
+</script>
+
+<div id="form" style="width:400px;height:600px;overflow:auto;">
+	<form id="notificationForm" name="notificationForm" method="post" onsubmit="return validate()" action="persistNotification.php?id='. $cm->id .'" style="padding-left:10px;padding-right:10px;">
+		<h3>Notification</h3>
+		<table>
+			<tr>
+				<td style="width:100px">Title</td>
+				<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="notificationTitle" name="notificationTitle"><br/><span id="titleReq" style="color:red;display:none;">You Must Specify the Title of the Notification</span></td>
+			</tr>
+			<tr>
+				<td>Expiry Date</td>
+				<td><input type="date" class="required" style="margin-right:10px;width:200px;" id="notificationExpiryDate" name="notificationExpiryDate"><br/><span id="expReq" style="color:red;display:none;">You Must Specify an Expiry Date</span></td>
+			</tr>
+			<tr>
+				<td style="vertical-align:top;">Content</td>
+				<td><textarea class="required" name="notificationContent" id="notificationContent" style="margin-right:10px;width:200px;" style></textarea><br/><span id="contentReq" style="color:red;display:none;">You Must Specify a Description</span></td>
+			</tr>
+		</table>
+		<hr/><input name="Submit" type="submit" style="float:right; display:block; border:1px solid #000000; height:20px; padding-left:2px; padding-right:2px; padding-top:0px; padding-bottom:2px; line-height:14px; background-color:#EFEFEF;" value="Create a new Notification"/>
+	</form>
+</div>');
 
 echo "<br/>";
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++: Main Page (Cancel Creation of this Notification)</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();
-
-?>
