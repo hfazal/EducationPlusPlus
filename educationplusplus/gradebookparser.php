@@ -138,6 +138,9 @@ if ($assign) {
                          //Award here
                         //echo "$awardStatus + $row->userid + $requirement->pointearningscenario + Assignemnt: $row->assignment Grade:$row->grade ";
                        // echo "<br/>";
+
+
+                }
                         if ($awardStatus == $numberOfReq){
                          //   echo "HELLO";
                            // $student->currentpointbalance += $pointearningscenaio->pointvalue;
@@ -161,8 +164,6 @@ if ($assign) {
                             $DB->insert_record('epp_student_pes', $record, false);
 
                         }
-
-                }
                             echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
 
                             ');
