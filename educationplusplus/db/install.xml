@@ -60,8 +60,9 @@
 	<!-- epp_student -->
 	<TABLE NAME="epp_student" COMMENT="EducationPlusPlus: A Student" PREVIOUS="epp_requirement" NEXT="epp_incentive">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="firstname"/>
-        <FIELD NAME="firstname" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="First name of student" PREVIOUS="id" NEXT="lastname"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course_id"/>
+		<FIELD NAME="course_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="firstname"/>
+        <FIELD NAME="firstname" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="First name of student" PREVIOUS="course_id" NEXT="lastname"/>
 		<FIELD NAME="lastname" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Last name of student" PREVIOUS="firstname" NEXT="student_id"/>
 		<FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID from the mdl_user table" PREVIOUS="lastname" NEXT="currentpointbalance"/>
 		<FIELD NAME="currentpointbalance" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Current point balance of student" PREVIOUS="student_id" NEXT="accumulatedpoints"/>
