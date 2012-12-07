@@ -75,67 +75,19 @@ $table_pes = 'epp_pointearningscenario';
 $table_req = 'epp_requirement';
 $table_student = 'epp_student';
 $table_assign_submission = 'assign_submission';
-
-$pes = $DB->get_records($table_pes,array('course'=>$course->id));
-foreach($pes as $pointearningscenaio)
-    $req = $DB->get_records($table_req,array('pontearningscenario'=>$pes->id));
-
+$now = new DateTime();
 $assign = $DB->get_records($table_assign,array('course'=>$course->id));
-foreach($assign as $assignments){
-    $result = $DB->get_records($table_assign_grade,array('assignment'=>$assignments->id));
-	
-$submission =  $DB->get_records($table_assign_submission,array('assignment'=>$assign->id)); //temp
-}
+$students = $DB->get_records($table_student,array('course_id'=>$course->id));
+$pes = $DB->get_records($table_pes,array('course'=>$course->id ));
+
+
+    
+//$submission =  $DB->get_records($table_assign_submission,array('assignment'=>$assign->id)); TBD
+
 $constructedSelectOptions = "";
 // Output starts here
 //echo var_dump($result);
 echo $OUTPUT->header();
-if ($result){
-	foreach ($result as $row){
-        foreach ($req as $requirement){
-            if ($result->id == $req->activity){
-                switch($req->cond){
-                case 0: // Complete
-                    //award points
-                    break;
-                case 1: // >
-                    if ($row->grade > $req->percenttoachieve){
-                        //award points
-                        $pes_award = $DB->get_record($table_pes,array('id'=>$req->pointearningscenaio));
-                        $student_award = $DB->get_record($table_student,array('student_id'=>$result->userid));
-                        $student_award->currentpointbalance += $pes_award->pointvalue; 
-                        $student_award->accumulatedpoints += $pes_award->pointvalue; 
-                    }
-                    break;
-                case 2: // >=
-                     if ($row->grade >= $req->percenttoachieve){
-                        //award points
-                        $pes_award = $DB->get_record($table_pes,array('id'=>$req->pointearningscenaio));
-                        $student_award = $DB->get_record($table_student,array('student_id'=>$result->userid));
-                        $student_award->currentpointbalance += $pes_award->pointvalue; 
-                        $student_award->accumulatedpoints += $pes_award->pointvalue; 
-                    }                   
-                    break;
-                case 3: // =
-                    if ($row->grade == $req->percenttoachieve){
-                        //award points
-                        $pes_award = $DB->get_record($table_pes,array('id'=>$req->pointearningscenaio));
-                        $student_award = $DB->get_record($table_student,array('student_id'=>$result->userid));
-                        $student_award->currentpointbalance += $pes_award->pointvalue; 
-                        $student_award->accumulatedpoints += $pes_award->pointvalue; 
-                    } 
-                    break;
-                default:
-                    $stringToReturn = "ERROR in DB"; //Some sort of db storing error of condition
-                }
-            }
-        }
-		echo var_dump($row);
-		//array_push($arrayOfAssignNames, $row->name);
-		//array_push($arrayOfAssignIDs, $row->id);
-	}
-}
-
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
@@ -143,8 +95,94 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 // Replace the following lines with you own code
 echo $OUTPUT->heading('Education++');
 
-echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
-');
+if ($assign) {
+    foreach ($pes as $pointearningscenaio){
+        $req = $DB->get_records($table_req,array('pointearningscenario'=>$pointearningscenaio->id));
+        $numberOfReq = count($req);
+        $awardStatus = 0;
+        foreach ($students as $student){
+            $result = $DB->get_records($table_assign_grade,array('userid'=>$student->student_id));
+            if($DB->count_records('epp_student_pes',array('student_id'=>$student->id , 'pes_id'=>$pointearningscenaio->id)) == 0){
+                foreach ($result as $row){
+                    //$student_es = $DB->get_record('epp_student_pes',array('student_id'=>$row->userid));
+                        foreach ($req as $requirement){
+                            if (($row->assignment == $requirement->activity) ){
+                                switch($requirement->cond){
+                                case 0: // Complete
+                                    $awardStatus = $awardStatus + 1;
+                                    break;
+                                case 1: // >
+                                    if ($row->grade > $requirement->percenttoachieve){
+                                    $awardStatus = $awardStatus + 1;
+
+                                    }
+                                    break;
+                                case 2: // >=
+                                    if ($row->grade >= $requirement->percenttoachieve){
+                                    $awardStatus = $awardStatus + 1;
+
+                                    }                   
+                                    break;
+                                case 3: // =
+                                    if ($row->grade == $requirement->percenttoachieve){
+                                    $awardStatus = $awardStatus + 1;
+
+                                    } 
+                                    break;
+                                default:
+                                    $stringToReturn = "ERROR in DB"; //Some sort of db storing error of condition
+                                }
+                            }
+                        }
+
+                         //Award here
+                        //echo "$awardStatus + $row->userid + $requirement->pointearningscenario + Assignemnt: $row->assignment Grade:$row->grade ";
+                       // echo "<br/>";
+                        if ($awardStatus == $numberOfReq){
+                         //   echo "HELLO";
+                           // $student->currentpointbalance += $pointearningscenaio->pointvalue;
+                            $record_stu = new stdClass();
+                            $record_stu->id                        = intval($student->id);
+                            $record_stu->course_id                 = intval($student->course_id);
+                            $record_stu->firstname                 = $student->firstname;
+                            $record_stu->lastname                  = $student->lastname;
+                            $record_stu->student_id                = $student->student_id;
+                            $record_stu->currentpointbalance       = intval($student->currentpointbalance + $pointearningscenaio->pointvalue);
+                            $record_stu->accumulatedpoints         = intval($student->accumulatedpoints + $pointearningscenaio->pointvalue);
+                            $record_stu->leaderboardoptstatus      = $student->leaderboardoptstatus;
+
+                            $DB->update_record('epp_student', $record_stu, false);
+
+                            //$student->accumulatedpoints += $pointearningscenaio->pointvalue;
+
+                            $record = new stdClass();
+                            $record->student_id   = intval($student->id);
+                            $record->pes_id       = intval($pointearningscenaio->id);
+                            $DB->insert_record('epp_student_pes', $record, false);
+
+                        }
+
+                }
+                            echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+
+                            ');
+
+                            echo $OUTPUT->box_start();
+                            echo '<div style="width:50%; margin:0 auto;">' .$student->firstname  .' ' . $student->lastname . ' has been awarded: '.$pointearningscenaio->pointvalue . ' Points </div>';
+                            echo $OUTPUT->box_end();
+            }
+        }   
+    }
+}
+        //echo var_dump($row);
+        //array_push($arrayOfAssignNames, $row->name);
+        //array_push($arrayOfAssignIDs, $row->id);
+    
+
+
+
+
+
 
 // Finish the page
 echo $OUTPUT->footer();
