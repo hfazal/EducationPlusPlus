@@ -184,7 +184,7 @@ if ($assign) {
 
 
 
-
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
 // Finish the page
 echo $OUTPUT->footer();
 
