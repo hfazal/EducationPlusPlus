@@ -83,7 +83,7 @@ if($added){
 echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
 						<h2>Point Earning Scenerio Tools</h2>
 						<a href="viewAllPES.php?id='. $cm->id .'">Manage Scenarios in which Students can Earn Points</a><br/>
-						<a href="#">Scan Gradebook to detect Met Scenarios</a>
+						<a href="gradebookparser.php?id='. $cm->id .'">Scan Gradebook to detect Met Scenarios</a>
 					</div>');
 echo "<br/>";
 echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
