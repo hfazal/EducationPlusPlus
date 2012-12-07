@@ -113,7 +113,7 @@
     </TABLE>
 
 	<!-- epp_student_badge -->
-	<TABLE NAME="epp_student_badge" COMMENT="EducationPlusPlus: Awarded Badges" PREVIOUS="epp_badge" NEXT="epp_notifcation" >
+	<TABLE NAME="epp_student_badge" COMMENT="EducationPlusPlus: Awarded Badges" PREVIOUS="epp_badge" NEXT="epp_notification" >
       <FIELDS>
 		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="student_id"/>
         <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="id" NEXT="badge_id"/>
@@ -124,16 +124,16 @@
       </KEYS>
     </TABLE>	
 	
-	<!-- epp_notifcation -->
-	<TABLE NAME="epp_notifcation" COMMENT="EducationPlusPlus: Holds Notifications" PREVIOUS="epp_student_badge" NEXT="epp_student_pes" >
+	<!-- epp_notification -->
+	<TABLE NAME="epp_notification" COMMENT="EducationPlusPlus: Holds Notifications" PREVIOUS="epp_student_badge" NEXT="epp_student_pes" >
       <FIELDS>
 		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="student_id"/>
         <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="id" NEXT="course"/>
 		<FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course this Students Notification belongs to" PREVIOUS="student_id" NEXT="title"/>
 		<FIELD NAME="title" TYPE="text" LENGTH="big" NOTNULL="true" SEQUENCE="false" COMMENT="Title for the Notification" PREVIOUS="course" NEXT="content"/>
-		<FIELD NAME="content" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Content for the Notification" PREVIOUS="title" NEXT="read"/>
-		<FIELD NAME="read" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Whether the student has dismissed the notification" PREVIOUS="content" NEXT="expirydate"/>
-		<FIELD NAME="expirydate" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date for the Notifi	cation to be deleted" PREVIOUS="read"/>
+		<FIELD NAME="content" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Content for the Notification" PREVIOUS="title" NEXT="isread"/>
+		<FIELD NAME="isread" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Whether the student has dismissed the notification" PREVIOUS="content" NEXT="expirydate"/>
+		<FIELD NAME="expirydate" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date for the Notifi	cation to be deleted" PREVIOUS="isread"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -141,7 +141,7 @@
     </TABLE>
 	
 	<!-- epp_student_pes -->
-	<TABLE NAME="epp_student_pes" COMMENT="EducationPlusPlus: Holds the Scenarios that Students have Earned" PREVIOUS="epp_notifcation" >
+	<TABLE NAME="epp_student_pes" COMMENT="EducationPlusPlus: Holds the Scenarios that Students have Earned" PREVIOUS="epp_notification" >
       <FIELDS>
 		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="student_id"/>
         <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="id" NEXT="pes_id"/>

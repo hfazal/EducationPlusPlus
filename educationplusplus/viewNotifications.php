@@ -31,10 +31,12 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
+// Education++ Classes
 require 'eppClasses/Notification.php';
-	
+
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
+$deleted = optional_param('delete', 0, PARAM_INT);
 
 if ($id) {
     $cm         = get_coursemodule_from_id('educationplusplus', $id, 0, false, MUST_EXIST);
@@ -51,10 +53,11 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'view', "view.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'viewNotifications', "viewNotifications.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
-$PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
+
+$PAGE->set_url('/mod/educationplusplus/createAPES.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
@@ -64,62 +67,85 @@ $PAGE->set_context($context);
 //$PAGE->set_focuscontrol('some-html-id');
 //$PAGE->add_body_class('educationplusplus-'.$somevar);
 
-//Process Notification
-$notificationTitle = $_POST["notificationTitle"];
-$notificationContent = $_POST["notificationContent"];
-$notificationExpiryDate = $_POST["notificationExpiryDate"];
-
+// Retrieve All Assignments to Display as Options for Requirements
+// Retrieve from DB all PES
 global $DB;
-
-$enrolment = $DB->get_record('enrol',array('courseid'=>$course->id, 'status'=>0));
-$userIds = $DB->get_records('user_enrolments',array('enrolid'=>$enrolment->id));
-
-/* CREATE NOTIFICATION OBJECT */
-$newNotification = new Notification(0, $notificationTitle, $notificationContent, 1, new DateTime($notificationExpiryDate));
-
-foreach ($userIds as $user)
-{
-	if ($user)
-	{
-		//PERSIST TO epp_notification
-		$record 				= new stdClass();
-		$record->student_id  	= intval($user->userid);
-		$record->course  		= intval($course->id);
-		$record->title		 	= $notificationTitle;
-		$record->content	 	= $notificationContent;
-		$record->isread 			= 0;
-		$datetimeVersionOfExpiryDate = new DateTime ($notificationExpiryDate);
-		$record->expirydate 	= $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
-		$id = $DB->insert_record('epp_notification', $record, true);
-	}
-}
+$allNotifications = $DB->get_records('epp_notification',array('course'=>$course->id, 'student_id'=>$USER->id));
+$arrayOfNewNotificationObjects = array();
+$arrayOfOldNotificationObjects = array();
+$arrayOfIDsForNotificationObjects = array();
 
 // Output starts here
 echo $OUTPUT->header();
+if ($allNotifications)
+{
+	foreach ($allNotifications as $notification)
+	{
+		if ($notification->isread == 0)
+		{
+			array_push($arrayOfNewNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
+			array_push($arrayOfIDsForNotificationObjects, $notification->id);
+		}
+		else
+		array_push($arrayOfOldNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
+	}
+}
 
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
 
 // Replace the following lines with you own code
-echo $OUTPUT->heading('Education++');
+echo $OUTPUT->heading('Education++: View Your Notifications');
 
 //Styles for output: notificationTitle, notificationContents, notificationExpiryDate
 echo "	<style>
-			.notificationTitle		{ font-weight:bold; font-size:x-large; }
-			.notificationContents	{ font-style:italic; font-size:x-large; }
-			.notificationExpiryDate	{ color:red; font-size:medium; }
+			.notificationTitle		{ font-weight:bold; font-size:x-large}
+			.notificationContents	{ font-style:italic; font-size:x-large}
+			.notificationExpiryDate	{ font-size:medium; color: red}
 		</style>
 	";
+	
+echo '	<script>
+			function confirmDelete(index){
+				var x;
+				var r = confirm("Are you sure you want to dismiss this notification?");
+				if (r==true){
+					var newNotification = document.getElementById("new"+index);
+					newNotification.setAttribute("style", "color: black; background-color: white");
+				}
+				else{}
+			}
+		</script>';	
 
-if ($id > 0)
-	echo $OUTPUT->box('The following Notification was successfully sent to all students:<br/><br/>' . $newNotification);
+if ($arrayOfNewNotificationObjects){
+	for ($i=0; $i < count($arrayOfNewNotificationObjects); $i++){
+		echo $OUTPUT->box_start();
+		echo '<div id = "new'.$i .'" style="color: white; background-color: black">';
+		echo '<div style="float:right"><a href="dismissNotification.php?id='. $cm->id .'&notId='. $arrayOfIDsForNotificationObjects[$i] .'" onclick="confirmDelete(' . $i . ')">dismiss</a></div>';
+		echo $arrayOfNewNotificationObjects[$i];
+		echo $OUTPUT->box_end();
+		echo "</div>";
+		echo "<br/>";
+	}
+}
+else{
+	echo $OUTPUT->box('<div style="width:100%;text-align:center;">No new notifications were found.</div>');
+	echo "<br/>";
+}
 
+if ($arrayOfOldNotificationObjects)
+{
+	for ($i=0; $i < count($arrayOfOldNotificationObjects); $i++){
+		echo $OUTPUT->box_start();
+		echo $arrayOfOldNotificationObjects[$i];
+		echo $OUTPUT->box_end();
+		echo "<br/>";
+	}
+}
 
-echo "<br/>";
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();
 
-?>

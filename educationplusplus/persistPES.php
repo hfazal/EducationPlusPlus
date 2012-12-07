@@ -204,6 +204,24 @@ echo "	<style>
 	";
 if ($duplicateFound == false){
 	echo $OUTPUT->box('The following Point Earning Scenario was successfully saved:<br/><br/>' . $newPES);
+	
+	$enrolment = $DB->get_record('enrol',array('courseid'=>$course->id, 'status'=>0));
+	$userIds = $DB->get_records('user_enrolments',array('enrolid'=>$enrolment->id));
+	
+	foreach ($userIds as $user)
+	{
+			//PERSIST TO epp_notification
+			$record 				= new stdClass();
+			$record->student_id  	= intval($user->userid);
+			$record->course  		= intval($course->id);
+			$record->title		 	= "New Point Earning Scenario";
+			$record->content	 	= 'A new scenario was created: '.$newPES->name . ': ' .$newPES->pointValue. ' '.$newPES->description;
+			$record->isread 		= 0;
+			$datetimeVersionOfExpiryDate = new DateTime();
+			$record->expirydate 	= $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
+			$id = $DB->insert_record('epp_notification', $record, true);
+		
+	}
 }
 else { // ($duplicateFound == true)
 	echo $OUTPUT->box('The following Point Earning Scenario was <strong>NOT</strong> saved as a scenario with the same requirements already exists:<br/><br/>' . $newPES);

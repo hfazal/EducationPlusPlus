@@ -8,10 +8,10 @@
 
 		// CONSTRUCTOR
 		function __construct( $student_id, $title, $content, $read, $expiryDate ) {
-			$this->name = $name;
-			$this->pointValue = $pointValue;
-			$this->description = $description;
-			$this->requirementSet = $requirementSet;
+			$this->student_id = $student_id;
+			$this->title = $title;
+			$this->content = $content;
+			$this->read = $read;
 			$this->expiryDate = $expiryDate;
 		}
 
@@ -37,12 +37,13 @@
 		
 		// TOSTRING
 		public function __toString() {
-			$stringToReturn = "<span class='pesName'>" . $this->name . "</span> <span class='pesPointValue'>(" . $this->pointValue . " Points)</span><br/><span class='pesExpiryDate'>Expires on " . $this->expiryDate->format('m-d-Y') . "</span><br/><span class='pesDescription'>" . $this->description . "</span>";
-			$stringToReturn = $stringToReturn . "<ul>";
-			for ($i=0; $i<count($this->requirementSet); $i++){
-				$stringToReturn = $stringToReturn . "<li span='pesRequirements'>" . $this->requirementSet[$i] . "</li>";
-			}
-			$stringToReturn = $stringToReturn . "</ul>";
+			$stringToReturn = "<span class='notificationTitle'>" 
+			. $this->title 
+			. "</span> <span class='notificationContents'><br/>" 
+			. $this->content 
+			. "</span><br/><span class='notificationExpiryDate'>Expires on <em>" 
+			. $this->expiryDate->format('m-d-Y')
+			. "</em></span><br/>";
 			return $stringToReturn;
 		}
 	}
