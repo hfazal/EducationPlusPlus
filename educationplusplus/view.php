@@ -89,6 +89,7 @@ echo "<br/>";
 echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
 						<h2>Notifications</h2>
 						<a href="createANotification.php?id='. $cm->id .'">Create a New Notification for all Users in this Class</a><br/>
+						<a href="viewNotifications.php?id='. $cm->id .'">View your notifications</a><br/>
 					</div>');
 echo "<br/>";
 echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
