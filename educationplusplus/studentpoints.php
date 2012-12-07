@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2011 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,10 +31,11 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
+// Education++ Classes
+
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
-$added = optional_param('newpes', 0, PARAM_INT);
 
 if ($id) {
     $cm         = get_coursemodule_from_id('educationplusplus', $id, 0, false, MUST_EXIST);
@@ -51,11 +52,11 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'view', "view.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'studentpoints', "studentpoints.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
 
-$PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/educationplusplus/studentpoints.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
@@ -65,9 +66,19 @@ $PAGE->set_context($context);
 //$PAGE->set_focuscontrol('some-html-id');
 //$PAGE->add_body_class('educationplusplus-'.$somevar);
 
-// Output starts here
-echo $OUTPUT->header();
+// Retrieve All Assignments to Display as Options for Requirements
+// Retrieve from DB all Activities
+global $DB;
+$students = $DB->get_records('epp_student',array('course_id'=>$course->id));
 
+
+    
+//$submission =  $DB->get_records($table_assign_submission,array('assignment'=>$assign->id)); TBD
+
+$constructedSelectOptions = "";
+// Output starts here
+//echo var_dump($result);
+echo $OUTPUT->header();
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
@@ -75,30 +86,20 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 // Replace the following lines with you own code
 echo $OUTPUT->heading('Education++');
 
-if($added){
-	echo $OUTPUT->heading('A NEW POINT EARNING SCENARIO HAS BEEN CREATED!!!! (This will be a notification)');
-	echo "<br/>";
-}
 
-echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
-						<h2>Point Earning Scenerio Tools</h2>
-						<a href="viewAllPES.php?id='. $cm->id .'">Manage Scenarios in which Students can Earn Points</a><br/>
-						<a href="gradebookparser.php?id='. $cm->id .'">Scan Gradebook to detect Met Scenarios</a>
-					</div>');
-echo "<br/>";
-echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
-						<h2>Notifications</h2>
-						<a href="createANotification.php?id='. $cm->id .'">Create a New Notification for all Users in this Class</a><br/>
-						<a href="viewNotifications.php?id='. $cm->id .'">View your notifications</a><br/>
-					</div>');
-echo "<br/>";
-echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
-						<h2>Reward Tools</h2>
-						<a href="viewAllRewards.php?id='. $cm->id .'">Manage Rewards in which Students can Spend Points on</a><br/>
-					</div>');
-echo $OUTPUT->box('	<div style="width:100%;text-align:center;">
-						<h2>Student Points List</h2>
-						<a href="studentpoints.php?id='. $cm->id .'">View list of Students and their Points Balance</a><br/>
-					</div>');
+    
+
+ echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+
+');
+
+     echo $OUTPUT->box_start();
+     foreach($students as $student){
+     echo '<div style="width:100%; margin:0 auto; font-size:20px;">' .$student->firstname  .' ' . $student->lastname . ' has a balance of: '.$student->currentpointbalance . ' Points </div>';
+    }
+     echo $OUTPUT->box_end();
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
+
 // Finish the page
 echo $OUTPUT->footer();
+
