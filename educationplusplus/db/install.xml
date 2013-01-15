@@ -77,8 +77,9 @@
 	<!-- epp_incentive -->
 	<TABLE NAME="epp_incentive" COMMENT="EducationPlusPlus: An Incentive" PREVIOUS="epp_student" NEXT="epp_reward">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="name"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name of the incentive" PREVIOUS="id" NEXT="qtyperstudent"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course_id"/>
+		<FIELD NAME="course_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name of the incentive" PREVIOUS="course_id" NEXT="qtyperstudent"/>
 		<FIELD NAME="qtyperstudent" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Quantity allowed per student" PREVIOUS="name" NEXT="storevisibility"/>
 		<FIELD NAME="storevisibility" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Store visibility" PREVIOUS="qtyperstudent" NEXT="priceinpoints"/>
 		<FIELD NAME="priceinpoints" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Price of the insentive" PREVIOUS="storevisibility" NEXT="icon"/>
@@ -133,7 +134,7 @@
 		<FIELD NAME="title" TYPE="text" LENGTH="big" NOTNULL="true" SEQUENCE="false" COMMENT="Title for the Notification" PREVIOUS="course" NEXT="content"/>
 		<FIELD NAME="content" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Content for the Notification" PREVIOUS="title" NEXT="isread"/>
 		<FIELD NAME="isread" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Whether the student has dismissed the notification" PREVIOUS="content" NEXT="expirydate"/>
-		<FIELD NAME="expirydate" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date for the Notifi	cation to be deleted" PREVIOUS="isread"/>
+		<FIELD NAME="expirydate" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date for the Notification to be deleted" PREVIOUS="isread"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -141,11 +142,24 @@
     </TABLE>
 	
 	<!-- epp_student_pes -->
-	<TABLE NAME="epp_student_pes" COMMENT="EducationPlusPlus: Holds the Scenarios that Students have Earned" PREVIOUS="epp_notification" >
+	<TABLE NAME="epp_student_pes" COMMENT="EducationPlusPlus: Holds the Scenarios that Students have Earned" PREVIOUS="epp_notification" NEXT="epp_student_incentive" >
       <FIELDS>
 		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="student_id"/>
         <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="id" NEXT="pes_id"/>
 		<FIELD NAME="pes_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="student_id"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+	
+	<!-- epp_student_incentive -->
+	<TABLE NAME="epp_student_incentive" COMMENT="EducationPlusPlus: Holds the Incentives that Students have Purchased (And the Number of times they've purchased it)" PREVIOUS="epp_student_pes" >
+      <FIELDS>
+		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="incentive_id"/>
+		<FIELD NAME="incentive_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Holds the incentive id (class doesnt matter, id is unique ref to epp_incentive where you can retrieve class)" PREVIOUS="id" NEXT="student_id"/>
+        <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Holds the student id for the student who has purchased" PREVIOUS="incentive_id" NEXT="quantity"/>
+		<FIELD NAME="quantity" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Holds the quantity of purchases, will be checked against epp_incentive's qtyperstudent field prior to purchase" PREVIOUS="student_id"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

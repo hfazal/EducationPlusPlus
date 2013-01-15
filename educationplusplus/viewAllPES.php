@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2013 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -69,6 +69,13 @@ $PAGE->set_context($context);
 //$PAGE->set_cacheable(false);
 //$PAGE->set_focuscontrol('some-html-id');
 //$PAGE->add_body_class('educationplusplus-'.$somevar);
+
+// Determine if Professor Level Access
+$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+$isProfessor = false;
+if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
+	$isProfessor = true;
+}
 
 // Retrieve All Assignments to Display as Options for Requirements
 // Retrieve from DB all PES
@@ -133,12 +140,18 @@ echo '	<script>
 		</script>';
 	
 
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="createAPES.php?id='. $cm->id .'">create a new scenario in which students can earn poitns</a></div>');
-echo "<br/>";
+if($isProfessor){
+	// Create only displayed to professor (not student)
+	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="createAPES.php?id='. $cm->id .'">create a new scenario in which students can earn points</a></div>');
+	echo "<br/>";
+}
 if ($arrayOfPESObjects){
 	for ($i=0; $i < count($arrayOfPESObjects); $i++){
 		echo $OUTPUT->box_start();
-		echo '<div style="float:right"><a href="editPES.php?id=' . $cm->id .'&pes=' . $arrayOfIDsForPESObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDelete(' . $arrayOfIDsForPESObjects[$i] . ')">delete</a></div>';
+		if($isProfessor){
+			// Edit/Delete only displayed to professor (not student)
+			echo '<div style="float:right"><a href="editPES.php?id=' . $cm->id .'&pes=' . $arrayOfIDsForPESObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDelete(' . $arrayOfIDsForPESObjects[$i] . ')">delete</a></div>';
+		}
 		echo $arrayOfPESObjects[$i];
 		echo $OUTPUT->box_end();
 		echo "<br/>";
