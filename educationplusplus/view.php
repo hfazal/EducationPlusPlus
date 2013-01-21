@@ -72,15 +72,79 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
 
-// Determine if Professor Level Access
+//Help box, displayed on first launch, and when triggered
+
+global $DB;
+
+/* Set up to Education++ Resources.
+1. Determine if current user has Professor Level Access
+2. If not a professor, determine if first usage (no entry in epp_student). If so, make an entry, tell them about opting out
+3. Scan Gradebook if updated since last scan (Preshoth)
+4. Show Notifications for user (Robert)
+ */
+
+// START OF 1. Determine if current user has Professor Level Access
 $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
 $isProfessor = false;
 if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
 	$isProfessor = true;
 }
+// END OF 1. Determine if current user has Professor Level Access
+
+// START OF 2. If not a professor, determine if first usage (no entry in epp_student). If so, make an entry, tell them about opting out.
+if (!$isProfessor){	//Student
+	$students = $DB->get_records('epp_student',array('course_id'=>$course->id));
+	$matchingRecordFound = false;
+	
+	foreach ($students as $studentRecord){
+		if ($USER->id == $studentRecord->student_id){
+			//Record Match
+			$matchingRecordFound = true;
+			break;
+		}
+	}
+		
+	echo '<script src="jquery-1.9.0.min.js"></script>
+	  <div id="introbox" style="width:900px;margin:0 auto;text-align:center;border:thin gray solid;margin-bottom:15px;';
+	  
+	if ($matchingRecordFound == false){ //If no matching student record for this class was found,
+		// make one, then tell user about opting out
+		$record 						= new stdClass();
+		$record->course_id 				= intval($course->id);
+		$record->firstname	 			= $USER->firstname;
+		$record->lastname 				= $USER->lastname;
+		$record->student_id 			= intval($USER->id);
+		$record->currentpointbalance 	= 0;
+		$record->accumulatedpoints		= 0;
+		$record->leaderboardoptstatus 	= 0;
+		$idOfPES = $DB->insert_record('epp_student', $record, true);
+	}
+	else {
+		echo 'display:none';
+	}
+	echo'">
+		<div style="width:90%;display:inline-block;text-align:right;color:red;font-size:small;cursor:pointer;cursor:hand;" onclick="$(\'#introbox\').hide();">dismiss</div>
+		<br/>
+		<h1>Welcome to <span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span>!</h1>
+		<p>Ever felt you deserved more for all the work you do in school? With Education++, you can earn points for all you do, then spend them on rewards! For example, if you Ace your Midterm, you could get points you can spend on dropping a quiz or two!</p>
+		<p>In addition, you can <a style="text-decoration:underline" href="leaderboardClass.php?id='. $cm->id .'">compete with your classmates</a> for bragging rights of who has the most points in the class</p>
+		<p>Best of all, you can <a style="text-decoration:underline" href="leaderboardSchool.php?id='. $cm->id .'">solidfy your name in your school\'s history</a> by earning the most badges ever on the school leaderboard</p>
+		<p>Don\'t want to take part in the leaderboard? No problem, you can <a style="text-decoration:underline" href="leaderboardOpt.php?id='. $cm->id .'">opt out here</a> and still earn rewards!</p>
+		<p>Ready to get started? <a style="text-decoration:underline" href="viewAllPES.php?id='. $cm->id .'">Check out all the rewards your Professor has set up for you here!</a></p>
+	  </div>';
+}
+// END OF 2. If not a professor, determine if first usage (no entry in epp_student). If so, make an entry, tell them about opting out.
+
+// START OF 3. Scan Gradebook if updated since last scan
+	//Preshoth's Scan Gradebook code
+// END OF 3. Scan Gradebook if updated since last scan
+
+// START OF 4. Show Notifications for user
+	//Roberts's Show Uyser Specific Notifications Code	
+// END OF 4. Show Notifications for user
 
 echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
-	echo '<img style="float:left; margin-left:30px;margin-right:30px;" src="pix/logo.png" />';
+	echo '<div style="float:left; margin-left:30px;margin-right:30px;text-align:center;"><img src="pix/logo.png" alt="education++" /><br/><span style="color:red;font-size:small;cursor:pointer;cursor:hand;" onclick="$(\'#introbox\').show();">help!</span></div>';
 	if ($isProfessor){
 		echo '<div style="float:left;margin:30px;">
 			<h2 style="font-size:large">Administrator</h2>
@@ -105,12 +169,11 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 	}
 	else{
 		//Since Student, Obtain Point Balance
-		global $DB;
 		$eppStudentRecord = $DB->get_record('epp_student',array('course_id'=>$course->id, 'student_id'=>$USER->id));
 		//echo var_dump($eppStudentRecord);
 		echo '<span style="color:red;font-weight:bold;">';
 		if (!$eppStudentRecord){
-			echo '0 Points';
+			echo 'Error: No student record was found, check step 2 of page setup';
 		}
 		else{
 			echo $eppStudentRecord->currentpointbalance . ' Points';
@@ -136,6 +199,6 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 		</div>';
 	}
 echo '</div>';
-echo 'Things to add to this (view.php):<br/>1. If student, check if they have an entry in epp_student, if not make them one.<br/>2. If gradebook has been updated since last check, rescan for achieved PES<br/>3. New Notifications should show here somehow';
+echo 'Things to add to this (view.php):<br/><s>1. If student, check if they have an entry in epp_student, if not make them one.</s>- Husain Completed<br/>2. If gradebook has been updated since last check, rescan for achieved PES<br/>3. New Notifications should show here somehow';
 // Finish the page
 echo $OUTPUT->footer();
