@@ -108,12 +108,12 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
 
+if($isProfessor){
 // Replace the following lines with you own code
-echo $OUTPUT->heading('Education++: Manage Point Earning Scenarios');
-
-if($deleted){
-	echo $OUTPUT->heading('The Scenario was Deleted');
-	echo "<br/>";
+	echo $OUTPUT->heading('Education++: Manage Point Earning Scenarios');
+}
+else{
+	echo $OUTPUT->heading('Education++: Ways to Earn Points');
 }
 
 //Styles for output: pesName, pesPointValue, pesExpiryDate, pesDescription, pesRequirements

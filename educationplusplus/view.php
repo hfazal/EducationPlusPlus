@@ -127,9 +127,7 @@ if (!$isProfessor){	//Student
 		<br/>
 		<h1>Welcome to <span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span>!</h1>
 		<p>Ever felt you deserved more for all the work you do in school? With Education++, you can earn points for all you do, then spend them on rewards! For example, if you Ace your Midterm, you could get points you can spend on dropping a quiz or two!</p>
-		<p>In addition, you can <a style="text-decoration:underline" href="leaderboardClass.php?id='. $cm->id .'">compete with your classmates</a> for bragging rights of who has the most points in the class</p>
-		<p>Best of all, you can <a style="text-decoration:underline" href="leaderboardSchool.php?id='. $cm->id .'">solidfy your name in your school\'s history</a> by earning the most badges ever on the school leaderboard</p>
-		<p>Don\'t want to take part in the leaderboard? No problem, you can <a style="text-decoration:underline" href="leaderboardOpt.php?id='. $cm->id .'">opt out here</a> and still earn rewards!</p>
+		<p>In addition, you can <a style="text-decoration:underline" href="leaderboardClass.php?id='. $cm->id .'">compete with your classmates</a> for bragging rights of who has the most points in the class. Best of all, you can <a style="text-decoration:underline" href="leaderboardSchool.php?id='. $cm->id .'">solidfy your name in your school\'s history</a> by earning the most badges ever on the school leaderboard. Don\'t want to take part in the leaderboard? No problem, you can <a style="text-decoration:underline" href="leaderboardOpt.php?id='. $cm->id .'">opt out here</a> and still earn rewards!</p>
 		<p>Ready to get started? <a style="text-decoration:underline" href="viewAllPES.php?id='. $cm->id .'">Check out all the rewards your Professor has set up for you here!</a></p>
 	  </div>';
 }
@@ -144,7 +142,11 @@ if (!$isProfessor){	//Student
 // END OF 4. Show Notifications for user
 
 echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
-	echo '<div style="float:left; margin-left:30px;margin-right:30px;text-align:center;"><img src="pix/logo.png" alt="education++" /><br/><span style="color:red;font-size:small;cursor:pointer;cursor:hand;" onclick="$(\'#introbox\').show();">help!</span></div>';
+	echo '<div style="float:left; margin-left:30px;margin-right:30px;text-align:center;"><img src="pix/logo.png" alt="education++" />';
+	if (!$isProfessor){	//show help only if student
+		echo '<br/><span style="color:red;font-size:small;cursor:pointer;cursor:hand;" onclick="$(\'#introbox\').show();">help!</span>';
+	}
+	echo '</div>';
 	if ($isProfessor){
 		echo '<div style="float:left;margin:30px;">
 			<h2 style="font-size:large">Administrator</h2>
@@ -196,9 +198,14 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 			<a href="leaderboardClass.php?id='. $cm->id .'">View the Class Leaderboard</a><br/>
 			<a href="leaderboardSchool.php?id='. $cm->id .'">View the Schoolwide Leaderboard</a><br/>
 			<a href="leaderboardOpt.php?id='. $cm->id .'">Opt in or out of the Leaderboard</a><br/>
+			<br/>
+			<h3>Your Notifications</h3>
+			<ul>
+				<li>Notification 1 (dismiss)</li>
+				<li>Notification 2 (dismiss)</li>
+			</ul>
 		</div>';
 	}
 echo '</div>';
-echo 'Things to add to this (view.php):<br/><s>1. If student, check if they have an entry in epp_student, if not make them one.</s>- Husain Completed<br/>2. If gradebook has been updated since last check, rescan for achieved PES<br/>3. New Notifications should show here somehow';
 // Finish the page
 echo $OUTPUT->footer();
