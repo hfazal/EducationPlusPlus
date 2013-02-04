@@ -152,7 +152,7 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 			<h2 style="font-size:large">Administrator</h2>
 			<h3>Point Earning Scenerio Tools</h3>
 			<a href="viewAllPES.php?id='. $cm->id .'">Manage Scenarios in which Students can Earn Points</a><br/>
-			<s><a href="gradebookparser.php?id='. $cm->id .'">Scan Gradebook to detect Met Scenarios (Will auto trigger)</a></s><br/>
+			<a href="gradebookparser.php?id='. $cm->id .'">Scan Gradebook to detect Met Scenarios (Will auto trigger)</a><br/>
 			<br/>
 			<h3>Reward Tools</h3>
 			<a href="viewAllRewards.php?id='. $cm->id .'">Manage Rewards in which Students can Spend Points on</a><br/>
