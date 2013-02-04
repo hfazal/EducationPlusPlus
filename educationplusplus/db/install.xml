@@ -84,7 +84,8 @@
 		<FIELD NAME="storevisibility" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Store visibility" PREVIOUS="qtyperstudent" NEXT="priceinpoints"/>
 		<FIELD NAME="priceinpoints" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Price of the insentive" PREVIOUS="storevisibility" NEXT="icon"/>
 		<FIELD NAME="icon" TYPE="binary" NOTNULL="false" SEQUENCE="false" COMMENT="Image for the incentive" PREVIOUS="priceinpoints" NEXT="deletebyprof"/>
-		<FIELD NAME="deletebyprof" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Whether the incentive has been deleted" PREVIOUS="icon"/>
+		<FIELD NAME="deletebyprof" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Whether the incentive has been deleted" PREVIOUS="icon" NEXT="datecreated" />
+		<FIELD NAME="datecreated" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date of reward creation" PREVIOUS="deletebyprof"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -94,31 +95,34 @@
 	<!-- epp_reward -->
 	<TABLE NAME="epp_reward" COMMENT="EducationPlusPlus: A Reward Incentive" PREVIOUS="epp_incentive" NEXT="epp_badge">
       <FIELDS>
-        <FIELD NAME="incentive_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" NEXT="prize"/>
+		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="incentive_id"/>
+        <FIELD NAME="incentive_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="id" NEXT="prize"/>
         <FIELD NAME="prize" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Prize to be claimed" PREVIOUS="incentive_id" NEXT="expirydate"/>
 		<FIELD NAME="expirydate" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date of expiry for the Reward to be claimed" PREVIOUS="prize"/>
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="incentive_id"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
 	
 	<!-- epp_badge -->
 	<TABLE NAME="epp_badge" COMMENT="EducationPlusPlus: A Reward Incentive" PREVIOUS="epp_reward" NEXT="epp_student_badge" >
       <FIELDS>
-        <FIELD NAME="incentive_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true"/>
+		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="incentive_id"/>
+        <FIELD NAME="incentive_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="id" />
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="incentive_id"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
 
 	<!-- epp_student_badge -->
 	<TABLE NAME="epp_student_badge" COMMENT="EducationPlusPlus: Awarded Badges" PREVIOUS="epp_badge" NEXT="epp_notification" >
       <FIELDS>
-		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="student_id"/>
-        <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="id" NEXT="badge_id"/>
-		<FIELD NAME="badge_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="student_id"/>
+		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="student_id" />
+        <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="id" NEXT="incentive_id" />
+		<FIELD NAME="incentive_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="student_id" NEXT="datepurchased" />
+		<FIELD NAME="datepurchased" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date student purchased the badge" PREVIOUS="incentive_id"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -142,7 +146,7 @@
     </TABLE>
 	
 	<!-- epp_student_pes -->
-	<TABLE NAME="epp_student_pes" COMMENT="EducationPlusPlus: Holds the Scenarios that Students have Earned" PREVIOUS="epp_notification" NEXT="epp_student_incentive" >
+	<TABLE NAME="epp_student_pes" COMMENT="EducationPlusPlus: Holds the Scenarios that Students have Earned" PREVIOUS="epp_notification" NEXT="epp_student_reward" >
       <FIELDS>
 		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="student_id"/>
         <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="id" NEXT="pes_id"/>
@@ -153,18 +157,18 @@
       </KEYS>
     </TABLE>
 	
-	<!-- epp_student_incentive -->
-	<TABLE NAME="epp_student_incentive" COMMENT="EducationPlusPlus: Holds the Incentives that Students have Purchased (And the Number of times they've purchased it)" PREVIOUS="epp_student_pes" >
+	<!-- epp_student_reward -->
+	<TABLE NAME="epp_student_reward" COMMENT="EducationPlusPlus: Holds the Rewards that Students have Purchased" PREVIOUS="epp_student_pes" >
       <FIELDS>
 		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="incentive_id"/>
 		<FIELD NAME="incentive_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Holds the incentive id (class doesnt matter, id is unique ref to epp_incentive where you can retrieve class)" PREVIOUS="id" NEXT="student_id"/>
-        <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Holds the student id for the student who has purchased" PREVIOUS="incentive_id" NEXT="quantity"/>
-		<FIELD NAME="quantity" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Holds the quantity of purchases, will be checked against epp_incentive's qtyperstudent field prior to purchase" PREVIOUS="student_id"/>
+        <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Holds the student id for the student who has purchased" PREVIOUS="incentive_id"  NEXT="datepurchased" />
+		<FIELD NAME="datepurchased" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date student purchased the reward" PREVIOUS="student_id" />
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-	
+		
   </TABLES>
 </XMLDB>
