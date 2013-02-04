@@ -136,7 +136,7 @@ addRequirements();
 </script>
 
 <div id="form" style="width:400px;height:600px;overflow:auto;">
-	<form id="pesform" name="pesform" method="post" onsubmit="return validate()" action="persistPES.php?id='. $cm->id .'" name="pes-creator" id="pes-creator" style="padding-left:10px;padding-right:10px;">
+	<form id="pesform" name="pesform" method="post" onsubmit="return validate()" action="persistIncentive.php?id='. $cm->id .'" name="pes-creator" id="pes-creator" style="padding-left:10px;padding-right:10px;">
 		<h3>Incentive</h3>
 		<table>
 			<tr>
@@ -150,6 +150,15 @@ addRequirements();
 			<tr>
 				<td>Price in Points</td>
 				<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="incentivePrice" name="incentivePrice"><br/><span id="pvReq" style="color:red;display:none;">You Must Specify a price for the incentive</span><span id="pvReqInt" style="color:red;display:none;">You Must Specify a positive number for a Price</span></td>
+			</tr>
+			<tr>
+				<td>Type of Incentive</td>
+				<td>
+					<select id="incentiveType">
+						 <option value="badge">Badge</option>
+  						 <option value="reward">Reward</option>
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<td style="vertical-align:top;">Store Visibility</td>
