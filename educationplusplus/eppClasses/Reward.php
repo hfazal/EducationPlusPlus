@@ -35,6 +35,14 @@
 		public function quantityAllowedPerStudent() {
 			return parent::__get("qtyPerStudent");
 		}
+		
+		public function parentGetter($var) {
+			return parent::__get($var);
+		}
+		
+		public function getExpiryDateString(){
+			return date($this->expiryDate->format('Y-m-d'));
+		}
 			 		 
 		// TOSTRING
 		public function __toString() {

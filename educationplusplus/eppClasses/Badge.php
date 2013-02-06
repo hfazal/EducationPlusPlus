@@ -28,6 +28,10 @@
 			}
 			return $this;
 		}
+		
+		public function parentGetter($var) {
+			return parent::__get($var);
+		}
 			 		 
 		// TOSTRING
 		public function __toString() {

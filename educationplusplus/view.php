@@ -152,13 +152,17 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 			<h2 style="font-size:large">Administrator</h2>
 			<h3>Point Earning Scenerio Tools</h3>
 			<a href="viewAllPES.php?id='. $cm->id .'">Manage Scenarios in which Students can Earn Points</a><br/>
-			<a href="gradebookparser.php?id='. $cm->id .'">Scan Gradebook to detect Met Scenarios (Will auto trigger)</a><br/>
+			<s><a href="gradebookparser.php?id='. $cm->id .'">Scan Gradebook to detect Met Scenarios (Will auto trigger)</a></s><br/>
 			<br/>
 			<h3>Reward Tools</h3>
 			<a href="viewAllRewards.php?id='. $cm->id .'">Manage Rewards in which Students can Spend Points on</a><br/>
 			<br/>
 			<h3>Student Points List</h3>
 			<a href="studentpoints.php?id='. $cm->id .'">View list of Students and their Points Balance</a><br/>
+			<br/>
+			<h3>Reporting</h3>
+			<a href="reportingGeneral.php?id='. $cm->id .'">View A Report of All Purchases</a><br/>
+			<a href="reportingGeneral.php?id='. $cm->id .'">Get a PDF Report sent to your email of all Purchases</a><br/>
 			<br/>
 			<h3>Notifications</h3>
 			<a href="createANotification.php?id='. $cm->id .'">Create a New Notification for all Users in this Class</a><br/>
