@@ -157,10 +157,8 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 			<h3>Reward Tools</h3>
 			<a href="viewAllRewards.php?id='. $cm->id .'">Manage Rewards in which Students can Spend Points on</a><br/>
 			<br/>
-			<h3>Student Points List</h3>
-			<a href="studentpoints.php?id='. $cm->id .'">View list of Students and their Points Balance</a><br/>
-			<br/>
 			<h3>Reporting</h3>
+			<a href="transactionHistory.php?id='. $cm->id .'">View A Student\'s Transactions</a><br/>
 			<a href="reportingGeneral.php?id='. $cm->id .'">View A Report of All Purchases</a><br/>
 			<a href="reportingGeneral.php?id='. $cm->id .'">Get a PDF Report sent to your email of all Purchases</a><br/>
 			<br/>
@@ -192,11 +190,12 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 			<h2 style="font-size:large">Student</h2>
 			<h3>Point Earning Scenerios</h3>
 			<a href="viewAllPES.php?id='. $cm->id .'">View All the Ways you Can Earn Points</a><br/>
-			<a href="earnedPES.php?id='. $cm->id .'">View All the Ways you Have Already Earned Points</a><br/>
 			<br/>
 			<h3>Rewards</h3>
 			<a href="storeFront.php?id='. $cm->id .'">View the Store to Purchase Rewards</a><br/>
-			<a href="storePurchases.php?id='. $cm->id .'">View Your Purchases</a><br/>
+			<br/>
+			<h3>Transactions</h3>
+			<a href="transactionHistory.php?id='. $cm->id .'">View All the Ways You Have Already Spent and Earned Points</a><br/>
 			<br/>
 			<h3>View the Leaderboard</h3>
 			<a href="leaderboardClass.php?id='. $cm->id .'">View the Class Leaderboard</a><br/>

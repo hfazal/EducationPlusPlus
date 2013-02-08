@@ -10,18 +10,29 @@
 		private $leaderboardOptStatus;
 		
 		// CONSTRUCTOR
-		function __construct( $id, $course_id, $firstname, $lastname, $student_id, $currentpointbalance, $accumulatedpoints, $leaderboardoptstatus ) {
-			if (!empty($id)){	//Only if constructed off of a DB retrieval
-				$this->id = $id;
-			}
-			$this->courseId = $course_id;
+		function __construct(){
+			$this->id = null;
+			$this->courseId = null;
+			$this->firstName = null;
+			$this->lastName = null;
+			$this->studentId = null;
+			$this->currentPointBalance = null;
+			$this->accumulatedPoints = null;
+			$this->leaderboardOptStatus = null;
+		}
+		
+		function addData( $id, $course_id, $firstname, $lastname, $student_id, $currentpointbalance, $accumulatedpoints, $leaderboardoptstatus ) {
+			$this->id = intval($id);
+			$this->courseId = intval($course_id);
 			$this->firstName = $firstname;
 			$this->lastName = $lastname;
-			$this->studentId = $student_id;
-			$this->currentPointBalance = $currentpointbalance;
-			$this->accumulatedPoints = $accumulatedpoints;
-			$this->leaderboardOptStatus = $leaderboardoptstatus;
+			$this->studentId = intval($student_id);
+			$this->currentPointBalance = intval($currentpointbalance);
+			$this->accumulatedPoints = intval($accumulatedpoints);
+			$this->leaderboardOptStatus = intval($leaderboardoptstatus);
 		}
+		
+		
 		
 		// DESTRUCTOR
 		function __destruct() {

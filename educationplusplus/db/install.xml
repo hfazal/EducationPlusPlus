@@ -151,7 +151,9 @@
       <FIELDS>
 		<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="student_id"/>
         <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="id" NEXT="pes_id"/>
-		<FIELD NAME="pes_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="student_id"/>
+		<FIELD NAME="pes_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="student_id" NEXT="dateearned"/>
+		<FIELD NAME="dateearned" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date student earned the PES" PREVIOUS="pes_id" NEXT="pointsearned" />
+		<FIELD NAME="pointsearned" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="dateearned" />
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
