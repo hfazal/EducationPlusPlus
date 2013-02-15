@@ -172,7 +172,7 @@ echo '<br/><br/><h2 style="margin:0 auto; text-align:center;">Viewing Transactio
 					$theName = $i->name;
 				}
 			}
-			array_push($giantArrayOfTransactions, new RewardTransaction($rewardTransaction->id, $theName, $rewardTransaction->priceofpurchase, new DateTime($rewardTransaction->datepurchased)));
+			array_push($giantArrayOfTransactions, new RewardTransaction($rewardTransaction->id, $theName, $rewardTransaction->priceofpurchase, new DateTime($rewardTransaction->datepurchased), null, null));
 		}
 		foreach ($epp_student_redeemed_badges as $badgeTransaction){
 			$theName = "";

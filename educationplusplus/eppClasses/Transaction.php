@@ -7,7 +7,7 @@
 
 		// CONSTRUCTOR
 		function __construct( $id, $name, $pointsInvolved, $dateOfTransaction ){
-			$this->id = $name;
+			$this->id = $id;
 			$this->name = $name;
 			$this->pointsInvolved = $pointsInvolved;
 			$this->dateOfTransaction = $dateOfTransaction;

@@ -155,12 +155,11 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 			<s><a href="gradebookparser.php?id='. $cm->id .'">Scan Gradebook to detect Met Scenarios (Will auto trigger)</a></s><br/>
 			<br/>
 			<h3>Reward Tools</h3>
-			<a href="viewAllRewards.php?id='. $cm->id .'">Manage Rewards in which Students can Spend Points on</a><br/>
+			<a href="viewAllIncentives.php?id='. $cm->id .'">Manage Rewards in which Students can Spend Points on</a><br/>
 			<br/>
 			<h3>Reporting</h3>
 			<a href="transactionHistory.php?id='. $cm->id .'">View A Student\'s Transactions</a><br/>
-			<a href="reportingGeneral.php?id='. $cm->id .'">View A Report of All Purchases</a><br/>
-			<a href="reportingGeneral.php?id='. $cm->id .'">Get a PDF Report sent to your email of all Purchases</a><br/>
+			<a href="reportingGeneral.php?id='. $cm->id .'">View or Recieve an Email with a Report of All Reward Purchases</a><br/>
 			<br/>
 			<h3>Notifications</h3>
 			<a href="createANotification.php?id='. $cm->id .'">Create a New Notification for all Users in this Class</a><br/>
@@ -204,8 +203,9 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 			<br/>
 			<h3>Your Notifications</h3>
 			<ul>
-				<li>Notification 1 (dismiss)</li>
-				<li>Notification 2 (dismiss)</li>
+				<li>Notification 1 <em style="color:red">dismiss</em></li>
+				<li>Notification 2 <em style="color:red">dismiss</em></li>
+				<li><a href="viewNotifications.php?id='. $cm->id .'">View Dismissed Notifications</a></li>
 			</ul>
 		</div>';
 	}
