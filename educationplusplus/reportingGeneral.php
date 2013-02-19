@@ -34,8 +34,8 @@ require_once(dirname(__FILE__).'/lib.php');
 // Education++ Classes
 require 'eppClasses/Student.php';
 require 'eppClasses/RewardTransaction.php';
-// FPDF Compiler
-// require('fpdf/fpdf.php');
+// HTML2PDF
+require_once(dirname(__FILE__).'/html2pdf/html2pdf.class.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
@@ -69,16 +69,7 @@ if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
 	$isProfessor = true;
 }
 
-// Output starts here
-echo $OUTPUT->header();
-if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
-    echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
-}
-
-echo $OUTPUT->heading('Education++: Reward Report');
-
 if ($isProfessor){
-	global $DB;
 	// Check for save process
 	$saved = false;
 	if (isset($_POST["completion"])){
@@ -115,11 +106,11 @@ if ($isProfessor){
 			$DB->update_record($table1, $record);
 		}
 	}
-	
+
 	// Build Report
 	$allStudents = $DB->get_records('epp_student',array('course_id'=>$course->id));
 	$allIncentives = $DB->get_records('epp_incentive',array('course_id'=>$course->id));
-	
+
 	$table = 'epp_student_reward';
 	$select = "";
 	foreach($allIncentives as $courseIncentive){
@@ -127,10 +118,10 @@ if ($isProfessor){
 	}
 	$select = substr($select, 0, -4);
 	$allRewardTransactions = $DB->get_records_select($table,$select);
-	
+
 	$giantArrayOfRewardTransactions = array();
 	$student = null;
-	
+
 	foreach($allRewardTransactions as $rewardTransaction){
 		$name = "";
 		foreach($allIncentives as $courseIncentive){
@@ -150,60 +141,99 @@ if ($isProfessor){
 		}
 	}
 	
-	echo "<style>
-				table, tr, td{
-					border-bottom:1px solid #000;
-				}
-				.rewardDate{
-					font-style:italic;
-					color:black;
-				}
-				.rewardName{
-					color:black;
-					font-weight:bold;
-				}
-				.rewardStudent{
-					color:black;
-					font-weight:bold;
-				}
-				table.sortable thead {
-					background-color:#eee;
-					color:#666666;
-					font-weight: bold;
-					cursor:default;
-				}
-			</style><script src='sorttable.js'></script>";
-	if ($saved == true){
-		echo "<div style='width:100%;text-align:center;color:gray;'><h2 style='margin:0 auto'>Awarded Statuses Successfully Saved</h2></div><br/>";
-	}
-	echo '<form action="reportingGeneral.php?id=' . $cm->id . '" method="post"><table border="1" class="sortable" style="width:70%;margin:0 auto;">';
-	echo '<thead><tr>	<td style="cursor:pointer;cursor:hand;">Date</td>
+	$maintable = '<div id="maintable"><table border="1" class="sortable" style="width:' . (isset($_POST["viewPDF"]) ? "100" : "70") . '%;margin:0 auto;">
+					<thead><tr>
+						<td style="cursor:pointer;cursor:hand;">Date</td>
 						<td style="cursor:pointer;cursor:hand;">Student Name</td>
 						<td style="cursor:pointer;cursor:hand;">Reward Purchased</td>
 						<td style="cursor:pointer;cursor:hand;">Awarded Status</td>
 				 </tr></thead><tbody>';
 	foreach ($giantArrayOfRewardTransactions as $transaction){
-		echo $transaction; 
+		$maintable = $maintable . $transaction; 
 	}
-	echo "</tbody></table><br/>";
-	echo '<table style="width:70%;margin:0 auto;border:0;">';
-	echo '	<tr style="border:0">
-				<td style="border:0;width:100%;text-align:right;"><input type="submit" value="Save Update Awarded Statuses"></td>
-			</tr></table></form><br/>';
-	echo '<form action="reportingEmail.php?id=' . $cm->id . '" method="get"><table style="width:70%;margin:0 auto;border:0;">';
-	echo '	<tr style="border:0">
-				<td style="border:0;width:100%;text-align:right;">
-					Recieve an Email with a PDF of This Report (Save your changes first): <input type="text" name="email" placeholder="Email"><input type="submit" value="Send">
-				</td>
-			</tr></table></form>';	
+	$maintable = $maintable . "</tbody></table></div><!--maintable--><br/>";
+
+	//echo var_dump($course);
+
+	if (isset($_POST["viewPDF"])){	//Generate PDF
+		$maintable = preg_replace('#<input(.*?)>#is', '', $maintable);	//Gets rid of checkboxes
+		$maintable = "<div style='margin:50px;'><table border='0'><tr>
+						<td align='top'>
+							<img src='./pix/logo.png' style='width:120px;margin-right:50px;' />
+						</td>
+						<td align='top'>
+							<h1 style='margin-bottom: 0;'>Education++ Rewards Report</h1>
+							<h4 style='margin-bottom: 0;'>" . $course->fullname . " (" . $course->shortname . ")</h4>
+							<h4 style='margin-bottom: 0;'>Generated on " . date('l F dS Y \a\t h:i A') . "</h4>
+						</td>
+					 </tr></table><br/><br/>" . $maintable . "</div>";
+		$reportGenerator = new HTML2PDF('P','A4','en');
+		$reportGenerator->WriteHTML($maintable);
+		$reportGenerator->Output('report.pdf');
+	}
+	else{
+		// Output starts here
+		echo $OUTPUT->header();
+		if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
+			echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
+		}
+
+		echo $OUTPUT->heading('Education++: Reward Report');
+
+		if ($isProfessor){
+			global $DB;
+			
+			echo "<style>
+						table, tr, td{
+							border-bottom:1px solid #000;
+						}
+						.rewardDate{
+							font-style:italic;
+							color:black;
+						}
+						.rewardName{
+							color:black;
+							font-weight:bold;
+						}
+						.rewardStudent{
+							color:black;
+							font-weight:bold;
+						}
+						table.sortable thead {
+							background-color:#eee;
+							color:#666666;
+							font-weight: bold;
+							cursor:default;
+						}
+					</style><script src='sorttable.js'></script>";
+			if ($saved == true){
+				echo "<div style='width:100%;text-align:center;color:gray;'><h2 style='margin:0 auto'>Awarded Statuses Successfully Saved</h2></div><br/>";
+			}
+			echo '<form action="reportingGeneral.php?id=' . $cm->id . '" method="post">';
+			echo $maintable;
+			echo '<table style="width:70%;margin:0 auto;border:0;">';
+			echo '	<tr style="border:0">
+						<td style="border:0;width:100%;text-align:right;"><input type="submit" value="Save Update Awarded Statuses"></td>
+					</tr></table></form><br/>';
+			echo '<form action="reportingGeneral.php?id=' . $cm->id . '" method="post"><table style="width:70%;margin:0 auto;border:0;">';
+			echo '	<tr style="border:0">
+						<td style="border:0;width:100%;text-align:right;">
+							<input type="text" name="viewPDF" style="display:none;"><input type="submit" value="View this Report as PDF (Save your changes first)">
+						</td>
+					</tr></table></form>';	
+			echo '<br/><br/>';
+			echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
+
+			// Finish the page
+			echo $OUTPUT->footer();
+		}
+	}
 }
 else{
 	echo '<div>Only the Professor can access Reporting</div>';
-}
-	
-echo '<br/><br/>';
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
+	echo '<br/><br/>';
+	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
 
-// Finish the page
-echo $OUTPUT->footer();
-
+	// Finish the page
+	echo $OUTPUT->footer();
+}	

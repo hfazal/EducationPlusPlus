@@ -159,7 +159,7 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 			<br/>
 			<h3>Reporting</h3>
 			<a href="transactionHistory.php?id='. $cm->id .'">View A Student\'s Transactions</a><br/>
-			<a href="reportingGeneral.php?id='. $cm->id .'">View or Recieve an Email with a Report of All Reward Purchases</a><br/>
+			<a href="reportingGeneral.php?id='. $cm->id .'">Generate a report and track All Reward Purchases</a><br/>
 			<br/>
 			<h3>Notifications</h3>
 			<a href="createANotification.php?id='. $cm->id .'">Create a New Notification for all Users in this Class</a><br/>
