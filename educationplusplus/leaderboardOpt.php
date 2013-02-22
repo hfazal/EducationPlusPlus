@@ -73,8 +73,8 @@ echo $OUTPUT->heading('Education++: Opt In or Out of the Leaderboard');
 
 global $DB;
 $studentRecord = $DB->get_record('epp_student',array('student_id'=>$USER->id, 'course_id'=>$course->id));
-$studentObject = new Student( $studentRecord->id, $studentRecord->course_id, $studentRecord->firstname, $studentRecord->lastname, $studentRecord->student_id, $studentRecord->currentpointbalance, $studentRecord->accumulatedpoints, $studentRecord->leaderboardoptstatus );
-
+$studentObject = new Student();
+$studentObject->addData( $studentRecord->id, $studentRecord->course_id, $studentRecord->firstname, $studentRecord->lastname, $studentRecord->student_id, $studentRecord->currentpointbalance, $studentRecord->accumulatedpoints, $studentRecord->leaderboardoptstatus );
 
 echo '	<script>
 			function optOut(){
@@ -100,11 +100,11 @@ echo '	<script>
 
 echo '<div style="text-align:center">';
 if ($studentObject->leaderboardOptStatus == 0) {//in
-	echo 'Currently, you are <b>opted in</b> to the leaderboard system.<br/><br/>This means your classmates can see how many points you\'ve earned in the class, and you can compete with them to see who can accumulate the most.<br/><br/>It also means you can see where you rank in the school for number of badges accumulated.';
+	echo 'Currently, you are <b>opted in</b> to the leaderboard system.<br/><br/>This means your classmates can see how many points you\'ve earned in each class Education++ is available in, and you can compete with them to see who can accumulate the most.<br/><br/>It also means you can see where you rank in the school for number of badges accumulated.';
 	echo '<br/><br/><button type="button" onclick="optOut()">Opt Out</button>';
 }
 else {	// out
-	echo 'Currently, you are <b>opted out</b> of the leaderboard system.<br/><br/> This means your classmates <i>cannot</i> see how many points you\'ve earned in the class to compete with them on the leaderboard system.<br/><br/>It also means <i>you are not</i> on the school leaderboard where can see how you rank in the school for number of badges accumulated.';
+	echo 'Currently, you are <b>opted out</b> of the leaderboard system.<br/><br/> This means your classmates <i>cannot</i> see how many points you\'ve earned in any class Education++ is available in, and you <i>cannot</i> compete with them on the leaderboard system.<br/><br/>It also means <i>you are not</i> on the school leaderboard where can see how you rank in the school for number of badges accumulated.';
 	echo '<br/><br/><button type="button" onclick="optIn()">Opt In</button>';
 }
 echo '</div>';

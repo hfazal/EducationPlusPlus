@@ -89,40 +89,58 @@ echo '	<script src="sorttable.js"></script>
 				font-weight: bold;
 				cursor:default;
 			}
+			.badge{
+				-webkit-border-radius: 10px;
+				-khtml-border-radius: 10px;	
+				-moz-border-radius: 10px;
+				border-radius: 10px;
+				width:50px;
+				height:50px;
+				margin-left:10px;
+				vertical-align:middle;
+			}
 		</style>
 
 		<table class="sortable" style="margin: auto;">
 		<thead>
-			<tr>
-				<td style="cursor:pointer;cursor:hand;">Name</td>
-				<td style="cursor:pointer;cursor:hand;">Badges Accumulated</td>
+			<tr style="border-bottom:thin solid black;">
+				<td style="cursor:pointer;cursor:hand;">Ranking</td>
+				<td style="cursor:pointer;cursor:hand;">Name (Click a Name to View all Badges)</td>
+				<td style="cursor:pointer;cursor:hand;">Badges Accumulated (Most Recent Shown) </td>
 			</tr>
 		</thead>
 		<tbody>';
 
 $allIncentives = $DB->get_records('epp_incentive');
-		
+
+$ranking = 0;
 foreach ($studentIdsUnique as $epp_student){
 	$allRecords = $DB->get_records('epp_student',array('student_id'=>$epp_student));
 	
-	foreach ($allRecords as $firstrecord){
+	foreach ($allRecords as $firstrecord){	
+		$ranking++;
+		
 		if ($USER->id == $firstrecord->student_id){
-			echo '<tr style="background-color:#BCED91;">';
+			echo '<tr style="background-color:#BCED91;border-bottom:thin solid black;">';
 		}
 		else {
-			echo '<tr>';
+			echo '<tr style="border-bottom:thin solid black;">';
 		}
 		
-		echo '  <td style="font-weight:bold">' . $firstrecord->firstname . ' ' . $firstrecord->lastname . '</td>
-				<td style="text-align:left;max-width:150px;">';
+		echo '  <td style="font-weight:bold;text-align:center;min-width:200px;">' . $ranking . '</td>
+				<td style="font-weight:bold;min-width:300px;"><a href="leaderboardStudentProfile.php?id='. $cm->id .'&sid='. $firstrecord->student_id .'">' . $firstrecord->firstname . ' ' . $firstrecord->lastname . '</a></td>
+				<td style="text-align:left;min-width:250px;height:70px;">';
 
-		$thisStudentsBadges = $DB->get_records('epp_student_badge',array('student_id'=>$firstrecord->id));
+		$thisStudentsBadges = $DB->get_records('epp_student_badge',array('student_id'=>$firstrecord->student_id), "datePurchased DESC");
 		echo count($thisStudentsBadges) . " "; // displays number of badges earned
 		
+		$badgeCount = 0;
 		foreach ($thisStudentsBadges as $earnedBadge){
+			if ($badgeCount >= 3){ break;}
 			foreach ($allIncentives as $incentive){
-				if ($incentive->id == $earnedBadge->badge_id){
-					echo '<img style="width:25px;height:25px;" src="data:image/jpg;base64,' . $incentive->icon . '" alt="' . $incentive->name . '" />';
+				if ($incentive->id == $earnedBadge->incentive_id && $badgeCount < 3){
+					echo '<img class="badge" src="data:image/jpg;base64,' . $incentive->icon . '" alt="' . $incentive->name . '" />';
+					$badgeCount++;
 				}
 			}
 		}

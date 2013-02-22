@@ -84,21 +84,25 @@ echo '	<script src="sorttable.js"></script>
 
 		<table class="sortable" style="margin: auto;">
 		<thead>
-			<tr>
-				<td style="cursor:pointer;cursor:hand;">Name</td>
+			<tr style="border-bottom:thin solid black;">
+				<td style="cursor:pointer;cursor:hand;">Ranking</td>
+				<td style="cursor:pointer;cursor:hand;">Name (Click a Name to View all Badges)</td>
 				<td style="cursor:pointer;cursor:hand;">Total Points Accumulated</td>
 			</tr>
 		</thead>
 		<tbody>';
 
+$ranking = 0;
 foreach ($students as $studentRecord){
+	$ranking++;
 	if ($USER->id == $studentRecord->student_id){
-		echo '<tr style="background-color:#BCED91;">';
+		echo '<tr style="background-color:#BCED91;border-bottom:thin solid black;">';
 	}
 	else {
-		echo '<tr>';
+		echo '<tr style="border-bottom:thin solid black;">';
 	}
-	echo '	<td style="font-weight:bold">' . $studentRecord->firstname . ' ' . $studentRecord->lastname . '</td>
+	echo '  <td style="font-weight:bold;text-align:center;min-width:200px;">' . $ranking . '</td>
+			<td style="font-weight:bold;min-width:300px;"><a href="leaderboardStudentProfile.php?id='. $cm->id .'&sid='. $studentRecord->student_id .'">' . $studentRecord->firstname . ' ' . $studentRecord->lastname . '</a></td>
 			<td style="text-align:right">' . $studentRecord->accumulatedpoints . '</td>
 		  </tr>';
 }

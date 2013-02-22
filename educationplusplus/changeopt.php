@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2013 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -72,7 +72,7 @@ $changeOptTo = 0;
 //echo var_dump($opt);
 
 if (strcmp($opt, "in") == 0 || strcmp($opt, "out") == 0){ //opt in or out
-	$student = $DB->get_record('epp_student',array('course_id'=>$course->id,'student_id'=>$USER->id));
+	$studentRecords = $DB->get_records('epp_student',array('student_id'=>$USER->id));	//for all instances in epp_student
 	if (strcmp($opt, "in") == 0){
 		$changeOptTo = 0;
 	}
@@ -80,19 +80,20 @@ if (strcmp($opt, "in") == 0 || strcmp($opt, "out") == 0){ //opt in or out
 		$changeOptTo = 1;
 	}
 	
-	$record 						= new stdClass();
-	$record->id						= intval($student->id);
-	$record->course_id 				= intval($student->course_id);
-	$record->firstname	 			= $student->firstname;
-	$record->lastname 				= $student->lastname;
-	$record->student_id				= intval($student->student_id);
-	$record->currentpointbalance 	= intval($student->currentpointbalance);
-	$record->accumulatedpoints		= intval($student->accumulatedpoints);
-	$record->leaderboardoptstatus 	= $changeOptTo;
-	
-	// UPDATE PES
-	$DB->update_record('epp_student', $record);
-	
+	foreach ($studentRecords as $studentRecord){
+		$record 						= new stdClass();
+		$record->id						= intval($studentRecord->id);
+		$record->course_id 				= intval($studentRecord->course_id);
+		$record->firstname	 			= $studentRecord->firstname;
+		$record->lastname 				= $studentRecord->lastname;
+		$record->student_id				= intval($studentRecord->student_id);
+		$record->currentpointbalance 	= intval($studentRecord->currentpointbalance);
+		$record->accumulatedpoints		= intval($studentRecord->accumulatedpoints);
+		$record->leaderboardoptstatus 	= $changeOptTo;
+		
+		// UPDATE PES
+		$DB->update_record('epp_student', $record);
+	}
 	if ($changeOptTo == 0){
 		echo $OUTPUT->box('You were successfully opted into the Leaderboard System');
 	}

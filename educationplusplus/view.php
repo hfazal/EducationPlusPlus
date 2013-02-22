@@ -118,7 +118,18 @@ if (!$isProfessor){	//Student
 		$record->student_id 			= intval($USER->id);
 		$record->currentpointbalance 	= 0;
 		$record->accumulatedpoints		= 0;
-		$record->leaderboardoptstatus 	= 0;
+		
+		// Pull all instances of the student in epp_student. If there is no record (in another course), opt them in. If there is, follow that leaderboard opt status 
+		$s = $DB->get_records('epp_student',array('student_id'=>$USER->id));
+		$newOptStatus = 0;
+		if ($s){
+			foreach ($s as $s1){
+				$newOptStatus = $s1->leaderboardoptstatus;
+				break;
+			}
+		}
+		
+		$record->leaderboardoptstatus 	= $newOptStatus;	//See above
 		$idOfPES = $DB->insert_record('epp_student', $record, true);
 	}
 	else {
