@@ -31,6 +31,8 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
+// Education++ Classes
+require 'eppClasses/Notification.php';
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
@@ -138,7 +140,34 @@ if (!$isProfessor){	//Student
 // END OF 3. Scan Gradebook if updated since last scan
 
 // START OF 4. Show Notifications for user
-	//Roberts's Show Uyser Specific Notifications Code	
+	
+	$allNotifications = $DB->get_records('epp_notification',array('course'=>$course->id, 'student_id'=>$USER->id));
+	$arrayOfNewNotificationObjects = array();
+	$arrayOfIDsForNotificationObjects = array();
+
+	// Output starts here
+	if ($allNotifications){
+		foreach ($allNotifications as $notification){
+			//New
+			if ($notification->isread == 0){
+				array_push($arrayOfNewNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
+				array_push($arrayOfIDsForNotificationObjects, $notification->id);
+			}
+		}
+	}
+
+	echo '	<script>
+			function confirmDelete(index){
+				var x;
+				var r = confirm("Are you sure you want to dismiss this notification?");
+				if (r==true){
+					var newNotification = document.getElementById("new"+index);
+					newNotification.setAttribute("style", "color: black; background-color: white");
+				}
+				else{}
+			}
+		</script>';	
+	
 // END OF 4. Show Notifications for user
 
 echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
@@ -202,12 +231,16 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 			<a href="leaderboardOpt.php?id='. $cm->id .'">Opt in or out of the Leaderboard</a><br/>
 			<br/>
 			<h3>Your Notifications</h3>
-			<ul>
-				<li>Notification 1 <em style="color:red">dismiss</em></li>
-				<li>Notification 2 <em style="color:red">dismiss</em></li>
-				<li><a href="viewNotifications.php?id='. $cm->id .'">View Dismissed Notifications</a></li>
-			</ul>
-		</div>';
+			<ul>';
+			if ($arrayOfNewNotificationObjects){
+				for ($i=0; $i < count($arrayOfNewNotificationObjects); $i++){
+					echo '<li title="' . $arrayOfNewNotificationObjects[$i]->content . '">' . $arrayOfNewNotificationObjects[$i]->title . ' <a href="dismissNotification.php?id='. $cm->id .'&notId='. $arrayOfIDsForNotificationObjects[$i] .'" onclick="confirmDelete(' . $i . ')"><em style="color:red">dismiss</em></a></li>';
+				}
+			}
+			else {
+				echo '<li>(no new notifications)</li>';
+			}
+			echo '</ul><a style="font-style:italic;" href="viewNotifications.php?id='. $cm->id .'">View Dismissed Notifications</a></div>';
 	}
 echo '</div>';
 // Finish the page
