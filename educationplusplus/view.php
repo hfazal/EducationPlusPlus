@@ -181,7 +181,7 @@ if (!$isProfessor){	//Student
 	
 // END OF 4. Show Notifications for user
 
-echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
+echo '<div id="eppContainer" style="width:950px;margin:0 auto;">';
 	echo '<div style="float:left; margin-left:30px;margin-right:30px;text-align:center;"><img src="pix/logo.png" alt="education++" />';
 	if (!$isProfessor){	//show help only if student
 		echo '<br/><span style="color:red;font-size:small;cursor:pointer;cursor:hand;" onclick="$(\'#introbox\').show();">help!</span>';
@@ -216,7 +216,7 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 		//echo var_dump($eppStudentRecord);
 		echo '<span style="color:red;font-weight:bold;">';
 		if (!$eppStudentRecord){
-			echo 'Error: No student record was found, check step 2 of page setup';
+			//echo 'Error: No student record was found, check step 2 of page setup';
 		}
 		else{
 			echo $eppStudentRecord->currentpointbalance . ' Points';
@@ -226,7 +226,7 @@ echo '<div id="eppContainer" style="width:900px;margin:0 auto;">';
 		//Options
 		echo '<div style="float:left;margin:30px;">
 			
-			<h2 style="font-size:large">Student</h2>
+			<h2 style="font-size:large">Student <a href="leaderboardStudentProfile.php?id=' . $cm->id . '&sid=' . $USER->id .'">(View Your Profile)</a></h2>
 			<h3>Point Earning Scenerios</h3>
 			<a href="viewAllPES.php?id='. $cm->id .'">View All the Ways you Can Earn Points</a><br/>
 			<br/>
