@@ -21,11 +21,22 @@ Developer Notes
 
   If a change has been made to the database setup (db/install.xml), it wont 
   be put into effect unless you uninstall and reinstall (Your other option
-  is to create a new entry in the update file, which is hard). To uninstall:
+  is to create a new entry in the update file, which is hard).
+
+  Keep in mind if you un/reinstall, you lose all instances of Education++ in
+  all classes. You can get around this by backing up the epp_ tables, or using
+  the update file.
+
+  To uninstall  however, you need a copy of the original database setup 
+  (db/install.xml) on the server. Keep your new one aside and once the 
+  uninstall/reinstall  process is complete, put it back. Once the old
+  install.xml is in place, uninstall by:
 
 1 Go to Settings > Site Administration > Plugins > Plugins overview
 
 2 Select uninstall Education Plus Plus. Confirm. 
 
-3 To reinstall, go to Settings > Site Administration > Notifications and select
-  update the Database (New Schema will be installed along with eduation++
+3 Put the new database setup (db/install.xml) in to place.
+
+3 Now reinstall by going to Settings > Site Administration > Notifications and select
+  update the Database (New Schema will be installed along with Eduation++)
