@@ -99,8 +99,8 @@ if ($isProfessor){
 					$dismiss = true;
 				}
 			}
-			$record->reportDismissed= ($dismiss == true ? 1 : 0);
-			$record->reportNew		= intval($r->reportnew);
+			$record->reportdismissed= ($dismiss == true ? 1 : 0);
+			$record->reportnew		= intval($r->reportnew);
 			
 			// UPDATE PES
 			$DB->update_record($table1, $record);
