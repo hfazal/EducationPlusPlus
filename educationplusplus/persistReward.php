@@ -31,10 +31,9 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
-// Education++ Classes
-
-
-
+require 'eppClasses/Badge.php';
+require 'eppClasses/Reward.php';
+	
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
 
@@ -53,11 +52,10 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'createAnIncentive', "createAnIncentive.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'view', "view.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
-
-$PAGE->set_url('/mod/educationplusplus/createAnIncentive.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
@@ -67,12 +65,66 @@ $PAGE->set_context($context);
 //$PAGE->set_focuscontrol('some-html-id');
 //$PAGE->add_body_class('educationplusplus-'.$somevar);
 
-// Retrieve All Assignments to Display as Options for Requirements
-// Retrieve from DB all Activities
+//Process PES
+$incentiveName = $_POST["incentiveName"];
+$incentiveQty = intval($_POST["incentiveQty"]);
+$incentivePrice = $_POST["incentivePrice"];
+$storevisTrue = $_POST["storevis"];
+$rewardExpiryDate = $_POST["rewardExpiryDate"];
+$rewardDescription = $_POST["rewardDescription"];
+
+if (isset($_FILES["incentiveImg"])) {
+    $incentiveImg = file_get_contents($_FILES["incentiveImg"]["tmp_name"]);
+    $incentiveImg = base64_encode($incentiveImg);
+    $incentiveImg = mysql_real_escape_string($incentiveImg);
+}
+
+//echo $incentiveImg;
+//if ($incentiveType == 'reward')
+
+
+
+
+global $DB;
+
+$allIncentive = $DB->get_records('epp_incentive',array('course_id'=>$course->id));
+$arrayOfIncentiveObjects = array();
+$arrayOfIDsForIncentiveObjects = array();
+
+if ($allIncentive){
+	foreach ($allIncentive as $rowIncentive){
+		array_push($arrayOfIncentiveObjects, new Incentive($rowIncentive->name, intval($rowIncentive->qtyperstudent), $rowIncentive->storevisibility, intval($rowIncentive->priceinpoints), $rowIncentive->icon, $rowIncentive->deletebyprof, $rowIncentive->datecreated));
+		array_push($arrayOfIDsForIncentiveObjects, $rowIncentive->id);
+	}
+}
+
+
+//$newIncentive = new Incentive($incentiveName, $incentiveQty, $storevisTrue, $incentiveType, $incentivePrice, $incentiveImg, false);
+
+//if($incentiveType == "reward"){
+        $record                 = new stdClass();
+        $record->course_id         = intval($course->id);
+        $record->name           = $incentiveName;
+        $record->priceinpoints     = intval($incentivePrice);
+        $record->qtyperstudent    = intval($incentiveQty);
+        $record->storevisibility    = intval($storevisTrue);
+        $record->icon = $incentiveImg;
+        $record->deletebyprof =  0;
+        $datetimeVersionOfDateCreated = new DateTime();
+        $record->datecreated = $datetimeVersionOfDateCreated->format('Y-m-d H:i:s');
+        $idOfIncentive = $DB->insert_record('epp_incentive', $record, true);
+
+        $record_rew = new stdClass(); 
+        $record_rew->incentive_id = intval($idOfIncentive);
+        $record_rew->prize = $rewardDescription;
+        $datetimeVersionOfExpiryDate = new DateTime ($rewardExpiryDate);
+        $record_rew->expirydate     = $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
+        $DB->insert_record('epp_reward', $record_rew, false);
+
+//}
 
 // Output starts here
 echo $OUTPUT->header();
-$constructedSelectOptions = "";
 
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
@@ -80,13 +132,13 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 
 // Replace the following lines with you own code
 echo $OUTPUT->heading('Education++');
+    
 
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="createAReward.php?id='. $cm->id .'">Create a Reward</a></div>');
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="createABasge.php?id='. $cm->id .'">Create a Badge</a></div>');
 
 echo "<br/>";
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="viewAllPES.php?id='. $cm->id .'">Return to the Education++: Manage Scenarios Page (Cancel Creation of this Scenario)</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();
 
+?>
