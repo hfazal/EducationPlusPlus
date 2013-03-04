@@ -167,9 +167,9 @@
 		<FIELD NAME="incentive_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Holds the incentive id (class doesnt matter, id is unique ref to epp_incentive where you can retrieve class)" PREVIOUS="id" NEXT="student_id"/>
         <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Holds the student id for the student who has purchased" PREVIOUS="incentive_id"  NEXT="datepurchased" />
 		<FIELD NAME="datepurchased" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="Date student purchased the reward" PREVIOUS="student_id" NEXT="priceofpurchase" />
-		<FIELD NAME="priceofpurchase" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="datepurchased" NEXT="reportDismissed" />
-		<FIELD NAME="reportDismissed" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="priceofpurchase" NEXT="reportNew" />
-		<FIELD NAME="reportNew" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="reportDismissed"  />
+		<FIELD NAME="priceofpurchase" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="datepurchased" NEXT="reportdismissed" />
+		<FIELD NAME="reportdismissed" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="priceofpurchase" NEXT="reportnew" />
+		<FIELD NAME="reportnew" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" PREVIOUS="reportdismissed"  />
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
