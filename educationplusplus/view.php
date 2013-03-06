@@ -196,6 +196,7 @@ echo '<div id="eppContainer" style="width:950px;margin:0 auto;">';
 			<br/>
 			<h3>Reward Tools</h3>
 			<a href="viewAllIncentives.php?id='. $cm->id .'">Manage Rewards in which Students can Spend Points on</a><br/>
+			<a href="storeFront.php?id='. $cm->id .'">View the Store that Students can Purchase Rewards in</a><br/>
 			<br/>
 			<h3>Reporting</h3>
 			<a href="transactionHistory.php?id='. $cm->id .'">View A Student\'s Transactions</a><br/>

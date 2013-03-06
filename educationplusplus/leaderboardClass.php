@@ -86,6 +86,7 @@ echo '	<script src="sorttable.js"></script>
 		<thead>
 			<tr style="border-bottom:thin solid black;">
 				<td style="cursor:pointer;cursor:hand;">Ranking</td>
+				<td></td>
 				<td style="cursor:pointer;cursor:hand;">Name (Click a Name to View all Badges)</td>
 				<td style="cursor:pointer;cursor:hand;">Total Points Accumulated</td>
 			</tr>
@@ -94,6 +95,10 @@ echo '	<script src="sorttable.js"></script>
 
 $ranking = 0;
 foreach ($students as $studentRecord){
+	$stuObj = new stdClass();
+	$stuObj->id = $studentRecord->student_id;
+	$stuObj->courseid = $course->id;
+
 	$ranking++;
 	if ($USER->id == $studentRecord->student_id){
 		echo '<tr style="background-color:#BCED91;border-bottom:thin solid black;">';
@@ -102,6 +107,7 @@ foreach ($students as $studentRecord){
 		echo '<tr style="border-bottom:thin solid black;">';
 	}
 	echo '  <td style="font-weight:bold;text-align:center;min-width:200px;">' . $ranking . '</td>
+			<td style="min-width:50px">'. $OUTPUT->user_picture($stuObj, array('size'=>50)) . '</td>
 			<td style="font-weight:bold;min-width:300px;"><a href="leaderboardStudentProfile.php?id='. $cm->id .'&sid='. $studentRecord->student_id .'">' . $studentRecord->firstname . ' ' . $studentRecord->lastname . '</a></td>
 			<td style="text-align:right">' . $studentRecord->accumulatedpoints . '</td>
 		  </tr>';
