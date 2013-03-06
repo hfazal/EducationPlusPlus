@@ -99,10 +99,10 @@ if ($assign) {
     foreach ($pes as $pointearningscenaio){
         $req = $DB->get_records($table_req,array('pointearningscenario'=>$pointearningscenaio->id));
         $numberOfReq = count($req);
-        $awardStatus = 0;
         foreach ($students as $student){
+			$awardStatus = 0;
             $result = $DB->get_records($table_assign_grade,array('userid'=>$student->student_id));
-            if($DB->count_records('epp_student_pes',array('student_id'=>$student->id , 'pes_id'=>$pointearningscenaio->id)) == 0){
+            if($DB->count_records('epp_student_pes',array('student_id'=>$student->student_id , 'pes_id'=>$pointearningscenaio->id)) == 0){
                 foreach ($result as $row){
                     //$student_es = $DB->get_record('epp_student_pes',array('student_id'=>$row->userid));
                         foreach ($req as $requirement){
@@ -134,12 +134,6 @@ if ($assign) {
                                 }
                             }
                         }
-
-                         //Award here
-                        //echo "$awardStatus + $row->userid + $requirement->pointearningscenario + Assignemnt: $row->assignment Grade:$row->grade ";
-                       // echo "<br/>";
-
-
                 }
                         if ($awardStatus == $numberOfReq){
                          //   echo "HELLO";
@@ -159,30 +153,21 @@ if ($assign) {
                             //$student->accumulatedpoints += $pointearningscenaio->pointvalue;
 
                             $record = new stdClass();
-                            $record->student_id   = intval($student->id);
+                            $record->student_id   = intval($student->student_id);
                             $record->pes_id       = intval($pointearningscenaio->id);
-                            $DB->insert_record('epp_student_pes', $record, false);
-
-                        }
-                            echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
-
-                            ');
-
+							$dateTimeCurrent = new DateTime();
+							$record->dateearned   = $dateTimeCurrent->format('Y-m-d H:i:s');
+							$record->pointsearned = intval($pointearningscenaio->pointvalue);
+							$DB->insert_record('epp_student_pes', $record, false);
+							echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>');
                             echo $OUTPUT->box_start();
                             echo '<div style="width:50%; margin:0 auto;">' .$student->firstname  .' ' . $student->lastname . ' has been awarded: '.$pointearningscenaio->pointvalue . ' Points </div>';
                             echo $OUTPUT->box_end();
+                        }
             }
         }   
     }
 }
-        //echo var_dump($row);
-        //array_push($arrayOfAssignNames, $row->name);
-        //array_push($arrayOfAssignIDs, $row->id);
-    
-
-
-
-
 
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
 // Finish the page

@@ -152,6 +152,7 @@ echo '<br/><br/><h2 style="margin:0 auto; text-align:center;">Viewing Transactio
 		if ($allIncentives){
 			$epp_student_redeemed_rewards = $DB->get_records_select($table,$select);
 			$epp_student_redeemed_badges = $DB->get_records_select($table2,$select);
+			//echo var_dump($select);
 		}
 		else {
 			$epp_student_redeemed_rewards = null;
@@ -169,6 +170,7 @@ echo '<br/><br/><h2 style="margin:0 auto; text-align:center;">Viewing Transactio
 		$select3 = $select3 . ")";
 		if ($allPES){
 			$epp_student_earned_pes= $DB->get_records_select($table3,$select3);
+			//echo var_dump($select3);
 		}
 		else {
 			$epp_student_earned_pes= null;
@@ -198,9 +200,11 @@ echo '<br/><br/><h2 style="margin:0 auto; text-align:center;">Viewing Transactio
 		foreach ($epp_student_earned_pes as $pesTransaction){
 			$theName = "";
 			foreach($allPES as $p){
-				if ($p->id == $pesTransaction->id){
+				if ($p->id == $pesTransaction->pes_id){
 					$theName = $p->name;
 				}
+				//echo var_dump($p);
+				//echo var_dump($pesTransaction);
 			}
 			array_push($giantArrayOfTransactions, new PESTransaction($pesTransaction->id, $theName, $pesTransaction->pointsearned, new DateTime($pesTransaction->dateearned)));
 		}
