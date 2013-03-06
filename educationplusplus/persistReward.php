@@ -76,7 +76,6 @@ $rewardDescription = $_POST["rewardDescription"];
 if (isset($_FILES["incentiveImg"])) {
     $incentiveImg = file_get_contents($_FILES["incentiveImg"]["tmp_name"]);
     $incentiveImg = base64_encode($incentiveImg);
-    $incentiveImg = mysql_real_escape_string($incentiveImg);
 }
 
 //echo $incentiveImg;
