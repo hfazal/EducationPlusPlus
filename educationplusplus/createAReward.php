@@ -136,7 +136,7 @@ addRequirements();
 </script>
 
 <div id="form" style="width:400px;height:600px;overflow:auto;">
-	<form id="pesform" name="pesform" method="post"  enctype="multipart/form-data" onsubmit="return validate()" action="persistIncentive.php?id='. $cm->id .'" name="pes-creator" id="pes-creator" style="padding-left:10px;padding-right:10px;">
+	<form id="pesform" name="pesform" method="post"  enctype="multipart/form-data" onsubmit="return validate()" action="persistReward.php?id='. $cm->id .'" name="pes-creator" id="pes-creator" style="padding-left:10px;padding-right:10px;">
 		<h3>Incentive</h3>
 		<table>
 			<tr>
