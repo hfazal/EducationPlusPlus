@@ -218,8 +218,8 @@ if ($iid){
 			}
 			else{
 				//Add Reporting Columns
-				$student_record->reportDismissed	= 0;
-				$student_record->reportNew			= 1;
+				$student_record->reportdismissed	= 0;
+				$student_record->reportnew			= 1;
 				
 				// Deduct Points
 				$eppStudentRecord->currentpointbalance = $eppStudentRecord->currentpointbalance - $cost;
