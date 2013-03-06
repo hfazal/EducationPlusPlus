@@ -95,9 +95,14 @@ foreach($allIncentives as $courseIncentive){
 }
 $select = substr($select, 0, -4);
 $select = $select . ")";
-$epp_student_redeemed_rewards = $DB->get_records_select($table,$select);
-$epp_student_redeemed_badges = $DB->get_records_select($table2,$select);
-
+if($allIncentives){
+	$epp_student_redeemed_rewards = $DB->get_records_select($table,$select);
+	$epp_student_redeemed_badges = $DB->get_records_select($table2,$select);
+}
+else{
+	$epp_student_redeemed_rewards = null;
+	$epp_student_redeemed_badges = null;
+}
 //echo var_dump($epp_student_redeemed_rewards);
 
 // Output starts here
@@ -259,8 +264,10 @@ $allIncentives = $DB->get_records('epp_incentive',array('course_id'=>$course->id
 // Display Store Inventory
 if ($allIncentives){
 	echo '<span style="color:red;font-weight:bold;">';
+	$disableBuy = false;
 	if (!$eppStudentRecord){
-		echo 'Error: No student record was found, check step 2 of page setup';
+		echo 'You are not a student, so you will not be able to buy anything';
+		$disableBuy = true;
 	}
 	else{
 		echo $eppStudentRecord->currentpointbalance . ' is your Point Balance';
@@ -318,9 +325,11 @@ if ($allIncentives){
 			else{
 				echo '<div class="reward">' . $currentReward . 'Quantity: ' . $remainingQty .  '/' . $allowed .
 				'<form action="storefront.php?id=' . $cm->id . '" method="post">' .
-				'<input type="hidden" name="buy" id="buy" value="' . $rewardChecker->incentive_id . '">' .
-				'<input style="float:right;border:none;" type="submit" name="purchase" id="purchase" value="Buy" />' . 
-				'</form></div>';
+				'<input type="hidden" name="buy" id="buy" value="' . $rewardChecker->incentive_id . '">';
+				if (!$disableBuy){
+					echo '<input style="float:right;border:none;" type="submit" name="purchase" id="purchase" value="Buy" />';
+				} 
+				echo '</form></div>';
 			}
 			echo '<br/>';
 		}

@@ -148,8 +148,15 @@ echo '<br/><br/><h2 style="margin:0 auto; text-align:center;">Viewing Transactio
 		}
 		$select = substr($select, 0, -4);
 		$select = $select . ")";
-		$epp_student_redeemed_rewards = $DB->get_records_select($table,$select);
-		$epp_student_redeemed_badges = $DB->get_records_select($table2,$select);
+		
+		if ($allIncentives){
+			$epp_student_redeemed_rewards = $DB->get_records_select($table,$select);
+			$epp_student_redeemed_badges = $DB->get_records_select($table2,$select);
+		}
+		else {
+			$epp_student_redeemed_rewards = null;
+			$epp_student_redeemed_badges = null;
+		}
 
 	// Part 1b: Point Earning Scenarios
 		$allPES = $DB->get_records('epp_pointearningscenario',array('course'=>$course->id));
@@ -160,7 +167,12 @@ echo '<br/><br/><h2 style="margin:0 auto; text-align:center;">Viewing Transactio
 		}
 		$select3 = substr($select3, 0, -4);
 		$select3 = $select3 . ")";
-		$epp_student_earned_pes= $DB->get_records_select($table3,$select3);
+		if ($allPES){
+			$epp_student_earned_pes= $DB->get_records_select($table3,$select3);
+		}
+		else {
+			$epp_student_earned_pes= null;
+		}
 
 	// Part 2: Make a Transaction object for all reward purchases, badge purchases and PES earnings then throw them in a giant array
 		$giantArrayOfTransactions = array();
