@@ -91,7 +91,7 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 // Replace the following lines with you own code
 echo $OUTPUT->heading('Education++');
 
-echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
 <script>
 counter = 0;
 function addRequirements(){
@@ -143,9 +143,10 @@ function validate(){
 	return pass;
 }
 addRequirements();
-</script>
+</script>';
 
-<div id="form" style="width:400px;height:600px;overflow:auto;">
+if ($constructedSelectOptions != ''){
+echo $OUTPUT->box('<div id="form" style="width:400px;height:600px;overflow:auto;">
 	<form id="pesform" name="pesform" method="post" onsubmit="return validate()" action="persistPES.php?id='. $cm->id .'" name="pes-creator" id="pes-creator" style="padding-left:10px;padding-right:10px;">
 		<h3>Point Earning Scenario</h3>
 		<table>
@@ -177,6 +178,10 @@ addRequirements();
 		<input name="Submit" type="submit" style="float:right; display:block; border:1px solid #000000; height:20px; padding-left:2px; padding-right:2px; padding-top:0px; padding-bottom:2px; line-height:14px; background-color:#EFEFEF;" value="Create New Point Earning Scenario"/>
 	</form>
 </div>');
+}
+else{
+	echo $OUTPUT->box("No Assignments were found to make Scenarios out of");
+}
 
 echo "<br/>";
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="viewAllPES.php?id='. $cm->id .'">Return to the Education++: Manage Scenarios Page (Cancel Creation of this Scenario)</a></div>');

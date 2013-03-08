@@ -179,36 +179,42 @@ echo '<br/><br/><h2 style="margin:0 auto; text-align:center;">Viewing Transactio
 	// Part 2: Make a Transaction object for all reward purchases, badge purchases and PES earnings then throw them in a giant array
 		$giantArrayOfTransactions = array();
 		//contstuctor( $id, $name, $pointsInvolved, $dateOfTransaction )
-		foreach ($epp_student_redeemed_rewards as $rewardTransaction){
-			$theName = "";
-			foreach($allIncentives as $i){
-				if ($i->id == $rewardTransaction->incentive_id){
-					$theName = $i->name;
+
+		if ($epp_student_redeemed_rewards != null){
+			foreach ($epp_student_redeemed_rewards as $rewardTransaction){
+				$theName = "";
+				foreach($allIncentives as $i){
+					if ($i->id == $rewardTransaction->incentive_id){
+						$theName = $i->name;
+					}
 				}
+				array_push($giantArrayOfTransactions, new RewardTransaction($rewardTransaction->id, $theName, $rewardTransaction->priceofpurchase, new DateTime($rewardTransaction->datepurchased), null, null));
 			}
-			array_push($giantArrayOfTransactions, new RewardTransaction($rewardTransaction->id, $theName, $rewardTransaction->priceofpurchase, new DateTime($rewardTransaction->datepurchased), null, null));
 		}
-		foreach ($epp_student_redeemed_badges as $badgeTransaction){
-			$theName = "";
-			foreach($allIncentives as $i){
-				if ($i->id == $badgeTransaction->incentive_id){
-					$theName = $i->name;
+		if ($epp_student_redeemed_badges != null){
+			foreach ($epp_student_redeemed_badges as $badgeTransaction){
+				$theName = "";
+				foreach($allIncentives as $i){
+					if ($i->id == $badgeTransaction->incentive_id){
+						$theName = $i->name;
+					}
 				}
+				array_push($giantArrayOfTransactions, new BadgeTransaction($badgeTransaction->id, $theName, $badgeTransaction->priceofpurchase, new DateTime($badgeTransaction->datepurchased)));
 			}
-			array_push($giantArrayOfTransactions, new BadgeTransaction($badgeTransaction->id, $theName, $badgeTransaction->priceofpurchase, new DateTime($badgeTransaction->datepurchased)));
 		}
-		foreach ($epp_student_earned_pes as $pesTransaction){
-			$theName = "";
-			foreach($allPES as $p){
-				if ($p->id == $pesTransaction->pes_id){
-					$theName = $p->name;
+		if ($epp_student_earned_pes != null){
+			foreach ($epp_student_earned_pes as $pesTransaction){
+				$theName = "";
+				foreach($allPES as $p){
+					if ($p->id == $pesTransaction->pes_id){
+						$theName = $p->name;
+					}
+					//echo var_dump($p);
+					//echo var_dump($pesTransaction);
 				}
-				//echo var_dump($p);
-				//echo var_dump($pesTransaction);
+				array_push($giantArrayOfTransactions, new PESTransaction($pesTransaction->id, $theName, $pesTransaction->pointsearned, new DateTime($pesTransaction->dateearned)));
 			}
-			array_push($giantArrayOfTransactions, new PESTransaction($pesTransaction->id, $theName, $pesTransaction->pointsearned, new DateTime($pesTransaction->dateearned)));
 		}
-	
 	// Part 3: CSS to Organize Table
 	echo   "<style>
 				table, tr, td{
