@@ -33,6 +33,8 @@ require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 // Education++ Classes
 require 'eppClasses/Notification.php';
+// Gradebook Parser
+require_once('gradebookparser.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
@@ -147,7 +149,9 @@ if (!$isProfessor){	//Student
 // END OF 2. If not a professor, determine if first usage (no entry in epp_student). If so, make an entry, tell them about opting out.
 
 // START OF 3. Scan Gradebook if updated since last scan
-	//Preshoth's Scan Gradebook code
+	
+	swerve($DB, $course);
+
 // END OF 3. Scan Gradebook if updated since last scan
 
 // START OF 4. Show Notifications for user
@@ -192,7 +196,6 @@ echo '<div id="eppContainer" style="width:950px;margin:0 auto;">';
 			<h2 style="font-size:large">Administrator</h2>
 			<h3>Point Earning Scenerio Tools</h3>
 			<a href="viewAllPES.php?id='. $cm->id .'">Manage Scenarios in which Students can Earn Points</a><br/>
-			<s><a href="gradebookparser.php?id='. $cm->id .'">Scan Gradebook to detect Met Scenarios (Will auto trigger)</a></s><br/>
 			<br/>
 			<h3>Reward Tools</h3>
 			<a href="viewAllIncentives.php?id='. $cm->id .'">Manage Rewards in which Students can Spend Points on</a><br/>
@@ -204,7 +207,6 @@ echo '<div id="eppContainer" style="width:950px;margin:0 auto;">';
 			<br/>
 			<h3>Notifications</h3>
 			<a href="createANotification.php?id='. $cm->id .'">Create a New Notification for all Users in this Class</a><br/>
-			<a href="viewNotifications.php?id='. $cm->id .'">View all Notifications Sent Out</a><br/>
 			<br/>
 			<h3>View the Leaderboard</h3>
 			<a href="leaderboardClass.php?id='. $cm->id .'">View the Class Leaderboard</a><br/>
@@ -252,7 +254,7 @@ echo '<div id="eppContainer" style="width:950px;margin:0 auto;">';
 			else {
 				echo '<li>(no new notifications)</li>';
 			}
-			echo '</ul><a style="font-style:italic;" href="viewNotifications.php?id='. $cm->id .'">View Dismissed Notifications</a></div>';
+			echo '</ul><a style="font-style:italic;" href="viewNotifications.php?id='. $cm->id .'">View All Notifications</a></div>';
 	}
 echo '</div>';
 // Finish the page

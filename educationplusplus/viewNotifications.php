@@ -77,17 +77,22 @@ $arrayOfIDsForNotificationObjects = array();
 
 // Output starts here
 echo $OUTPUT->header();
-if ($allNotifications)
-{
-	foreach ($allNotifications as $notification)
-	{
-		if ($notification->isread == 0)
-		{
-			array_push($arrayOfNewNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
-			array_push($arrayOfIDsForNotificationObjects, $notification->id);
+if ($allNotifications){
+	foreach ($allNotifications as $notification){
+		$expirydate = new DateTime($notification->expirydate);	//YYYY-MM-DD HH:MM:SS
+		$current = new DateTime();
+		if ($current > $expirydate){
+			$DB->delete_records('epp_notification', array('id'=>$notification->id));
 		}
-		else
-		array_push($arrayOfOldNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
+		else{
+			if ($notification->isread == 0){
+				array_push($arrayOfNewNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
+				array_push($arrayOfIDsForNotificationObjects, $notification->id);
+			}
+			else{
+				array_push($arrayOfOldNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
+			}
+		}
 	}
 }
 

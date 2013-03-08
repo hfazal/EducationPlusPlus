@@ -84,20 +84,14 @@ echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jqu
 
 function validate(){
 	var title       = document.forms["notificationForm"]["notificationTitle"].value;
-	var expirydate  = document.forms["notificationForm"]["notificationExpiryDate"].value;
 	var description = document.forms["notificationForm"]["notificationContent"].value;
 	var pass 		= true;
 	
 	$("#titleReq").css("display", "none");
-	$("#expReq").css("display", "none");
 	$("#contentReq").css("display", "none");
 	
 	if (title==null || title==""){
 		$("#titleReq").css("display", "inline");
-		pass = false;
-	}
-	if (expirydate==null || expirydate==""){
-		$("#expReq").css("display", "inline");
 		pass = false;
 	}
 	if (description==null || description==""){
@@ -117,10 +111,10 @@ function validate(){
 				<td style="width:100px">Title</td>
 				<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="notificationTitle" name="notificationTitle"><br/><span id="titleReq" style="color:red;display:none;">You Must Specify the Title of the Notification</span></td>
 			</tr>
-			<tr>
+			<!--<tr>
 				<td>Expiry Date</td>
 				<td><input type="date" class="required" style="margin-right:10px;width:200px;" id="notificationExpiryDate" name="notificationExpiryDate"><br/><span id="expReq" style="color:red;display:none;">You Must Specify an Expiry Date</span></td>
-			</tr>
+			</tr>-->
 			<tr>
 				<td style="vertical-align:top;">Content</td>
 				<td><textarea class="required" name="notificationContent" id="notificationContent" style="margin-right:10px;width:200px;" style></textarea><br/><span id="contentReq" style="color:red;display:none;">You Must Specify a Description</span></td>

@@ -67,7 +67,8 @@ $PAGE->set_context($context);
 //Process Notification
 $notificationTitle = $_POST["notificationTitle"];
 $notificationContent = $_POST["notificationContent"];
-$notificationExpiryDate = $_POST["notificationExpiryDate"];
+$notificationExpiryDate = new DateTime();
+$notificationExpiryDate->add(new DateInterval('P90D'));
 
 global $DB;
 
@@ -75,7 +76,7 @@ $enrolment = $DB->get_record('enrol',array('courseid'=>$course->id, 'status'=>0)
 $userIds = $DB->get_records('user_enrolments',array('enrolid'=>$enrolment->id));
 
 /* CREATE NOTIFICATION OBJECT */
-$newNotification = new Notification(0, $notificationTitle, $notificationContent, 1, new DateTime($notificationExpiryDate));
+$newNotification = new Notification(0, $notificationTitle, $notificationContent, 1, $notificationExpiryDate);
 
 foreach ($userIds as $user)
 {
@@ -88,8 +89,7 @@ foreach ($userIds as $user)
 		$record->title		 	= $notificationTitle;
 		$record->content	 	= $notificationContent;
 		$record->isread 			= 0;
-		$datetimeVersionOfExpiryDate = new DateTime ($notificationExpiryDate);
-		$record->expirydate 	= $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
+		$record->expirydate 	= $notificationExpiryDate->format('Y-m-d H:i:s');
 		$id = $DB->insert_record('epp_notification', $record, true);
 	}
 }
