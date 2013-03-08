@@ -297,9 +297,12 @@ if ($allIncentives){
 			}
 			else{
 				echo '<div class="badge">' . $currentBadge . '<span style="color:green;font-weight:bold;">AVAILABLE</span>' .
-				'<form action="storefront.php?id=' . $cm->id . '" method="post">' .
-				'<input style="float:right;border:none;" type="submit" image="pix/buy.png" name="buy" id="buy" value="' . $badgeChecker->incentive_id . '" />' . 
-				'</form></div>';
+				'<form action="storefront.php?id=' . $cm->id . '" method="post">' . 
+				'<input type="hidden" name="buy" id="buy" value="' . $badgeChecker->incentive_id . '" />';
+				if (!$disableBuy){
+					echo '<input style="float:right;border:none;" type="submit" name="purchase" id="purchase" value="Buy" />';
+				} 
+				echo '</form></div>';
 			}
 			echo '<br/>';
 			
@@ -325,7 +328,7 @@ if ($allIncentives){
 			else{
 				echo '<div class="reward">' . $currentReward . 'Quantity: ' . $remainingQty .  '/' . $allowed .
 				'<form action="storefront.php?id=' . $cm->id . '" method="post">' .
-				'<input type="hidden" name="buy" id="buy" value="' . $rewardChecker->incentive_id . '">';
+				'<input type="hidden" name="buy" id="buy" value="' . $rewardChecker->incentive_id . '" />';
 				if (!$disableBuy){
 					echo '<input style="float:right;border:none;" type="submit" name="purchase" id="purchase" value="Buy" />';
 				} 
