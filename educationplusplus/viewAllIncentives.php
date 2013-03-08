@@ -32,9 +32,9 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 // Education++ Classes
-require 'eppClasses/PointEarningScenario.php';
-require 'eppClasses/Requirement.php';
-require 'eppClasses/Activity.php';
+require 'eppClasses/Incentive.php';
+require 'eppClasses/Reward.php';
+require 'eppClasses/Badge.php';
 
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
@@ -81,10 +81,34 @@ if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
 // Retrieve from DB all PES
 global $DB;
 $allIncentives = $DB->get_records('epp_incentive',array('course_id'=>$course->id));
+$arrayOfIDsForIncentiveObjects = array();
+$arrayOfReward = array();
+$arrayOfBadge = array();
 
 // Output starts here
 echo $OUTPUT->header();
 
+if($allIncentives){
+	foreach ($allIncentives as $rowIncentive){
+		$allRewards = $DB->get_record('epp_reward',array('incentive_id'=>$rowIncentive->id));
+		$allBadges = $DB->get_record('epp_badge',array('incentive_id'=>$rowIncentive->id));
+		if ($allRewards){
+			foreach($allRewards as $rowReward){
+				array_push($arrayOfReward, new Reward($rowIncentive->name, intval($rowIncentive->qtyperstudent), intval($rowIncentive->storevisibility), intval($rowIncentive->priceinpoints), $rowIncentive->icon, intval($rowIncentive->deletebyprof), new DateTime($rowIncentive->datecreated), $allRewards->prize, new DateTime($allRewards->expirydate)  ));
+				array_push($arrayOfIDsForIncentiveObjects, $rowIncentive->id);
+				break;
+			}
+		}
+		if($allBadges){
+			foreach($allBadges as $rowBadge){
+				array_push($arrayOfBadge, new Badge($rowIncentive->name, intval($rowIncentive->qtyperstudent), intval($rowIncentive->storevisibility), intval($rowIncentive->priceinpoints), $rowIncentive->icon, intval($rowIncentive->deletebyprof), new DateTime($rowIncentive->datecreated)));	
+				array_push($arrayOfIDsForIncentiveObjects, $rowIncentive->id);
+				break;
+			}
+		}
+	}
+	
+}
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
@@ -109,31 +133,55 @@ echo "	<style>
 	";
 
 echo '	<script>
-			function confirmDelete(pes){
+			function confirmDeleteReward(pes){
 				var x;
 				var r = confirm("Are you sure you want to delete this Scenario? Students will no longer be able to earn points this way.");
 				if (r==true){
-					pes = "deletePES.php?id=' . $cm->id .'&pes=" + pes;
+					pes = "deleteReward.php?id=' . $cm->id .'&reward=" + pes;
 					window.location = pes;
 				}
 				else{}
 			}
 		</script>';
-	
+
+echo '	<script>
+			function confirmDeleteBadge(pes){
+				var x;
+				var r = confirm("Are you sure you want to delete this Scenario? Students will no longer be able to earn points this way.");
+				if (r==true){
+					pes = "deleteBadge.php?id=' . $cm->id .'&badge=" + pes;
+					window.location = pes;
+				}
+				else{}
+			}
+		</script>';
 
 if($isProfessor){
 	// Create only displayed to professor (not student)
 	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="createAnIncentive.php?id='. $cm->id .'">Create a new incentive</a></div>');
 	echo "<br/>";
 }
-/*if ($arrayOfPESObjects){
-	for ($i=0; $i < count($arrayOfPESObjects); $i++){
+if ($arrayOfReward){
+	for ($i=0; $i < count($arrayOfReward); $i++){
 		echo $OUTPUT->box_start();
 		if($isProfessor){
 			// Edit/Delete only displayed to professor (not student)
-			echo '<div style="float:right"><a href="editPES.php?id=' . $cm->id .'&pes=' . $arrayOfIDsForPESObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDelete(' . $arrayOfIDsForPESObjects[$i] . ')">delete</a></div>';
+			echo '<div style="float:right"><a href="editReward.php?id=' . $cm->id .'&reward=' . $arrayOfIDsForIncentiveObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteReward(' . $arrayOfIDsForIncentiveObjects[$i] . ')">delete</a></div>';
 		}
-		echo $arrayOfPESObjects[$i];
+		echo $arrayOfReward[$i];
+		echo $OUTPUT->box_end();
+		echo "<br/>";
+	}
+}
+
+if ($arrayOfBadge){
+	for ($i=0; $i < count($arrayOfBadge); $i++){
+		echo $OUTPUT->box_start();
+		if($isProfessor){
+			// Edit/Delete only displayed to professor (not student)
+			echo '<div style="float:right"><a href="editBadge.php?id=' . $cm->id .'&badge=' . $arrayOfIDsForIncentiveObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteBadge(' . $arrayOfIDsForIncentiveObjects[$i] . ')">delete</a></div>';
+		}
+		echo $arrayOfBadge[$i];
 		echo $OUTPUT->box_end();
 		echo "<br/>";
 	}
@@ -141,7 +189,7 @@ if($isProfessor){
 else{
 	echo $OUTPUT->box('<div style="width:100%;text-align:center;">no scenarios to earn points were found.</div>');
 	echo "<br/>";
-}*/
+}
 
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
 
