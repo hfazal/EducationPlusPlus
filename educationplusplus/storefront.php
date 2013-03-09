@@ -273,6 +273,8 @@ if ($allIncentives){
 		echo $eppStudentRecord->currentpointbalance . ' is your Point Balance';
 	}
 	echo '</span>';
+	
+	echo '<div id="storewrapper" style="height:500px;width:900px;overflow:auto;margin:0 auto;">';
 	foreach ($allIncentives as $rowIncentive){
 		$badgeChecker = $DB->get_record('epp_badge',array('incentive_id'=>$rowIncentive->id));
 		$rewardChecker = $DB->get_record('epp_reward',array('incentive_id'=>$rowIncentive->id));
@@ -292,20 +294,8 @@ if ($allIncentives){
 			$allowed = 1;
 			$remainingQty = $allowed - $counter;
 			
-			if ($remainingQty == 0) {
-				echo '<div class="badge">' . $currentBadge . '<span style="color:green;font-weight:bold;">ALREADY PURCHASED</span></div>';
-			}
-			else{
-				echo '<div class="badge">' . $currentBadge . '<span style="color:green;font-weight:bold;">AVAILABLE</span>' .
-				'<form action="storefront.php?id=' . $cm->id . '" method="post">' . 
-				'<input type="hidden" name="buy" id="buy" value="' . $badgeChecker->incentive_id . '" />';
-				if (!$disableBuy){
-					echo '<input style="float:right;border:none;" type="submit" name="purchase" id="purchase" value="Buy" />';
-				} 
-				echo '</form></div>';
-			}
-			echo '<br/>';
-			
+			echo $currentBadge->getPurchaseTile($remainingQty, $cm->id, $badgeChecker->incentive_id, $disableBuy);
+			//<input style="float:right;border:none;" type="submit" name="purchase" id="purchase" value="Buy" />
 		}
 		else{ //$rewardChecker
 			$currentReward = new Reward($rowIncentive->name, intval($rowIncentive->qtyperstudent), intval($rowIncentive->storevisibility), intval($rowIncentive->priceinpoints), $rowIncentive->icon, intval($rowIncentive->deletebyprof), new DateTime($rowIncentive->datecreated), $rewardChecker->prize,  new DateTime($rewardChecker->expirydate));
@@ -322,21 +312,11 @@ if ($allIncentives){
 			$allowed = $currentReward->quantityAllowedPerStudent();
 			$remainingQty = $allowed - $counter;
 			
-			if ($remainingQty == 0) {
-				echo '<div class="reward">' . $currentReward . '<span style="color:red">SOLD OUT</span></div>';
-			}
-			else{
-				echo '<div class="reward">' . $currentReward . 'Quantity: ' . $remainingQty .  '/' . $allowed .
-				'<form action="storefront.php?id=' . $cm->id . '" method="post">' .
-				'<input type="hidden" name="buy" id="buy" value="' . $rewardChecker->incentive_id . '" />';
-				if (!$disableBuy){
-					echo '<input style="float:right;border:none;" type="submit" name="purchase" id="purchase" value="Buy" />';
-				} 
-				echo '</form></div>';
-			}
-			echo '<br/>';
+			echo $currentReward->getPurchaseTile($remainingQty, $cm->id, $rewardChecker->incentive_id, $disableBuy);
+			//<input style="float:right;border:none;" type="submit" name="purchase" id="purchase" value="Buy" />
 		}
 	}
+	echo '</div>';
 }
 else{
 	echo $OUTPUT->box('<div style="width:100%;text-align:center;">no incentives to display.</div>');
