@@ -119,10 +119,10 @@
 													<table style='width:100%;margin-right:10px;'>
 														<tr>";
 				if (!$disableBuy){								
-					$stringToReturn = $stringToReturn . "<td id='buybutton' style='width:33%;border-right:thin solid #999999;font-size:x-small;background-color:#98fb98;text-align:center;'>Buy</td>";
+					$stringToReturn = $stringToReturn . "<td id='buybutton' style='border-left:thin solid #999999;width:33%;border-right:thin solid #999999;font-size:x-small;background-color:#98fb98;text-align:center;'><input style='float:right;border:none;width:100%;height:100%;background-color:#98fb98' type='submit' name='purchase' id='purchase' value='Buy' /></td>";
 				}
 				else{
-					$stringToReturn = $stringToReturn . "<td id='buybutton' style='width:33%;border-right:thin solid #999999;font-size:x-small;background-color:#98fb98;text-align:center;'>Buy Disabled</td>";
+					$stringToReturn = $stringToReturn . "<td id='buybutton' style='border-left:thin solid #999999;width:33%;border-right:thin solid #999999;font-size:x-small;background-color:#98fb98;text-align:center;'>Buy Disabled</td>";
 				}
 				
 				$stringToReturn = $stringToReturn .        "<td style='width:33%;border-right:thin solid #999999;font-size:x-small;'>Qty: " . $remainingQty . "/" . parent::__get("qtyPerStudent") . "</td>

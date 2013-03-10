@@ -111,8 +111,6 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
 
-echo $OUTPUT->heading('Education++: Store Front');
-
 echo "	<style>
 			.badge 				{ border: thin red solid; width:400px; }
 			.badgeName			{ font-weight:bold; }
@@ -261,20 +259,34 @@ if ($iid){
 
 // Repull all incentives, but this time ignore deleted and hidden incentives
 $allIncentives = $DB->get_records('epp_incentive',array('course_id'=>$course->id, 'deletebyprof'=>0, 'storevisibility'=>1));
+
+$disableBuy = false;
+$points = "";
+if (!$eppStudentRecord){
+	$points = 'You are not a student, so you will not be able to buy anything';
+	$disableBuy = true;
+}
+else{
+	$points = 'You have ' . $eppStudentRecord->currentpointbalance . ' points you can spend!<br/>Note: You can only spend points you earned in this Course';
+}
+// Display Store Intro
+echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+		<br/>
+		<h1>Welcome to the <span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Store!</h1>
+		<p style="color:red;font-weight:bold">' . $points . '</p>
+		<p>Once you\'ve earned enough points, you can buy items the professor has made available to you below!</p>
+		<p>There are two types of Items that you can purchase: Badges and Rewards</p>
+		<p>With Badges, you can start cementing your school Legacy by accumultaing these badges and adding them up on the <a href="leaderboardSchool.php?id='. $cm->id .'">school leaderboard!</a></p>
+		<p>With Rewards, you can get classroom benefits! Read the Descriptions for more details!</p>
+	  </div>';
+
 // Display Store Inventory
 if ($allIncentives){
 	echo '<span style="color:red;font-weight:bold;">';
-	$disableBuy = false;
-	if (!$eppStudentRecord){
-		echo 'You are not a student, so you will not be able to buy anything';
-		$disableBuy = true;
-	}
-	else{
-		echo $eppStudentRecord->currentpointbalance . ' is your Point Balance';
-	}
+	
 	echo '</span>';
 	
-	echo '<div id="storewrapper" style="height:500px;width:900px;overflow:auto;margin:0 auto;">';
+	echo '<div id="storewrapper" style="height:450px;width:900px;overflow:auto;margin:0 auto;">';
 	foreach ($allIncentives as $rowIncentive){
 		$badgeChecker = $DB->get_record('epp_badge',array('incentive_id'=>$rowIncentive->id));
 		$rewardChecker = $DB->get_record('epp_reward',array('incentive_id'=>$rowIncentive->id));
@@ -295,7 +307,6 @@ if ($allIncentives){
 			$remainingQty = $allowed - $counter;
 			
 			echo $currentBadge->getPurchaseTile($remainingQty, $cm->id, $badgeChecker->incentive_id, $disableBuy);
-			//<input style="float:right;border:none;" type="submit" name="purchase" id="purchase" value="Buy" />
 		}
 		else{ //$rewardChecker
 			$currentReward = new Reward($rowIncentive->name, intval($rowIncentive->qtyperstudent), intval($rowIncentive->storevisibility), intval($rowIncentive->priceinpoints), $rowIncentive->icon, intval($rowIncentive->deletebyprof), new DateTime($rowIncentive->datecreated), $rewardChecker->prize,  new DateTime($rewardChecker->expirydate));
@@ -313,7 +324,6 @@ if ($allIncentives){
 			$remainingQty = $allowed - $counter;
 			
 			echo $currentReward->getPurchaseTile($remainingQty, $cm->id, $rewardChecker->incentive_id, $disableBuy);
-			//<input style="float:right;border:none;" type="submit" name="purchase" id="purchase" value="Buy" />
 		}
 	}
 	echo '</div>';
@@ -322,8 +332,9 @@ else{
 	echo $OUTPUT->box('<div style="width:100%;text-align:center;">no incentives to display.</div>');
 }
 
-echo '<br/><br/><br/>';
+echo '<br/>';
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
+echo '<br/><br/>';
 
 // Finish the page
 echo $OUTPUT->footer();
