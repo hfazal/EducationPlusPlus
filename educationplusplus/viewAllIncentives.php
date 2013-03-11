@@ -81,7 +81,8 @@ if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
 // Retrieve from DB all PES
 global $DB;
 $allIncentives = $DB->get_records('epp_incentive',array('course_id'=>$course->id));
-$arrayOfIDsForIncentiveObjects = array();
+$arrayOfIDsForRewardObjects = array();
+$arrayOfIDsForBadgeObjects = array();
 $arrayOfReward = array();
 $arrayOfBadge = array();
 
@@ -95,14 +96,14 @@ if($allIncentives){
 		if ($allRewards){
 			foreach($allRewards as $rowReward){
 				array_push($arrayOfReward, new Reward($rowIncentive->name, intval($rowIncentive->qtyperstudent), intval($rowIncentive->storevisibility), intval($rowIncentive->priceinpoints), $rowIncentive->icon, intval($rowIncentive->deletebyprof), new DateTime($rowIncentive->datecreated), $allRewards->prize, new DateTime($allRewards->expirydate)  ));
-				array_push($arrayOfIDsForIncentiveObjects, $rowIncentive->id);
+				array_push($arrayOfIDsForRewardObjects, $rowIncentive->id);
 				break;
 			}
 		}
 		if($allBadges){
 			foreach($allBadges as $rowBadge){
 				array_push($arrayOfBadge, new Badge($rowIncentive->name, intval($rowIncentive->qtyperstudent), intval($rowIncentive->storevisibility), intval($rowIncentive->priceinpoints), $rowIncentive->icon, intval($rowIncentive->deletebyprof), new DateTime($rowIncentive->datecreated)));	
-				array_push($arrayOfIDsForIncentiveObjects, $rowIncentive->id);
+				array_push($arrayOfIDsForBadgeObjects, $rowIncentive->id);
 				break;
 			}
 		}
@@ -135,7 +136,7 @@ echo "	<style>
 echo '	<script>
 			function confirmDeleteReward(pes){
 				var x;
-				var r = confirm("Are you sure you want to delete this Scenario? Students will no longer be able to earn points this way.");
+				var r = confirm("Are you sure you want to delete this Reward? Students will no longer be able to purchase this Reward");
 				if (r==true){
 					pes = "deleteReward.php?id=' . $cm->id .'&reward=" + pes;
 					window.location = pes;
@@ -147,8 +148,7 @@ echo '	<script>
 echo '	<script>
 			function confirmDeleteBadge(pes){
 				var x;
-				var r = confirm("Are you sure you want to delete this Scenario? Students will no longer be able to earn points this way.");
-				if (r==true){
+				var r = confirm("Are you sure you want to delete this Badge? Students will no longer be able to purchase this Badge");
 					pes = "deleteBadge.php?id=' . $cm->id .'&badge=" + pes;
 					window.location = pes;
 				}
@@ -167,7 +167,7 @@ if ($arrayOfReward){
 			echo $OUTPUT->box_start();
 			if($isProfessor){
 				// Edit/Delete only displayed to professor (not student)
-				echo '<div style="float:right"><a href="editReward.php?id=' . $cm->id .'&reward=' . $arrayOfIDsForIncentiveObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteReward(' . $arrayOfIDsForIncentiveObjects[$i] . ')">delete</a></div>';
+				echo '<div style="float:right"><a href="editReward.php?id=' . $cm->id .'&reward=' . $arrayOfIDsForRewardObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteReward(' . $arrayOfIDsForRewardObjects[$i] . ')">delete</a></div>';
 			}
 			echo $arrayOfReward[$i];
 			echo $OUTPUT->box_end();
@@ -178,11 +178,11 @@ if ($arrayOfReward){
 
 if ($arrayOfBadge){
 	for ($i=0; $i < count($arrayOfBadge); $i++){
-		if ($arrayOfReward[$i]->parentGetter("deletedByProf") == 0){
+		if ($arrayOfBadge[$i]->parentGetter("deletedByProf") == 0){
 			echo $OUTPUT->box_start();
 			if($isProfessor){
 				// Edit/Delete only displayed to professor (not student)
-				echo '<div style="float:right"><a href="editBadge.php?id=' . $cm->id .'&badge=' . $arrayOfIDsForIncentiveObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteBadge(' . $arrayOfIDsForIncentiveObjects[$i] . ')">delete</a></div>';
+				echo '<div style="float:right"><a href="editBadge.php?id=' . $cm->id .'&badge=' . $arrayOfIDsForBadgeObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteBadge(' . $arrayOfIDsForBadgeObjects[$i] . ')">delete</a></div>';
 			}
 			echo $arrayOfBadge[$i];
 			echo $OUTPUT->box_end();
