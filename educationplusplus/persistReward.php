@@ -33,7 +33,7 @@ require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 require 'eppClasses/Badge.php';
 require 'eppClasses/Reward.php';
-	
+    
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
 
@@ -85,22 +85,33 @@ if (isset($_FILES["incentiveImg"])) {
 
 
 global $DB;
+$allIncentives = $DB->get_records('epp_incentive',array('course_id'=>$course->id));
+$arrayOfIDsForRewardObjects = array();
+$arrayOfReward = array();
 
-$allIncentive = $DB->get_records('epp_incentive',array('course_id'=>$course->id));
-$arrayOfIncentiveObjects = array();
-$arrayOfIDsForIncentiveObjects = array();
-
-if ($allIncentive){
-	foreach ($allIncentive as $rowIncentive){
-		array_push($arrayOfIncentiveObjects, new Incentive($rowIncentive->name, intval($rowIncentive->qtyperstudent), $rowIncentive->storevisibility, intval($rowIncentive->priceinpoints), $rowIncentive->icon, $rowIncentive->deletebyprof, $rowIncentive->datecreated));
-		array_push($arrayOfIDsForIncentiveObjects, $rowIncentive->id);
-	}
+if($allIncentives){
+    foreach ($allIncentives as $rowIncentive){
+        $allRewards = $DB->get_record('epp_reward',array('incentive_id'=>$rowIncentive->id));
+        if ($allRewards){
+            foreach($allRewards as $rowReward){
+                array_push($arrayOfReward, new Reward($rowIncentive->name, intval($rowIncentive->qtyperstudent), intval($rowIncentive->storevisibility), intval($rowIncentive->priceinpoints), $rowIncentive->icon, intval($rowIncentive->deletebyprof), new DateTime($rowIncentive->datecreated), $allRewards->prize, new DateTime($allRewards->expirydate)  ));
+                array_push($arrayOfIDsForRewardObjects, $rowIncentive->id);
+                break;
+            }
+        }
+    } 
 }
 
-
-//$newIncentive = new Incentive($incentiveName, $incentiveQty, $storevisTrue, $incentiveType, $incentivePrice, $incentiveImg, false);
-
-//if($incentiveType == "reward"){
+$newReward = new Reward($incentiveName, $incentiveQty, $storevisTrue, $incentivePrice, $incentiveImg, 0, new DateTime(), $rewardDescription, new DateTime($rewardExpiryDate));
+//DUPLICATE CHECK
+$duplicateFound = false;
+for($i=0; $i < count($arrayOfReward); $i++){
+    if (strcmp($newReward->parentGetter("name"), $arrayOfReward[$i]->parentGetter("name")) == 0){
+        echo $i;
+        $duplicateFound = true;
+    }
+}
+if ($duplicateFound == false){
         $record                 = new stdClass();
         $record->course_id         = intval($course->id);
         $record->name           = $incentiveName;
@@ -120,8 +131,10 @@ if ($allIncentive){
         $record_rew->expirydate     = $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
         $DB->insert_record('epp_reward', $record_rew, false);
 
-//}
-
+}
+else{
+    
+}
 // Output starts here
 echo $OUTPUT->header();
 
@@ -132,7 +145,30 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 // Replace the following lines with you own code
 echo $OUTPUT->heading('Education++');
     
-
+if ($duplicateFound == false){
+    echo $OUTPUT->box('The following Reward was successfully saved:<br/><br/>' . $newReward);
+    
+    $enrolment = $DB->get_record('enrol',array('courseid'=>$course->id, 'status'=>0));
+    $userIds = $DB->get_records('user_enrolments',array('enrolid'=>$enrolment->id));
+    
+    foreach ($userIds as $user)
+    {
+            //PERSIST TO epp_notification
+            $record                 = new stdClass();
+            $record->student_id     = intval($user->userid);
+            $record->course         = intval($course->id);
+            $record->title          = "New Reward";
+            $record->content        = 'A new reward was created: '.$newReward->parentGetter("name") . 'Price ' .$newReward->parentGetter("priceInPoints"). 'Description: '.$newReward->prize;
+            $record->isread         = 0;
+            $datetimeVersionOfExpiryDate = new DateTime();
+            $record->expirydate     = $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
+            $id = $DB->insert_record('epp_notification', $record, true);
+        
+    }
+}
+else { // ($duplicateFound == true)
+    echo $OUTPUT->box('The followingReward was <strong>NOT</strong> saved as a reward with the same name already exists:<br/><br/>' . $newReward);
+}
 
 echo "<br/>";
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');

@@ -83,21 +83,35 @@ if (isset($_FILES["badgeImg"])) {
 
 global $DB;
 
-$allIncentive = $DB->get_records('epp_incentive',array('course_id'=>$course->id));
-$arrayOfIncentiveObjects = array();
-$arrayOfIDsForIncentiveObjects = array();
+$allIncentives = $DB->get_records('epp_incentive',array('course_id'=>$course->id));
+$arrayOfBadge = array();
+$arrayOfIDsForBadgeObjects = array();
 
-if ($allIncentive){
-	foreach ($allIncentive as $rowIncentive){
-		array_push($arrayOfIncentiveObjects, new Incentive($rowIncentive->name, intval($rowIncentive->qtyperstudent), $rowIncentive->storevisibility, intval($rowIncentive->priceinpoints), $rowIncentive->icon, $rowIncentive->deletebyprof, $rowIncentive->datecreated));
-		array_push($arrayOfIDsForIncentiveObjects, $rowIncentive->id);
-	}
+if($allIncentives){
+    foreach ($allIncentives as $rowIncentive){
+        $allBadges = $DB->get_record('epp_badge',array('incentive_id'=>$rowIncentive->id));
+        if($allBadges){
+            foreach($allBadges as $rowBadge){
+                array_push($arrayOfBadge, new Badge($rowIncentive->name, intval($rowIncentive->qtyperstudent), intval($rowIncentive->storevisibility), intval($rowIncentive->priceinpoints), $rowIncentive->icon, intval($rowIncentive->deletebyprof), new DateTime($rowIncentive->datecreated)));  
+                array_push($arrayOfIDsForBadgeObjects, $rowIncentive->id);
+                break;
+            }
+        }
+    }
+    
 }
 
+$newBadge = new Badge($badgeName, 1, $storevisTrue, $badgePrice, $badgeImg, 0, new DateTime());
+//DUPLICATE CHECK
+$duplicateFound = false;
+for($i=0; $i < count($arrayOfBadge); $i++){
+    if (strcmp($newBadge->parentGetter("name"), $arrayOfBadge[$i]->parentGetter("name")) == 0){
+        echo $i;
+        $duplicateFound = true;
+    }
+}
 
-//$newIncentive = new Incentive($badgeName, $incentiveQty, $storevisTrue, $incentiveType, $badgePrice, $badgeImg, false);
-
-//if($incentiveType == "reward"){
+if ($duplicateFound == false){
         $record                 = new stdClass();
         $record->course_id         = intval($course->id);
         $record->name           = $badgeName;
@@ -113,8 +127,8 @@ if ($allIncentive){
         $record_rew = new stdClass(); 
         $record_rew->incentive_id = intval($idOfIncentive);
         $DB->insert_record('epp_badge', $record_rew, false);
+}
 
-//}
 
 // Output starts here
 echo $OUTPUT->header();
@@ -126,7 +140,30 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 // Replace the following lines with you own code
 echo $OUTPUT->heading('Education++');
     
-
+if ($duplicateFound == false){
+    echo $OUTPUT->box('The following Badge was successfully saved:<br/><br/>' . $newBadge);
+    
+    $enrolment = $DB->get_record('enrol',array('courseid'=>$course->id, 'status'=>0));
+    $userIds = $DB->get_records('user_enrolments',array('enrolid'=>$enrolment->id));
+    
+    foreach ($userIds as $user)
+    {
+            //PERSIST TO epp_notification
+            $record                 = new stdClass();
+            $record->student_id     = intval($user->userid);
+            $record->course         = intval($course->id);
+            $record->title          = "New Badge";
+            $record->content        = 'A new badge was created: '.$newBadge->parentGetter("name") . 'Price: ' .$newBadge->parentGetter("priceInPoints"). ' ';
+            $record->isread         = 0;
+            $datetimeVersionOfExpiryDate = new DateTime();
+            $record->expirydate     = $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
+            $id = $DB->insert_record('epp_notification', $record, true);
+        
+    }
+}
+else { // ($duplicateFound == true)
+    echo $OUTPUT->box('The following Badge was <strong>NOT</strong> saved as a badge with the same name already exists:<br/><br/>' . $newBadge);
+}
 
 echo "<br/>";
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
