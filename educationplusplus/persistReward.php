@@ -158,7 +158,7 @@ if ($duplicateFound == false){
             $record->student_id     = intval($user->userid);
             $record->course         = intval($course->id);
             $record->title          = "New Reward";
-            $record->content        = 'A new reward was created: '.$newReward->parentGetter("name") . 'Price ' .$newReward->parentGetter("priceInPoints"). 'Description: '.$newReward->prize;
+            $record->content        = 'A new reward was created: '.$newReward->parentGetter("name") . ', Price ' .$newReward->parentGetter("priceInPoints"). ', Description: '.$newReward->prize;
             $record->isread         = 0;
             $datetimeVersionOfExpiryDate = new DateTime();
             $datetimeVersionOfExpiryDate->add(new DateInterval('P90D'));
