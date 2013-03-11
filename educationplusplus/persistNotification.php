@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2013 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

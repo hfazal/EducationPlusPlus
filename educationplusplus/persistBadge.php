@@ -156,6 +156,7 @@ if ($duplicateFound == false){
             $record->content        = 'A new badge was created: '.$newBadge->parentGetter("name") . 'Price: ' .$newBadge->parentGetter("priceInPoints"). ' ';
             $record->isread         = 0;
             $datetimeVersionOfExpiryDate = new DateTime();
+            $datetimeVersionOfExpiryDate->add(new DateInterval('P90D'));
             $record->expirydate     = $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
             $id = $DB->insert_record('epp_notification', $record, true);
         

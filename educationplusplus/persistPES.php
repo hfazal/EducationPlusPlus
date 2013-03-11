@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2013 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -218,6 +218,7 @@ if ($duplicateFound == false){
 			$record->content	 	= 'A new scenario was created: '.$newPES->name . ': ' .$newPES->pointValue. ' '.$newPES->description;
 			$record->isread 		= 0;
 			$datetimeVersionOfExpiryDate = new DateTime();
+            $datetimeVersionOfExpiryDate->add(new DateInterval('P90D'));
 			$record->expirydate 	= $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
 			$id = $DB->insert_record('epp_notification', $record, true);
 		
