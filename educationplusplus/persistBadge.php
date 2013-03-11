@@ -153,7 +153,7 @@ if ($duplicateFound == false){
             $record->student_id     = intval($user->userid);
             $record->course         = intval($course->id);
             $record->title          = "New Badge";
-            $record->content        = 'A new badge was created: '.$newBadge->parentGetter("name") . 'Price: ' .$newBadge->parentGetter("priceInPoints"). ' ';
+            $record->content        = 'A new badge was created: '.$newBadge->parentGetter("name") . ', Price: ' .$newBadge->parentGetter("priceInPoints"). ' ';
             $record->isread         = 0;
             $datetimeVersionOfExpiryDate = new DateTime();
             $datetimeVersionOfExpiryDate->add(new DateInterval('P90D'));
