@@ -76,7 +76,8 @@ global $DB;
 //if($incentiveType == "reward"){
         $record                       = new stdClass();
         $record->id                   = intval($IncentiveID);
-        $record->deletebyprof            = 1;
+        $record->deletebyprof         = 1;
+        $record->storevisibility      = 0; 
 
         $DB->update_record('epp_incentive', $record);
 
