@@ -154,8 +154,9 @@ addRequirements();
 	
 			<tr>
 				<td style="vertical-align:top;">Store Visibility</td>
-				<td><input type="checkbox" class="required" name="storevis" id="storevis" style="margin-right:10px;width:200px;" value="1" checked/>
-					
+				<td>
+				<input type="hidden" name="storevis" value="0" />
+				<input type="checkbox" class="required" name="storevis" id="storevis" style="margin-right:10px;width:200px;" value="1" checked/>	
 				</td>
 			</tr>
 			<tr>
@@ -178,7 +179,7 @@ addRequirements();
 </div>');
 
 echo "<br/>";
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="viewAllPES.php?id='. $cm->id .'">Return to the Education++: Manage Scenarios Page (Cancel Creation of this Scenario)</a></div>');
+echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="viewAllIncentives.php?id='. $cm->id .'">Return to the Education++: Manage Incentives Page (Cancel Creation of this Scenario)</a></div>');
 
 // Finish the page
 echo $OUTPUT->footer();
