@@ -165,11 +165,13 @@ if ($arrayOfReward){
 	for ($i=0; $i < count($arrayOfReward); $i++){
 		if ($arrayOfReward[$i]->parentGetter("deletedByProf") == 0){
 			echo $OUTPUT->box_start();
+			echo '<div style="width:500px;">';
 			if($isProfessor){
 				// Edit/Delete only displayed to professor (not student)
 				echo '<div style="float:right"><a href="editReward.php?id=' . $cm->id .'&reward=' . $arrayOfIDsForRewardObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteReward(' . $arrayOfIDsForRewardObjects[$i] . ')">delete</a></div>';
 			}
 			echo $arrayOfReward[$i];
+			echo '</div>';
 			echo $OUTPUT->box_end();
 			echo "<br/>";
 		}
@@ -180,11 +182,13 @@ if ($arrayOfBadge){
 	for ($i=0; $i < count($arrayOfBadge); $i++){
 		if ($arrayOfBadge[$i]->parentGetter("deletedByProf") == 0){
 			echo $OUTPUT->box_start();
+			echo '<div style="width:500px;">';
 			if($isProfessor){
 				// Edit/Delete only displayed to professor (not student)
 				echo '<div style="float:right"><a href="editBadge.php?id=' . $cm->id .'&badge=' . $arrayOfIDsForBadgeObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteBadge(' . $arrayOfIDsForBadgeObjects[$i] . ')">delete</a></div>';
 			}
 			echo $arrayOfBadge[$i];
+			echo '</div>';
 			echo $OUTPUT->box_end();
 			echo "<br/>";
 		}

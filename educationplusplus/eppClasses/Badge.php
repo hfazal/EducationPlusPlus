@@ -141,12 +141,13 @@
 		// TOSTRING
 		public function __toString() {
 			$stringToReturn = "<table style='width:100%'>
+								<h3> Badge </h3>
 								<tr>
 									<td style='width:50%'>
 										<span class='badgeName'>" . parent::__get("name") . "</span>
 									</td>
 									<td style='width:50%'>
-										<span class='badgePrice'>" . parent::__get("priceInPoints") . " Points</span><br/>
+										<span class='badgePrice'> Price: " . parent::__get("priceInPoints") . " Points</span><br/>
 									</td>
 								</tr>
 								<tr>

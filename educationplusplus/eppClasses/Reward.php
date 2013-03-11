@@ -152,6 +152,7 @@
 		// TOSTRING
 		public function __toString() {
 			$stringToReturn = "<table style='width:100%'>
+								<h3> Reward </h3>
 								<tr>
 									<td style='width:50%'>
 										<span class='rewardName'>" . parent::__get("name") . "</span>
@@ -159,15 +160,18 @@
 										<span class='rewardExpiryDate'>Expires on " . $this->expiryDate->format('m-d-Y') ."</span>
 									</td>
 									<td style='width:50%'>
-										<span class='rewardPrice'>" . parent::__get("priceInPoints") . " Points</span><br/>
+										<span class='rewardPrice'> Price: " . parent::__get("priceInPoints") . " Points</span><br/>
+									</td>
+								</tr>
+								<tr>
+
+									<td>
+										<span class='rewardDescription'> Description: " . $this->prize . "</span>
 									</td>
 								</tr>
 								<tr>
 									<td>
 										<img style='width:200px;height:200px;' src='data:image/jpg;base64," . parent::__get("iconSelection") . "' alt='" . parent::__get("name") . "' />
-									</td>
-									<td>
-										<span class='rewardDescription'>" . $this->prize . "</span>
 									</td>
 								</tr>
 							</table>";			return $stringToReturn;
