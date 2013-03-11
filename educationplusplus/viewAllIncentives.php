@@ -163,27 +163,31 @@ if($isProfessor){
 }
 if ($arrayOfReward){
 	for ($i=0; $i < count($arrayOfReward); $i++){
-		echo $OUTPUT->box_start();
-		if($isProfessor){
-			// Edit/Delete only displayed to professor (not student)
-			echo '<div style="float:right"><a href="editReward.php?id=' . $cm->id .'&reward=' . $arrayOfIDsForIncentiveObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteReward(' . $arrayOfIDsForIncentiveObjects[$i] . ')">delete</a></div>';
+		if ($arrayOfReward[$i]->parentGetter("deletedByProf") == 0){
+			echo $OUTPUT->box_start();
+			if($isProfessor){
+				// Edit/Delete only displayed to professor (not student)
+				echo '<div style="float:right"><a href="editReward.php?id=' . $cm->id .'&reward=' . $arrayOfIDsForIncentiveObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteReward(' . $arrayOfIDsForIncentiveObjects[$i] . ')">delete</a></div>';
+			}
+			echo $arrayOfReward[$i];
+			echo $OUTPUT->box_end();
+			echo "<br/>";
 		}
-		echo $arrayOfReward[$i];
-		echo $OUTPUT->box_end();
-		echo "<br/>";
 	}
 }
 
 if ($arrayOfBadge){
 	for ($i=0; $i < count($arrayOfBadge); $i++){
-		echo $OUTPUT->box_start();
-		if($isProfessor){
-			// Edit/Delete only displayed to professor (not student)
-			echo '<div style="float:right"><a href="editBadge.php?id=' . $cm->id .'&badge=' . $arrayOfIDsForIncentiveObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteBadge(' . $arrayOfIDsForIncentiveObjects[$i] . ')">delete</a></div>';
+		if ($arrayOfReward[$i]->parentGetter("deletedByProf") == 0){
+			echo $OUTPUT->box_start();
+			if($isProfessor){
+				// Edit/Delete only displayed to professor (not student)
+				echo '<div style="float:right"><a href="editBadge.php?id=' . $cm->id .'&badge=' . $arrayOfIDsForIncentiveObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteBadge(' . $arrayOfIDsForIncentiveObjects[$i] . ')">delete</a></div>';
+			}
+			echo $arrayOfBadge[$i];
+			echo $OUTPUT->box_end();
+			echo "<br/>";
 		}
-		echo $arrayOfBadge[$i];
-		echo $OUTPUT->box_end();
-		echo "<br/>";
 	}
 }
 else{
