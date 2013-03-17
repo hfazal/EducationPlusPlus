@@ -24,14 +24,14 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2013 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 3;               // If version == 0 then module will not be installed
-$module->version   = 2012112705;      // The current module version (Date: YYYYMMDDXX)
+$module->version   = 1;               // If version == 0 then module will not be installed
+$module->version   = 2013031700;      // The current module version (Date: YYYYMMDDXX)
 $module->requires  = 2010031900;      // Requires this Moodle version
 $module->cron      = 0;               // Period for cron to check this module (secs)
 $module->component = 'mod_educationplusplus'; // To check on upgrade, that module sits in correct place
