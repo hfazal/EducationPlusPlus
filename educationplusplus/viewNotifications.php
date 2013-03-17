@@ -23,11 +23,9 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2013 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/// (Replace educationplusplus with the name of your module and remove this line)
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
@@ -56,96 +54,106 @@ $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 add_to_log($course->id, 'educationplusplus', 'viewNotifications', "viewNotifications.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
-
 $PAGE->set_url('/mod/educationplusplus/createAPES.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
-
-// Retrieve All Assignments to Display as Options for Requirements
-// Retrieve from DB all PES
 global $DB;
-$allNotifications = $DB->get_records('epp_notification',array('course'=>$course->id, 'student_id'=>$USER->id));
-$arrayOfNewNotificationObjects = array();
-$arrayOfOldNotificationObjects = array();
-$arrayOfIDsForNotificationObjects = array();
-
-// Output starts here
 echo $OUTPUT->header();
-if ($allNotifications){
-	foreach ($allNotifications as $notification){
-		$expirydate = new DateTime($notification->expirydate);	//YYYY-MM-DD HH:MM:SS
-		$current = new DateTime();
-		if ($current > $expirydate){
-			$DB->delete_records('epp_notification', array('id'=>$notification->id));
-		}
-		else{
-			if ($notification->isread == 0){
-				array_push($arrayOfNewNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
-				array_push($arrayOfIDsForNotificationObjects, $notification->id);
-			}
-			else{
-				array_push($arrayOfOldNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
-			}
-		}
-	}
-}
-
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
 
-// Replace the following lines with you own code
-echo $OUTPUT->heading('Education++: View Your Notifications');
+//Professor Check
+$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+$isProfessor = false;
+if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
+	$isProfessor = true;
+}
 
-//Styles for output: notificationTitle, notificationContents, notificationExpiryDate
-echo "	<style>
-			.notificationTitle		{ font-weight:bold; font-size:x-large}
-			.notificationContents	{ font-style:italic; font-size:x-large}
-			.notificationExpiryDate	{ font-size:medium; color: red}
-		</style>
-	";
-	
-echo '	<script>
-			function confirmDelete(index){
-				var x;
-				var r = confirm("Are you sure you want to dismiss this notification?");
-				if (r==true){
-					var newNotification = document.getElementById("new"+index);
-					newNotification.setAttribute("style", "color: black; background-color: white");
-				}
-				else{}
-			}
-		</script>';	
+// Display Notifications Intro
+	echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+			<br/>
+			<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Notifications</h1>
+			<p>Below you can view all Notification that you\'ve been sent. Notifications include new Point Earning Scenarios, Point Scenarios you\'ve unlocked, new Rewards in the Store and Notifications the Professor has sent you. Note that Notifications will be deleted 90 days after recieving them.</p>
+		  </div>';
 
-if ($arrayOfNewNotificationObjects){
-	for ($i=0; $i < count($arrayOfNewNotificationObjects); $i++){
-		echo $OUTPUT->box_start();
-		echo '<div id = "new'.$i .'" style="color: white; background-color: black">';
-		echo '<div style="float:right"><a href="dismissNotification.php?id='. $cm->id .'&notId='. $arrayOfIDsForNotificationObjects[$i] .'" onclick="confirmDelete(' . $i . ')">dismiss</a></div>';
-		echo $arrayOfNewNotificationObjects[$i];
-		echo $OUTPUT->box_end();
-		echo "</div>";
-		echo "<br/>";
-	}
+if ($isProfessor){
+	echo '<div style="text-align:center">As a Professor, you will not recieve any notifications</div><br/>	';
 }
 else{
-	echo $OUTPUT->box('<div style="width:100%;text-align:center;">No new notifications were found.</div>');
-	echo "<br/>";
-}
+	$allNotifications = $DB->get_records('epp_notification',array('course'=>$course->id, 'student_id'=>$USER->id));
+	$arrayOfNewNotificationObjects = array();
+	$arrayOfOldNotificationObjects = array();
+	$arrayOfIDsForNotificationObjects = array();
 
-if ($arrayOfOldNotificationObjects)
-{
-	for ($i=0; $i < count($arrayOfOldNotificationObjects); $i++){
-		echo $OUTPUT->box_start();
-		echo $arrayOfOldNotificationObjects[$i];
-		echo $OUTPUT->box_end();
+	// Output starts here
+	if ($allNotifications){
+		foreach ($allNotifications as $notification){
+			$expirydate = new DateTime($notification->expirydate);	//YYYY-MM-DD HH:MM:SS
+			$current = new DateTime();
+			if ($current > $expirydate){
+				$DB->delete_records('epp_notification', array('id'=>$notification->id));
+			}
+			else{
+				if ($notification->isread == 0){
+					array_push($arrayOfNewNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
+					array_push($arrayOfIDsForNotificationObjects, $notification->id);
+				}
+				else{
+					array_push($arrayOfOldNotificationObjects, $newNotification = new Notification(0, $notification->title, $notification->content, 1, new DateTime($notification->expirydate)));
+				}
+			}
+		}
+	}
+
+
+
+	//Styles for output: notificationTitle, notificationContents, notificationExpiryDate
+	echo "	<style>
+				.notificationTitle		{ font-weight:bold; font-size:x-large}
+				.notificationContents	{ font-style:italic; font-size:x-large}
+				.notificationExpiryDate	{ font-size:medium; color: red}
+			</style>
+		";
+		
+	echo '	<script>
+				function confirmDelete(index){
+					var x;
+					var r = confirm("Are you sure you want to dismiss this notification?");
+					if (r==true){
+						var newNotification = document.getElementById("new"+index);
+						newNotification.setAttribute("style", "color: black; background-color: white");
+					}
+					else{}
+				}
+			</script>';	
+
+	if ($arrayOfNewNotificationObjects){
+		for ($i=0; $i < count($arrayOfNewNotificationObjects); $i++){
+			echo $OUTPUT->box_start();
+			echo '<div id = "new'.$i .'" style="color: white; background-color: black">';
+			echo '<div style="float:right"><a style="color:red" href="dismissNotification.php?id='. $cm->id .'&notId='. $arrayOfIDsForNotificationObjects[$i] .'" onclick="confirmDelete(' . $i . ')">dismiss</a></div>';
+			echo $arrayOfNewNotificationObjects[$i];
+			echo $OUTPUT->box_end();
+			echo "</div>";
+			echo "<br/>";
+		}
+	}
+	else{
+		echo $OUTPUT->box('<div style="width:100%;text-align:center;">No new notifications were found.</div>');
 		echo "<br/>";
+	}
+
+	if ($arrayOfOldNotificationObjects)
+	{
+		for ($i=0; $i < count($arrayOfOldNotificationObjects); $i++){
+			echo $OUTPUT->box_start();
+			echo $arrayOfOldNotificationObjects[$i];
+			echo $OUTPUT->box_end();
+			echo "<br/>";
+		}
 	}
 }
 

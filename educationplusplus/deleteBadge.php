@@ -23,11 +23,9 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2013 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/// (Replace educationplusplus with the name of your module and remove this line)
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
@@ -52,40 +50,13 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'view', "view.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'deleteBadge', "deleteBadge.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
-$PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/educationplusplus/deleteBadge.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
-
-//echo $incentiveImg;
-//if ($incentiveType == 'reward')
-
-global $DB;
-
-//$newIncentive = new Incentive($incentiveName, $incentiveQty, $storevisTrue, $incentiveType, $incentivePrice, $incentiveImg, false);
-
-//if($incentiveType == "reward"){
-        $record                       = new stdClass();
-        $record->id                   = intval($IncentiveID);
-        $record->deletebyprof         = 1;
-        $record->storevisibility      = 0;  
-        $record->storevis
-
-        $DB->update_record('epp_incentive', $record);
-
-        redirect("viewAllIncentives.php?id=" . $cm->id);
-
-
-
-//}
 
 // Output starts here
 echo $OUTPUT->header();
@@ -94,11 +65,38 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
 
-// Replace the following lines with you own code
-echo $OUTPUT->heading('Education++');
-    
+// Determine if Professor Level Access
+$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+$isProfessor = false;
+if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
+	$isProfessor = true;
+}
+
+if($isProfessor){
+	global $DB;
+	//$newIncentive = new Incentive($incentiveName, $incentiveQty, $storevisTrue, $incentiveType, $incentivePrice, $incentiveImg, false);
+
+	//if($incentiveType == "reward"){
+			$record                       = new stdClass();
+			$record->id                   = intval($IncentiveID);
+			$record->deletebyprof         = 1;
+			$record->storevisibility      = 0;  
+
+			$DB->update_record('epp_incentive', $record);
+
+			redirect("viewAllIncentives.php?id=" . $cm->id);
 
 
+
+	//}
+}
+else{
+	echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+			<br/>
+			<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Rewards</h1>
+			<p><a href="storefront.php?id='. $cm->id .'">Visit the Store here</a></p>
+		  </div><br/>';
+}
 echo "<br/>";
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
 

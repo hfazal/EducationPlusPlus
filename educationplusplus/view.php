@@ -27,8 +27,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/// (Replace educationplusplus with the name of your module and remove this line)
-
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 // Education++ Classes
@@ -58,16 +56,10 @@ $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 add_to_log($course->id, 'educationplusplus', 'view', "view.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
-
 $PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
 
 // Output starts here
 echo $OUTPUT->header();
@@ -143,7 +135,7 @@ if (!$isProfessor){	//Student
 	echo'">
 		<div style="width:90%;display:inline-block;text-align:right;color:red;font-size:small;cursor:pointer;cursor:hand;" onclick="$(\'#introbox\').hide();">dismiss</div>
 		<br/>
-		<p>Ever felt you deserved more for all the work you do in school? With Education++, you can earn points for all you do, then spend them on rewards! For example, if you Ace your Midterm, you could get points you can spend on dropping a quiz or two!</p>
+		<p>Ever felt you deserved more for all the work you do in school? With Education++, you can earn points for all you do, then <a style="text-decoration:underline" href="storefront.php?id='. $cm->id .'">spend them on rewards</a>! For example, if you Ace your Midterm, you could get points you can spend on dropping a quiz or two!</p>
 		<p>In addition, you can <a style="text-decoration:underline" href="leaderboardClass.php?id='. $cm->id .'">compete with your classmates</a> for bragging rights of who has the most points in the class. Best of all, you can <a style="text-decoration:underline" href="leaderboardSchool.php?id='. $cm->id .'">solidfy your name in your school\'s history</a> by earning the most badges ever on the school leaderboard. Don\'t want to take part in the leaderboard? No problem, you can <a style="text-decoration:underline" href="leaderboardOpt.php?id='. $cm->id .'">opt out here</a> and still earn rewards!</p>
 		<p>Ready to get started? <a style="text-decoration:underline" href="viewAllPES.php?id='. $cm->id .'">Check out all the rewards your Professor has set up for you here!</a></p>
 	  </div>';

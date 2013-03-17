@@ -59,7 +59,7 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'createAPES', "createAPES.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'storefront', "storefront.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
 

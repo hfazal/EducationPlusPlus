@@ -53,61 +53,81 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'view', "view.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'leaderboardOpt', "leaderboardOpt.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
 
-$PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/educationplusplus/leaderboardOpt.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
+//Professor Check
+$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+$isProfessor = false;
+if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
+	$isProfessor = true;
+}
 
 // Output starts here
 echo $OUTPUT->header();
-echo $OUTPUT->heading('Education++: Opt In or Out of the Leaderboard');
+// Display Notifications Intro
+echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+		<br/>
+		<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Leaderboard</h1>
+		<p>Below you can opt in or out of the leaderboard system. What does this mean?</p>
+		<p>If you opt into the leaderboard you can: take part in the <a href="leaderboardClass.php?id=' . $cm->id . '">class leaderboard</a>, take part in the <a href="leaderboardSchool.php?id=' . $cm->id . '">school leaderboard</a> and have a <a href="leaderboardStudentProfile.php?id=' . $cm->id . '&sid=' . $USER->id .'">student profile</a></p>
+		<p>If you do choose to opt out, you can still earn points and purchase rewards</p>
+	  </div>';
+
 
 global $DB;
 $studentRecord = $DB->get_record('epp_student',array('student_id'=>$USER->id, 'course_id'=>$course->id));
 $studentObject = new Student();
 $studentObject->addData( $studentRecord->id, $studentRecord->course_id, $studentRecord->firstname, $studentRecord->lastname, $studentRecord->student_id, $studentRecord->currentpointbalance, $studentRecord->accumulatedpoints, $studentRecord->leaderboardoptstatus );
 
-echo '	<script>
-			function optOut(){
-				var x;
-				var r = confirm("Are you sure you want to Opt Out of the leaderboard system? You will no longer be on the School or Class leaderboard, and your Education++ Profile will not be visible to other students. (You can go back later)");
-				if (r==true){
-					url = "changeopt.php?id=' . $cm->id . '&opt=out";
-					window.location = url;
-				}
-				else{}
-			}
-			function optIn(){
-				var x;
-				var r = confirm("Are you sure you want to Opt In to the leaderboard system? You will be visible on the School and Class leaderboards, and your Education++ Profile will be visible to other students.  (You can go back later)");
-				if (r==true){
-					url = "changeopt.php?id=' . $cm->id . '&opt=in";
-					window.location = url;
-				}
-				else{}
-			}
-		</script>';
 
+if ($isProfessor){
+	echo $OUTPUT->box('<div style="text-align:center">As a Professor, you are not part of the leaderboard system</div>');
+	echo '<br/>';
+}
+else{
+	echo '	<script>
+				function optOut(){
+					var x;
+					var r = confirm("Are you sure you want to Opt Out of the leaderboard system? You will no longer be on the School or Class leaderboard, and your Education++ Profile will not be visible to other students. (You can go back later)");
+					if (r==true){
+						url = "changeopt.php?id=' . $cm->id . '&opt=out";
+						window.location = url;
+					}
+					else{}
+				}
+				function optIn(){
+					var x;
+					var r = confirm("Are you sure you want to Opt In to the leaderboard system? You will be visible on the School and Class leaderboards, and your Education++ Profile will be visible to other students.  (You can go back later)");
+					if (r==true){
+						url = "changeopt.php?id=' . $cm->id . '&opt=in";
+						window.location = url;
+					}
+					else{}
+				}
+			</script>';
 
-echo '<div style="text-align:center">';
-if ($studentObject->leaderboardOptStatus == 0) {//in
-	echo 'Currently, you are <b>opted in</b> to the leaderboard system.<br/><br/>This means your classmates can see how many points you\'ve earned in each class Education++ is available in, and you can compete with them to see who can accumulate the most.<br/><br/>It also means you can see where you rank in the school for number of badges accumulated.<br/><br/>Lastly, students in your school will be able to view your profile to see all badges you\'ve collected.';
-	echo '<br/><br/><button type="button" onclick="optOut()">Opt Out</button>';
+	echo $OUTPUT->box_start();
+	echo '<div style="text-align:center">';
+	if ($studentObject->leaderboardOptStatus == 0) {//in
+		echo 'Currently, you are <b>opted in</b> to the leaderboard system.<br/><br/>This means your classmates can see how many points you\'ve earned in each class Education++ is available in, and you can compete with them to see who can accumulate the most.<br/><br/>It also means you can see where you rank in the school for number of badges accumulated.<br/><br/>Lastly, students in your school will be able to view your profile to see all badges you\'ve collected.';
+		echo '<br/><br/><button type="button" onclick="optOut()">Opt Out</button>';
+	}
+	else {	// out
+		echo 'Currently, you are <b>opted out</b> of the leaderboard system.<br/><br/> This means your classmates <i>cannot</i> see how many points you\'ve earned in any class Education++ is available in, and you <i>cannot</i> compete with them on the leaderboard system.<br/><br/>It also means <i>you are not</i> on the school leaderboard where can see how you rank in the school for number of badges accumulated.<br/><br/>Lastly, students in your school will not be able to view your profile to see all badges you\'ve collected';
+		echo '<br/><br/><button type="button" onclick="optIn()">Opt In</button>';
+	}
+	echo '</div>';
+	echo $OUTPUT->box_end();
 }
-else {	// out
-	echo 'Currently, you are <b>opted out</b> of the leaderboard system.<br/><br/> This means your classmates <i>cannot</i> see how many points you\'ve earned in any class Education++ is available in, and you <i>cannot</i> compete with them on the leaderboard system.<br/><br/>It also means <i>you are not</i> on the school leaderboard where can see how you rank in the school for number of badges accumulated.<br/><br/>Lastly, students in your school will not be able to view your profile to see all badges you\'ve collected';
-	echo '<br/><br/><button type="button" onclick="optIn()">Opt In</button>';
-}
-echo '</div>';
+
+	
 
 echo '<br/>';
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');

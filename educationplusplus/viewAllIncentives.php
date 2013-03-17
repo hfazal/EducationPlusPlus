@@ -56,19 +56,14 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'createAPES', "createAPES.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'viewAllIncentives', "viewAllIncentives.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
 
-$PAGE->set_url('/mod/educationplusplus/createAPES.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/educationplusplus/viewAllIncentives.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
 
 // Determine if Professor Level Access
 $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
@@ -115,11 +110,20 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
 }
 
 if($isProfessor){
-// Replace the following lines with you own code
-	echo $OUTPUT->heading('Education++: Manage Incentives');
+	// Display Intro
+	echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+			<br/>
+			<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Rewards</h1>
+			<p>To reward students, you can create incentives for them to purchase. You can <a href="createAReward.php?id='. $cm->id .'">create a reward</a>, <a href="createABadge.php?id='. $cm->id .'">create a badge</a>, or manage already created rewards below.</p>
+			<p>A Badge is a trophy that students can purchase and display on the school leaderboard for bragging rights, while a Reward would be something tangeable like dropping their lowest quiz</p>
+		  </div>';
 }
 else{
-	echo $OUTPUT->heading('Education++: Ways to Earn Points');
+	echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+			<br/>
+			<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Rewards</h1>
+			<p><a href="storefront.php?id='. $cm->id .'">Visit the Store here</a></p>
+		  </div>';
 }
 
 //Styles for output: pesName, pesPointValue, pesExpiryDate, pesDescription, pesRequirements
@@ -149,6 +153,7 @@ echo '	<script>
 			function confirmDeleteBadge(pes){
 				var x;
 				var r = confirm("Are you sure you want to delete this Badge? Students will no longer be able to purchase this Badge");
+				if (r==true){
 					pes = "deleteBadge.php?id=' . $cm->id .'&badge=" + pes;
 					window.location = pes;
 				}
@@ -160,45 +165,45 @@ if($isProfessor){
 	// Create only displayed to professor (not student)
 	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="createAnIncentive.php?id='. $cm->id .'">Create a new incentive</a></div>');
 	echo "<br/>";
-}
-if ($arrayOfReward){
-	for ($i=0; $i < count($arrayOfReward); $i++){
-		if ($arrayOfReward[$i]->parentGetter("deletedByProf") == 0){
-			echo '<div style="width:500px;">';
-			echo $OUTPUT->box_start();
-			if($isProfessor){
-				// Edit/Delete only displayed to professor (not student)
-				echo '<div style="float:right"><a href="editReward.php?id=' . $cm->id .'&reward=' . $arrayOfIDsForRewardObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteReward(' . $arrayOfIDsForRewardObjects[$i] . ')">delete</a></div>';
+
+	if ($arrayOfReward){
+		for ($i=0; $i < count($arrayOfReward); $i++){
+			if ($arrayOfReward[$i]->parentGetter("deletedByProf") == 0){
+				echo '<div style="width:500px;">';
+				echo $OUTPUT->box_start();
+				if($isProfessor){
+					// Edit/Delete only displayed to professor (not student)
+					echo '<div style="float:right"><a href="editReward.php?id=' . $cm->id .'&reward=' . $arrayOfIDsForRewardObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteReward(' . $arrayOfIDsForRewardObjects[$i] . ')">delete</a></div>';
+				}
+				echo $arrayOfReward[$i];
+				echo $OUTPUT->box_end();
+				echo '</div>';
+				echo "<br/>";
 			}
-			echo $arrayOfReward[$i];
-			echo $OUTPUT->box_end();
-			echo '</div>';
-			echo "<br/>";
 		}
 	}
-}
 
-if ($arrayOfBadge){
-	for ($i=0; $i < count($arrayOfBadge); $i++){
-		if ($arrayOfBadge[$i]->parentGetter("deletedByProf") == 0){
-			echo '<div style="width:500px;">';
-			echo $OUTPUT->box_start();
-			if($isProfessor){
-				// Edit/Delete only displayed to professor (not student)
-				echo '<div style="float:right"><a href="editBadge.php?id=' . $cm->id .'&badge=' . $arrayOfIDsForBadgeObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteBadge(' . $arrayOfIDsForBadgeObjects[$i] . ')">delete</a></div>';
+	if ($arrayOfBadge){
+		for ($i=0; $i < count($arrayOfBadge); $i++){
+			if ($arrayOfBadge[$i]->parentGetter("deletedByProf") == 0){
+				echo '<div style="width:500px;">';
+				echo $OUTPUT->box_start();
+				if($isProfessor){
+					// Edit/Delete only displayed to professor (not student)
+					echo '<div style="float:right"><a href="editBadge.php?id=' . $cm->id .'&badge=' . $arrayOfIDsForBadgeObjects[$i] . '">edit</a> | <a href="#" onclick="confirmDeleteBadge(' . $arrayOfIDsForBadgeObjects[$i] . ')">delete</a></div>';
+				}
+				echo $arrayOfBadge[$i];
+				echo $OUTPUT->box_end();
+				echo '</div>';
+				echo "<br/>";
 			}
-			echo $arrayOfBadge[$i];
-			echo $OUTPUT->box_end();
-			echo '</div>';
-			echo "<br/>";
 		}
 	}
+	else{
+		echo $OUTPUT->box('<div style="width:100%;text-align:center;">no scenarios to earn points were found.</div>');
+		echo "<br/>";
+	}
 }
-else{
-	echo $OUTPUT->box('<div style="width:100%;text-align:center;">no scenarios to earn points were found.</div>');
-	echo "<br/>";
-}
-
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
 
 // Finish the page

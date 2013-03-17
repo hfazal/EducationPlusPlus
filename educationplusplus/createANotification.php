@@ -23,11 +23,9 @@
  *
  * @package    mod
  * @subpackage educationplusplus
- * @copyright  2012 Husain Fazal, Preshoth Paramalingam, Robert Stancia
+ * @copyright  2013 Husain Fazal, Preshoth Paramalingam, Robert Stancia
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/// (Replace educationplusplus with the name of your module and remove this line)
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
@@ -60,12 +58,6 @@ $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
-
-
 // Retrieve from DB all Notifications
 global $DB;
 
@@ -76,56 +68,74 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
 
-// Replace the following lines with you own code
-echo $OUTPUT->heading('Education++');
+// Display Notifications Intro
+echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+		<br/>
+		<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Notifications</h1>
+		<p>Below you can send a Notification to all students in your class, be it about upcoming rewards, badges or anything!</p>
+		<p>Please note that the students will see it the next time they log into Education++, and that Notifications expire and delete 90 days after they\'re created</p>
+	  </div>';
 
-echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
-<script>
 
-function validate(){
-	var title       = document.forms["notificationForm"]["notificationTitle"].value;
-	var description = document.forms["notificationForm"]["notificationContent"].value;
-	var pass 		= true;
-	
-	$("#titleReq").css("display", "none");
-	$("#contentReq").css("display", "none");
-	
-	if (title==null || title==""){
-		$("#titleReq").css("display", "inline");
-		pass = false;
-	}
-	if (description==null || description==""){
-		$("#contentReq").css("display", "inline");
-		pass = false;
-	}
-
-	return pass;
+//Professor Check
+$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+$isProfessor = false;
+if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
+	$isProfessor = true;
 }
-</script>
 
-<div id="form" style="width:400px;height:600px;overflow:auto;">
-	<form id="notificationForm" name="notificationForm" method="post" onsubmit="return validate()" action="persistNotification.php?id='. $cm->id .'" style="padding-left:10px;padding-right:10px;">
-		<h3>Notification</h3>
-		<table>
-			<tr>
-				<td style="width:100px">Title</td>
-				<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="notificationTitle" name="notificationTitle"><br/><span id="titleReq" style="color:red;display:none;">You Must Specify the Title of the Notification</span></td>
-			</tr>
-			<!--<tr>
-				<td>Expiry Date</td>
-				<td><input type="date" class="required" style="margin-right:10px;width:200px;" id="notificationExpiryDate" name="notificationExpiryDate"><br/><span id="expReq" style="color:red;display:none;">You Must Specify an Expiry Date</span></td>
-			</tr>-->
-			<tr>
-				<td style="vertical-align:top;">Content</td>
-				<td><textarea class="required" name="notificationContent" id="notificationContent" style="margin-right:10px;width:200px;" style></textarea><br/><span id="contentReq" style="color:red;display:none;">You Must Specify a Description</span></td>
-			</tr>
-		</table>
-		<hr/><input name="Submit" type="submit" style="float:right; display:block; border:1px solid #000000; height:20px; padding-left:2px; padding-right:2px; padding-top:0px; padding-bottom:2px; line-height:14px; background-color:#EFEFEF;" value="Create a new Notification"/>
-	</form>
-</div>');
+if ($isProfessor){
+	echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+	<script>
 
-echo "<br/>";
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++: Main Page (Cancel Creation of this Notification)</a></div>');
+	function validate(){
+		var title       = document.forms["notificationForm"]["notificationTitle"].value;
+		var description = document.forms["notificationForm"]["notificationContent"].value;
+		var pass 		= true;
+		
+		$("#titleReq").css("display", "none");
+		$("#contentReq").css("display", "none");
+		
+		if (title==null || title==""){
+			$("#titleReq").css("display", "inline");
+			pass = false;
+		}
+		if (description==null || description==""){
+			$("#contentReq").css("display", "inline");
+			pass = false;
+		}
+
+		return pass;
+	}
+	</script>';
+	
+	echo $OUTPUT->box('<div id="form" style="width:400px;overflow:auto;margin-bottom:30px;">
+						<form id="notificationForm" name="notificationForm" method="post" onsubmit="return validate()" action="persistNotification.php?id='. $cm->id .'" style="padding-left:10px;padding-right:10px;">
+							<h3>Notification</h3>
+							<table>
+								<tr>
+									<td style="width:100px">Title</td>
+									<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="notificationTitle" name="notificationTitle"><br/><span id="titleReq" style="color:red;display:none;">You Must Specify the Title of the Notification</span></td>
+								</tr>
+								<!--<tr>
+									<td>Expiry Date</td>
+									<td><input type="date" class="required" style="margin-right:10px;width:200px;" id="notificationExpiryDate" name="notificationExpiryDate"><br/><span id="expReq" style="color:red;display:none;">You Must Specify an Expiry Date</span></td>
+								</tr>-->
+								<tr>
+									<td style="vertical-align:top;">Content</td>
+									<td><textarea class="required" name="notificationContent" id="notificationContent" style="margin-right:10px;width:200px;" style></textarea><br/><span id="contentReq" style="color:red;display:none;">You Must Specify a Description</span></td>
+								</tr>
+							</table>
+							<hr/><input name="Submit" type="submit" style="float:right; display:block; border:1px solid #000000; height:20px; padding-left:2px; padding-right:2px; padding-top:0px; padding-bottom:2px; line-height:14px; background-color:#EFEFEF;" value="Create a new Notification"/>
+						</form>
+					</div>');
+	echo '<br/>';
+	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++: Main Page (Cancel Creation of this Notification)</a></div>');
+}
+else{
+	echo '<div style="text-align:center">As a Student, you cannot send any notifications</div><br/>';
+	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
+}
 
 // Finish the page
 echo $OUTPUT->footer();

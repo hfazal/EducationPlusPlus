@@ -55,19 +55,18 @@ add_to_log($course->id, 'educationplusplus', 'leaderboardStudentProfile', "leade
 
 /// Print the page header
 
-$PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/educationplusplus/leaderboardStudentProfile.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
-
 // Output starts here
 echo $OUTPUT->header();
-echo $OUTPUT->heading('Education++: Student Profile');
+echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+		<br/>
+		<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Leaderboard Student Profile</h1>
+		<p>This is the Leaderboard Student Profile, here you can view all badges earned by a student for all of their classes!</p>
+	  </div>';
 
 global $DB;
 $studentRecord = $DB->get_record('user',array('id'=>$sid));									// Get user record (From moodle)
@@ -133,7 +132,7 @@ if ( $opt == 0 || $USER->id==$sid && ($studentRecord!=null)){
 		}
 	}
 	
-	echo '<br/><br><table style="border:none;margin:0 auto;">
+	echo '<br/><table style="border:none;margin:0 auto;">
 			<tr>
 				<td colspan="2" style="text-align:center;width:100%;"><h2>'.
 					fullname($studentRecord)

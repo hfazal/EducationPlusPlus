@@ -69,6 +69,22 @@ if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
 	$isProfessor = true;
 }
 
+echo $OUTPUT->header();
+if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
+	echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
+}
+echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+		<br/>
+		<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Reward Tracking</h1>';
+if ($isProfessor){
+	echo '	<p>Below you can keep track of who you\'ve awarded rewards to and generate a PDF for your own records.</p>
+	  </div>';
+}
+else{
+	echo '	<p>Only Professors can access this page</p>
+	  </div>';
+}
+
 if ($isProfessor){
 	// Check for save process
 	$saved = false;
@@ -173,13 +189,6 @@ if ($isProfessor){
 	}
 	else{
 		// Output starts here
-		echo $OUTPUT->header();
-		if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
-			echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
-		}
-
-		echo $OUTPUT->heading('Education++: Reward Report');
-
 		if ($isProfessor){
 			global $DB;
 			
@@ -230,7 +239,6 @@ if ($isProfessor){
 	}
 }
 else{
-	echo '<div>Only the Professor can access Reporting</div>';
 	echo '<br/><br/>';
 	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
 

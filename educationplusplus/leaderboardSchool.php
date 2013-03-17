@@ -51,23 +51,23 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'view', "view.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'leaderboardSchool', "leaderboardSchool.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
 
-$PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/educationplusplus/leaderboardSchool.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
-
 // Output starts here
 echo $OUTPUT->header();
-echo $OUTPUT->heading('Education++: School Leaderboard');
+echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+		<br/>
+		<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> School Leaderboard</h1>
+		<p>This is the School Leaderboard where you and everyone at your school can compare how many badges you\'ve accumulated!</p>
+		<p>Start accumulating your badges and cement your place in your school\'s history!</p>
+	  </div>';
 
 global $DB;
 $studentIds = array();

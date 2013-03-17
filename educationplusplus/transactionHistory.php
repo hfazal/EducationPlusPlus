@@ -61,11 +61,6 @@ $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
-
 //TRANSACTIONS PAGE CODE
 $sid = -1;	//Initialize
 
@@ -87,7 +82,17 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
 
-echo $OUTPUT->heading('Education++: Transaction History');
+echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+		<br/>
+		<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Transaction History</h1>';
+if ($isProfessor){
+	echo '	<p>You can pick a student below and view all transactions they\'ve made, from earned scenarios to purchased rewards</p>
+	  </div>';
+}
+else{
+echo '	<p>You can view all transactions you\'ve made, from earned scenarios to purchased rewards below</p>
+	  </div>';
+}
 
 $theStudent = new Student();
 
@@ -135,7 +140,7 @@ else{
 	}
 }
 
-echo '<br/><br/><h2 style="margin:0 auto; text-align:center;">Viewing Transactions for ' . $theStudent->firstName . ' ' . $theStudent->lastName . '</h2><br/>';
+echo '<br/><h2 style="margin:0 auto; text-align:center;">Viewing Transactions for ' . $theStudent->firstName . ' ' . $theStudent->lastName . '</h2><br/>';
 
 // Student Transaction History
 	// Part 1a: Badges and Rewards

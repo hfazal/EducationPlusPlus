@@ -52,82 +52,102 @@ if ($id) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'educationplusplus', 'view', "view.php?id={$cm->id}", $educationplusplus->name, $cm->id);
+add_to_log($course->id, 'educationplusplus', 'persistUpdatedBadge', "persistUpdatedBadge.php?id={$cm->id}", $educationplusplus->name, $cm->id);
 
 /// Print the page header
-$PAGE->set_url('/mod/educationplusplus/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/educationplusplus/persistUpdatedBadge.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('educationplusplus-'.$somevar);
-
-//Process PES
-$incentiveName = $_POST["incentiveName"];
-$incentivePrice = $_POST["incentivePrice"];
-$storevisTrue = $_POST["storevis"];
-
-if (isset($_FILES["incentiveImg"])) {
-    $incentiveImg = file_get_contents($_FILES["incentiveImg"]["tmp_name"]);
-    $incentiveImg = base64_encode($incentiveImg);
-}
-
-//echo $incentiveImg;
-//if ($incentiveType == 'reward')
-
-
-
-
-global $DB;
-
-$allIncentive = $DB->get_records('epp_incentive',array('course_id'=>$course->id));
-$arrayOfIncentiveObjects = array();
-$arrayOfIDsForIncentiveObjects = array();
-
-if ($allIncentive){
-	foreach ($allIncentive as $rowIncentive){
-		array_push($arrayOfIncentiveObjects, new Incentive($rowIncentive->name, intval($rowIncentive->qtyperstudent), $rowIncentive->storevisibility, intval($rowIncentive->priceinpoints), $rowIncentive->icon, $rowIncentive->deletebyprof, $rowIncentive->datecreated));
-		array_push($arrayOfIDsForIncentiveObjects, $rowIncentive->id);
-	}
-}
-
-
-//$newIncentive = new Incentive($incentiveName, $incentiveQty, $storevisTrue, $incentiveType, $incentivePrice, $incentiveImg, false);
-
-//if($incentiveType == "reward"){
-        $record                       = new stdClass();
-        $record->id                   = intval($IncentiveID);
-        $record->course_id            = intval($course->id);
-        $record->name                 = $incentiveName;
-        $record->priceinpoints        = intval($incentivePrice);
-        $record->storevisibility      = intval($storevisTrue);
-        $record->icon                 = $incentiveImg;
-        $record->deletebyprof         =  0;
-        $datetimeVersionOfDateCreated = new DateTime();
-        $record->datecreated          = $datetimeVersionOfDateCreated->format('Y-m-d H:i:s');
-
-        $DB->update_record('epp_incentive', $record);
-
-//}
 
 // Output starts here
 echo $OUTPUT->header();
 
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
-    echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
+	echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
 
-// Replace the following lines with you own code
-echo $OUTPUT->heading('Education++');
-    
+// Determine if Professor Level Access
+$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+$isProfessor = false;
+if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
+	$isProfessor = true;
+}
+
+if($isProfessor){
+	// Display Intro
+	echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+			<br/>
+			<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Persist Badge</h1>
+			<p>To reward students, you can create incentives for them to purchase such as a Badge</p>
+			<p>A Badge is a trophy that students can purchase and display on the school leaderboard for bragging rights</p>
+			<p>Saving your Badge</p>
+		  </div>';
+
+	//Process Badge
+	$incentiveName = $_POST["incentiveName"];
+	$incentivePrice = $_POST["incentivePrice"];
+	$storevisTrue = $_POST["storevis"];
+
+	if (isset($_FILES["incentiveImg"])) {
+		$incentiveImg = file_get_contents($_FILES["incentiveImg"]["tmp_name"]);
+		$incentiveImg = base64_encode($incentiveImg);
+	}
+
+	if (isset($_POST["incentiveName"]) && isset($_POST["incentivePrice"]) && isset($_POST["storevis"]) && isset($_FILES["incentiveImg"])){
+		//echo $incentiveImg;
+		//if ($incentiveType == 'reward')
 
 
-echo "<br/>";
-echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="viewAllIncentives.php?id='. $cm->id .'">Return to the Education++: Manage Incentives Page</a></div>');
 
+
+		global $DB;
+
+		$allIncentive = $DB->get_records('epp_incentive',array('course_id'=>$course->id));
+		$arrayOfIncentiveObjects = array();
+		$arrayOfIDsForIncentiveObjects = array();
+
+		if ($allIncentive){
+			foreach ($allIncentive as $rowIncentive){
+				array_push($arrayOfIncentiveObjects, new Incentive($rowIncentive->name, intval($rowIncentive->qtyperstudent), $rowIncentive->storevisibility, intval($rowIncentive->priceinpoints), $rowIncentive->icon, $rowIncentive->deletebyprof, $rowIncentive->datecreated));
+				array_push($arrayOfIDsForIncentiveObjects, $rowIncentive->id);
+			}
+		}
+
+
+		//$newIncentive = new Incentive($incentiveName, $incentiveQty, $storevisTrue, $incentiveType, $incentivePrice, $incentiveImg, false);
+
+		//if($incentiveType == "reward"){
+				$record                       = new stdClass();
+				$record->id                   = intval($IncentiveID);
+				$record->course_id            = intval($course->id);
+				$record->name                 = $incentiveName;
+				$record->priceinpoints        = intval($incentivePrice);
+				$record->storevisibility      = intval($storevisTrue);
+				$record->icon                 = $incentiveImg;
+				$record->deletebyprof         =  0;
+				$datetimeVersionOfDateCreated = new DateTime();
+				$record->datecreated          = $datetimeVersionOfDateCreated->format('Y-m-d H:i:s');
+
+				$DB->update_record('epp_incentive', $record);
+
+		//}
+		echo $OUTPUT->box('The Badge was updated');
+	}
+	else{
+		echo $OUTPUT->box('Incomplete Data');
+	}
+	echo "<br/>";
+	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="viewAllIncentives.php?id='. $cm->id .'">Return to the Education++: Manage Incentives Page</a></div>');
+}
+else{
+	echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+			<br/>
+			<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Rewards</h1>
+			<p><a href="storefront.php?id='. $cm->id .'">Visit the Store here</a></p>
+		  </div><br/>';
+	echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Return to the Education++ homepage</a></div>');
+}
 // Finish the page
 echo $OUTPUT->footer();
 

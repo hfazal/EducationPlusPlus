@@ -65,26 +65,45 @@ $PAGE->set_title(format_string($educationplusplus->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-global $DB;
-
-$allPES = $DB->get_records('epp_pointearningscenario',array('course'=>$course->id));
-$arrayOfPESObjects = array();
-$arrayOfIDsForPESObjects = array();
+// Determine if Professor Level Access
+$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+$isProfessor = false;
+if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
+	$isProfessor = true;
+}
 
 // Output starts here
 echo $OUTPUT->header();
 
-// Replace the following lines with you own code
-echo $OUTPUT->heading('Education++');
+if($isProfessor){
+	// Display Intro
+	echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+			<br/>
+			<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Point Earning Scenario</h1>
+			<p>Deleting the Point Earning Scenario</p>
+		  </div>';
+	global $DB;
 
-if ($pes){
-	$DB->delete_records('epp_pointearningscenario', array('id'=>$pes));
-	$DB->delete_records('epp_requirement', array('pointearningscenario'=>$pes));
-	redirect("viewAllPES.php?id=" . $cm->id ."&delete=1");
+	$allPES = $DB->get_records('epp_pointearningscenario',array('course'=>$course->id));
+	$arrayOfPESObjects = array();
+	$arrayOfIDsForPESObjects = array();
+
+	if ($pes){
+		$DB->delete_records('epp_pointearningscenario', array('id'=>$pes));
+		$DB->delete_records('epp_requirement', array('pointearningscenario'=>$pes));
+		redirect("viewAllPES.php?id=" . $cm->id ."&delete=1");
+	}
+	else {
+		echo $OUTPUT->box("This page cannot be accessed directly");
+		echo "<br/>";
+	}
 }
-else {
-	echo $OUTPUT->box("This page cannot be accessed directly");
-	echo "<br/>";
+else{
+	echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
+			<br/>
+			<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Point Earning Scenario</h1>
+			<p><a href="viewAllPES.php?id='. $cm->id .'">View all available Point Earning Scenarios</a></p>
+		  </div><br/>';
 }
 
 echo $OUTPUT->box('<div style="width:100%;text-align:center;"><a href="view.php?id='. $cm->id .'">Click to return to the Education++ homepage</a></div>');
