@@ -122,7 +122,6 @@ if($isProfessor){
 				<tr>
 					<td style="vertical-align:top;">Store Visibility</td>
 					<td>
-					<input type="hidden" name="storevis" value="0" />
 					<input type="checkbox" class="required" name="storevis" id="storevis" style="margin-right:10px;width:200px;" value=" '. $Incentive->parentGetter("storeVisibility").' " '. $storeVis.' />
 						
 					</td>

@@ -87,14 +87,22 @@ if($isProfessor){
 	//Process Badge
 	$incentiveName = $_POST["incentiveName"];
 	$incentivePrice = $_POST["incentivePrice"];
-	$storevisTrue = $_POST["storevis"];
 
-	if (isset($_FILES["incentiveImg"])) {
-		$incentiveImg = file_get_contents($_FILES["incentiveImg"]["tmp_name"]);
-		$incentiveImg = base64_encode($incentiveImg);
+	if (isset($_POST['storevis'])) {
+		$storevisTrue = 1;
+	}
+	else{
+		$storevisTrue = 0;
+	
 	}
 
-	if (isset($_POST["incentiveName"]) && isset($_POST["incentivePrice"]) && isset($_POST["storevis"]) && isset($_FILES["incentiveImg"])){
+	$incentiveImg = null;
+	if ((!empty($_FILES["incentiveImg"])) && ($_FILES['incentiveImg']['error'] == 0)) {
+   		 $incentiveImg = file_get_contents($_FILES["incentiveImg"]["tmp_name"]);
+ 		 $incentiveImg = base64_encode($incentiveImg);
+	}
+
+	if (isset($_POST["incentiveName"]) && isset($_POST["incentivePrice"]) && isset($_FILES["incentiveImg"])){
 		//echo $incentiveImg;
 		//if ($incentiveType == 'reward')
 
@@ -124,7 +132,11 @@ if($isProfessor){
 				$record->name                 = $incentiveName;
 				$record->priceinpoints        = intval($incentivePrice);
 				$record->storevisibility      = intval($storevisTrue);
+
+				if ($incentiveImg!=null){
 				$record->icon                 = $incentiveImg;
+				}
+
 				$record->deletebyprof         =  0;
 				$datetimeVersionOfDateCreated = new DateTime();
 				$record->datecreated          = $datetimeVersionOfDateCreated->format('Y-m-d H:i:s');

@@ -85,14 +85,22 @@ if($isProfessor){
 	//Process Badge
 	$badgeName = $_POST["badgeName"];
 	$badgePrice = $_POST["badgePrice"];
-	$storevisTrue = $_POST["storevis"];
 
-	if (isset($_FILES["badgeImg"])) {
-		$badgeImg = file_get_contents($_FILES["badgeImg"]["tmp_name"]);
-		$badgeImg = base64_encode($badgeImg);
+	if (isset($_POST['storevis'])) {
+		$storevisTrue = 1;
+	}
+	else{
+		$storevisTrue = 0;
+	
+	}
+
+	$badgeImg = null;
+	if ((!empty($_FILES["badgeImg"])) && ($_FILES['badgeImg']['error'] == 0)) {
+   		 $badgeImg = file_get_contents($_FILES["badgeImg"]["tmp_name"]);
+ 		 $badgeImg = base64_encode($badgeImg);
 	}
 	
-	if (isset($_POST["badgeName"]) && isset($_POST["badgePrice"]) && isset($_POST["storevis"]) && isset($_FILES["badgeImg"])){
+	if (isset($_POST["badgeName"]) && isset($_POST["badgePrice"]) && isset($_FILES["badgeImg"])){
 
 		//echo $badgeImg;
 		//if ($incentiveType == 'reward')

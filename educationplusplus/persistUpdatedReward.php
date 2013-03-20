@@ -90,16 +90,24 @@ if($isProfessor){
 $incentiveName = $_POST["incentiveName"];
 $incentiveQty = intval($_POST["incentiveQty"]);
 $incentivePrice = $_POST["incentivePrice"];
-$storevisTrue = $_POST["storevis"];
+
+if (isset($_POST['storevis'])) {
+	$storevisTrue = 1;
+}
+else{
+	$storevisTrue = 0;
+}
+
 $rewardExpiryDate = $_POST["rewardExpiryDate"];
 $rewardDescription = $_POST["rewardDescription"];
+$incentiveImg = null;
 
-if (isset($_FILES["incentiveImg"])) {
+if ((!empty($_FILES["incentiveImg"])) && ($_FILES['incentiveImg']['error'] == 0)) {
     $incentiveImg = file_get_contents($_FILES["incentiveImg"]["tmp_name"]);
     $incentiveImg = base64_encode($incentiveImg);
 }
 
-	if (isset($_POST["incentiveName"]) && isset($_POST["incentiveQty"]) && isset($_POST["incentivePrice"]) && isset($_POST["storevis"]) && isset($_POST["rewardExpiryDate"]) && isset($_POST["rewardDescription"]) && isset($_FILES["incentiveImg"])){
+	if (isset($_POST["incentiveName"]) && isset($_POST["incentiveQty"]) && isset($_POST["incentivePrice"]) && isset($_POST["rewardExpiryDate"]) && isset($_POST["rewardDescription"]) && isset($_FILES["incentiveImg"])){
 
 		//echo $incentiveImg;
 		//if ($incentiveType == 'reward')
@@ -131,7 +139,11 @@ if (isset($_FILES["incentiveImg"])) {
 		$record->priceinpoints        = intval($incentivePrice);
 		$record->qtyperstudent        = intval($incentiveQty);
 		$record->storevisibility      = intval($storevisTrue);
+
+		if ($incentiveImg!=null){
 		$record->icon                 = $incentiveImg;
+		}
+
 		$record->deletebyprof         =  0;
 		$datetimeVersionOfDateCreated = new DateTime();
 		$record->datecreated          = $datetimeVersionOfDateCreated->format('Y-m-d H:i:s');

@@ -88,16 +88,25 @@ if($isProfessor){
 	$incentiveName = $_POST["incentiveName"];
 	$incentiveQty = intval($_POST["incentiveQty"]);
 	$incentivePrice = $_POST["incentivePrice"];
-	$storevisTrue = $_POST["storevis"];
-	$rewardExpiryDate = $_POST["rewardExpiryDate"];
-	$rewardDescription = $_POST["rewardDescription"];
 
-	if (isset($_FILES["incentiveImg"])) {
-		$incentiveImg = file_get_contents($_FILES["incentiveImg"]["tmp_name"]);
-		$incentiveImg = base64_encode($incentiveImg);
+	if (isset($_POST['storevis'])) {
+		$storevisTrue = 1;
+	}
+	else{
+		$storevisTrue = 0;
+	
 	}
 
-	if (isset($_POST["incentiveName"]) && isset($_POST["incentiveQty"]) && isset($_POST["incentivePrice"]) && isset($_POST["storevis"]) && isset($_POST["rewardExpiryDate"]) && isset($_POST["rewardDescription"]) && isset($_FILES["incentiveImg"])){
+	$rewardExpiryDate = $_POST["rewardExpiryDate"];
+	$rewardDescription = $_POST["rewardDescription"];
+	
+	$incentiveImg = null;
+	if ((!empty($_FILES["incentiveImg"])) && ($_FILES['incentiveImg']['error'] == 0)) {
+   		 $incentiveImg = file_get_contents($_FILES["incentiveImg"]["tmp_name"]);
+ 		 $incentiveImg = base64_encode($incentiveImg);
+	}
+
+	if (isset($_POST["incentiveName"]) && isset($_POST["incentiveQty"]) && isset($_POST["incentivePrice"]) && isset($_POST["rewardExpiryDate"]) && isset($_POST["rewardDescription"]) && isset($_FILES["incentiveImg"])){
 		
 		//echo $incentiveImg;
 		//if ($incentiveType == 'reward')
