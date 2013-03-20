@@ -105,7 +105,63 @@ if($isProfessor){
 		echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
 		<link rel="stylesheet" type="text/css" href="./jquery.datepick.css"> 
 		<script type="text/javascript" src="./jquery.datepick.min.js"></script>
-
+		<script>
+		function validate(){
+			var name        = document.forms["pesform"]["incentiveName"].value;
+			var pv          = document.forms["pesform"]["incentivePrice"].value;
+			var quantity    = document.forms["pesform"]["incentiveQty"].value;
+			var expirydate  = document.forms["pesform"]["rewardExpiryDate"].value;
+			var description = document.forms["pesform"]["rewardDescription"].value;
+			var pass 		= true;
+			
+			$("#nameReq").css("display", "none");
+			$("#pvReq").css("display", "none");
+			$("#pvReqInt").css("display", "none");
+			$("#quanReq").css("display", "none");
+			$("#quanReqInt").css("display", "none");
+			$("#expReq").css("display", "none");
+			$("#desReq").css("display", "none");
+			
+			if (name==null || name==""){
+				$("#nameReq").css("display", "inline");
+				pass = false;
+			}
+			if (quantity==null || quantity==""){
+				$("#quanReq").css("display", "inline");
+				pass = false;
+			}
+			else if (!parseInt(quantity)){
+				$("#quanReqInt").css("display", "inline");
+				pass = false;
+			}
+			else if (parseInt(quantity) < 1){
+				$("#quanReqInt").css("display", "inline");
+				pass = false;
+			}
+			if (pv==null || pv==""){
+				$("#pvReq").css("display", "inline");
+				pass = false;
+			}
+			else if (!parseInt(pv)){
+				$("#pvReqInt").css("display", "inline");
+				pass = false;
+			}
+			else if (parseInt(pv) < 1){
+				$("#pvReqInt").css("display", "inline");
+				pass = false;
+			}
+			if (expirydate==null || expirydate==""){
+				$("#expReq").css("display", "inline");
+				pass = false;
+			}
+			if (description==null || description==""){
+				$("#desReq").css("display", "inline");
+				pass = false;
+			}
+			
+			return pass;
+		}
+		</script>
 		<div id="form" style="width:650px;height:600px;overflow:auto;">
 			<div style="width:300px;float:left;">
 				<form id="pesform" name="pesform" method="post"  enctype="multipart/form-data" onsubmit="return validate()" action="persistUpdatedReward.php?id='. $cm->id .'&reward=' . $idOfIncentivetoEdit . '" name="pes-creator" id="pes-creator" style="padding-left:10px;padding-right:10px;">
@@ -113,15 +169,15 @@ if($isProfessor){
 				<table>
 					<tr>
 						<td style="width:100px">Name</td>
-						<td><input type="text" value="' . $Incentive->parentGetter("name") . '" style="margin-right:10px;width:200px;" id="incentiveName" name="incentiveName"><br/></td>
+						<td><input type="text" value="' . $Incentive->parentGetter("name") . '" style="margin-right:10px;width:200px;" id="incentiveName" name="incentiveName"><br/><span id="nameReq" style="color:red;display:none;">You Must Specify the Name of the Reward</span></td>
 					</tr>
 					<tr>
 						<td>Quantity Per Student</td>
-						<td><input type="text" value="' . $Incentive->parentGetter("qtyPerStudent") . '" class="required" style="margin-right:10px;width:200px;" id="incentiveQty" name="incentiveQty"><br/><span id="pvReq" style="color:red;display:none;">You Must Specify a quantity per student</span><span id="pvReqInt" style="color:red;display:none;">You Must Specify a positive number for a Quantity</span></td>
+						<td><input type="text" value="' . $Incentive->parentGetter("qtyPerStudent") . '" class="required" style="margin-right:10px;width:200px;" id="incentiveQty" name="incentiveQty"><br/><span id="quanReq" style="color:red;display:none;">You Must Specify a Quantity per student</span><span id="quanReqInt" style="color:red;display:none;">You Must Specify a positive number for a Quantity</span></td>
 					</tr>
 					<tr>
 						<td>Price in Points</td>
-						<td><input type="text" value="' . $Incentive->parentGetter("priceInPoints") . '" class="required" style="margin-right:10px;width:200px;" id="incentivePrice" name="incentivePrice"><br/><span id="pvReq" style="color:red;display:none;">You Must Specify a price for the incentive</span><span id="pvReqInt" style="color:red;display:none;">You Must Specify a positive number for a Price</span></td>
+						<td><input type="text" value="' . $Incentive->parentGetter("priceInPoints") . '" class="required" style="margin-right:10px;width:200px;" id="incentivePrice" name="incentivePrice"><br/><span id="pvReq" style="color:red;display:none;">You Must Specify a Price for the reward</span><span id="pvReqInt" style="color:red;display:none;">You Must Specify a positive number for a Price</span></td>
 					</tr>
 			
 					<tr>

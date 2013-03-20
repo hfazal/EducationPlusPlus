@@ -87,56 +87,35 @@ if($isProfessor){
 
 	echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
 	<script>
-	counter = 0;
-	function addRequirements(){
-		var newdiv = document.createElement(\'div\');
+		function validate(){
+			var name        = document.forms["pesform"]["badgeName"].value;
+			var pv          = document.forms["pesform"]["badgePrice"].value;
 
-		newdiv.innerHTML = \'<select id="reqAct[]" name="reqAct[]" style="margin-left:50px;">' . $constructedSelectOptions . '</select><select id="reqCond[]" name="reqCond[]"><option value="0">Completed</option><option value="1">&gt;</option><option value="2">&gt;=</option><option value="3">=</option></select><input type="text" id="reqGradeToAchieve[]" name="reqGradeToAchieve[]" style="width:50px;text-align:right;" placeholder="%">\';
-		counter++;
-
-		document.getElementById("requirementsDIV").appendChild(newdiv);
-	}
-	function validate(){
-		var name        = document.forms["pesform"]["pesName"].value;
-		var pv          = document.forms["pesform"]["pesPointValue"].value;
-		var expirydate  = document.forms["pesform"]["pesExpiryDate"].value;
-		var description = document.forms["pesform"]["pesDescription"].value;
-		var pass 		= true;
-		
-		$("#nameReq").css("display", "none");
-		$("#pvReq").css("display", "none");
-		$("#pvReqInt").css("display", "none");
-		$("#expReq").css("display", "none");
-		$("#desReq").css("display", "none");
-		
-		if (name==null || name==""){
-			$("#nameReq").css("display", "inline");
-			pass = false;
+			var pass 		= true;
+			
+			$("#nameReq").css("display", "none");
+			$("#pvReq").css("display", "none");
+			$("#pvReqInt").css("display", "none");
+			
+			if (name==null || name==""){
+				$("#nameReq").css("display", "inline");
+				pass = false;
+			}
+			if (pv==null || pv==""){
+				$("#pvReq").css("display", "inline");
+				pass = false;
+			}
+			else if (!parseInt(pv)){
+				$("#pvReqInt").css("display", "inline");
+				pass = false;
+			}
+			else if (parseInt(pv) < 1){
+				$("#pvReqInt").css("display", "inline");
+				pass = false;
+			}
+			
+			return pass;
 		}
-		if (pv==null || pv==""){
-			$("#pvReq").css("display", "inline");
-			pass = false;
-		}
-		else if (!parseInt(pv)){
-			$("#pvReqInt").css("display", "inline");
-			pass = false;
-		}
-		else if (parseInt(pv) < 1){
-			$("#pvReqInt").css("display", "inline");
-			pass = false;
-		}
-		if (expirydate==null || expirydate==""){
-			$("#expReq").css("display", "inline");
-			pass = false;
-		}
-		if (description==null || description==""){
-			$("#desReq").css("display", "inline");
-			pass = false;
-		}
-		
-		return pass;
-	}
-	addRequirements();
 	</script>
 
 	<div id="form" style="width:400px;height:600px;overflow:auto;">
@@ -145,11 +124,11 @@ if($isProfessor){
 			<table>
 				<tr>
 					<td style="width:100px">Name</td>
-					<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="badgeName" name="badgeName"><br/><span id="nameReq" style="color:red;display:none;">You Must Specify the Name of the Incentive</span></td>
+					<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="badgeName" name="badgeName"><br/><span id="nameReq" style="color:red;display:none;">You Must Specify the Name of the Badge</span></td>
 				</tr>
 				<tr>
 					<td>Price in Points</td>
-					<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="badgePrice" name="badgePrice"><br/><span id="pvReq" style="color:red;display:none;">You Must Specify a price for the incentive</span><span id="pvReqInt" style="color:red;display:none;">You Must Specify a positive number for a Price</span></td>
+					<td><input type="text" class="required" style="margin-right:10px;width:200px;" id="badgePrice" name="badgePrice"><br/><span id="pvReq" style="color:red;display:none;">You Must Specify a price for the Badge</span><span id="pvReqInt" style="color:red;display:none;">You Must Specify a positive number for a Price</span></td>
 				</tr>
 		
 				<tr>

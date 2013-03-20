@@ -103,7 +103,37 @@ if($isProfessor){
 		
 		
 		echo $OUTPUT->box('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+	<script>
+		function validate(){
+			var name        = document.forms["pesform"]["incentiveName"].value;
+			var pv          = document.forms["pesform"]["incentivePrice"].value;
 
+			var pass 		= true;
+			
+			$("#nameReq").css("display", "none");
+			$("#pvReq").css("display", "none");
+			$("#pvReqInt").css("display", "none");
+			
+			if (name==null || name==""){
+				$("#nameReq").css("display", "inline");
+				pass = false;
+			}
+			if (pv==null || pv==""){
+				$("#pvReq").css("display", "inline");
+				pass = false;
+			}
+			else if (!parseInt(pv)){
+				$("#pvReqInt").css("display", "inline");
+				pass = false;
+			}
+			else if (parseInt(pv) < 1){
+				$("#pvReqInt").css("display", "inline");
+				pass = false;
+			}
+			
+			return pass;
+		}
+	</script>
 
 	<div id="form" style="width:650px;height:600px;overflow:auto;">
 		<div style="width:300px;float:left;">
@@ -112,7 +142,7 @@ if($isProfessor){
 			<table>
 				<tr>
 					<td style="width:100px">Name</td>
-					<td><input type="text" value="' . $Incentive->parentGetter("name") . '" style="margin-right:10px;width:200px;" id="incentiveName" name="incentiveName"><br/></td>
+					<td><input type="text" value="' . $Incentive->parentGetter("name") . '" style="margin-right:10px;width:200px;" id="incentiveName" name="incentiveName"><br/><span id="nameReq" style="color:red;display:none;">You Must Specify the Name of the Badge</span></td>
 				</tr>
 				<tr>
 					<td>Price in Points</td>
