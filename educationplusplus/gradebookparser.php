@@ -26,7 +26,9 @@ function swerve($DB, $course){
                                 if (($row->assignment == $requirement->activity) ){
                                     switch($requirement->cond){
                                     case 0: // Complete
+                                        if ($row->grade >= 0){
                                         $awardStatus = $awardStatus + 1;
+                                        }
                                         break;
                                     case 1: // >
                                         if ($row->grade > $requirement->percenttoachieve){
