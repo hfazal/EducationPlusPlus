@@ -72,6 +72,9 @@ if ($educationplusplus->intro) { // Conditions to show the intro can change to l
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
 
+echo "<link rel='stylesheet' type='text/css' href='./css/usecaseboxes.css'>
+	<div class='floatingdiv'>Use Case Scenario(s): 5.2.3</div>";
+
 // Determine if Professor Level Access
 $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
 $isProfessor = false;

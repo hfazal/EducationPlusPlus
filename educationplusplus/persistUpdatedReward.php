@@ -74,6 +74,8 @@ $isProfessor = false;
 if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
 	$isProfessor = true;
 }
+echo "<link rel='stylesheet' type='text/css' href='./css/usecaseboxes.css'>
+	<div class='floatingdiv'>Use Case Scenario(s): 5.2.3</div>";
 
 if($isProfessor){
 	// Display Intro
