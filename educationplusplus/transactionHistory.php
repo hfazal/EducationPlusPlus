@@ -81,6 +81,8 @@ echo $OUTPUT->header();
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
 }
+echo "<link rel='stylesheet' type='text/css' href='./css/usecaseboxes.css'>
+	<div class='floatingdiv'>Use Case Scenario(s): 5.7.2, 5.7.3</div>";
 
 echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
 		<br/>
