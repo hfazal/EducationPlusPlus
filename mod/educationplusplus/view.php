@@ -242,7 +242,7 @@ echo '<div id="eppContainer" style="width:950px;margin:0 auto;">';
 			<ul>';
 			if ($arrayOfNewNotificationObjects){
 				for ($i=0; $i < count($arrayOfNewNotificationObjects); $i++){
-					echo '<li title="' . $arrayOfNewNotificationObjects[$i]->content . '">' . $arrayOfNewNotificationObjects[$i]->title . ' <a href="dismissNotification.php?id='. $cm->id .'&notId='. $arrayOfIDsForNotificationObjects[$i] .'" onclick="confirmDelete(' . $i . ')"><em style="color:red">dismiss</em></a></li>';
+					echo '<li title="' . $arrayOfNewNotificationObjects[$i]->content . '">' . $arrayOfNewNotificationObjects[$i]->title . ' <a href="viewNotifications.php?id='. $cm->id .'&notId='. $arrayOfIDsForNotificationObjects[$i] .'" onclick="confirmDelete(' . $i . ')"><em style="color:red">dismiss</em></a></li>';
 				}
 			}
 			else {

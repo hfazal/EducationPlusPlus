@@ -60,6 +60,27 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
 global $DB;
+
+// Get id of notification to be dismissed
+if ($_GET['notId']){
+	$dismissedId = $_GET['notId'];
+	// Query for notification to be dismissed
+	$dismissed = $DB->get_record('epp_notification',array('course'=>$course->id, 'student_id'=>$USER->id, 'id'=>$dismissedId));
+	// Create new record with id of notification to be updated
+	$record = new stdClass();
+	$record->id				= $dismissed->id;
+	$record->student_id  	= intval($dismissed->student_id);
+	$record->course  		= intval($dismissed->course);
+	$record->title		 	= $dismissed->title;
+	$record->content	 	= $dismissed->content;
+	$record->isread 		= 1;
+	$datetimeVersionOfExpiryDate = new DateTime ($dismissed->expirydate);
+	$record->expirydate 	= $datetimeVersionOfExpiryDate->format('Y-m-d H:i:s');
+	$status = $DB ->update_record('epp_notification', $record, false);
+	$allNotifications = $DB->get_records('epp_notification',array('course'=>$course->id, 'student_id'=>$USER->id));
+}
+
+
 echo $OUTPUT->header();
 if ($educationplusplus->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('educationplusplus', $educationplusplus, $cm->id), 'generalbox mod_introbox', 'educationplusplusintro');
@@ -78,7 +99,7 @@ if (has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
 	echo '<div id="introbox" style="width:900px;margin:0 auto;text-align:center;margin-bottom:15px;">
 			<br/>
 			<h1><span style="color:#FFCF08">Education</span><span style="color:#EF1821">++</span> Notifications</h1>
-			<p>Below you can view all Notification that you\'ve been sent. Notifications include new Point Earning Scenarios, Point Scenarios you\'ve unlocked, new Rewards in the Store and Notifications the Professor has sent you. Note that Notifications will be deleted 90 days after recieving them.</p>
+			<p>Below you can view all Notification that you\'ve been sent. Notifications include new Point Earning Scenarios, Point Scenarios you\'ve unlocked, new Rewards in the Store and Notifications the Professor has sent you. Please note that Notifications, new or dismissed, will be deleted 90 days after recieving them.</p>
 		  </div>';
 
 if ($isProfessor){
@@ -132,11 +153,12 @@ else{
 				}
 			</script>';	
 
+	echo "<h3>New Notifications</h3>";
 	if ($arrayOfNewNotificationObjects){
 		for ($i=0; $i < count($arrayOfNewNotificationObjects); $i++){
 			echo $OUTPUT->box_start();
-			echo '<div id = "new'.$i .'" style="color: white; background-color: black">';
-			echo '<div style="float:right"><a style="color:red" href="dismissNotification.php?id='. $cm->id .'&notId='. $arrayOfIDsForNotificationObjects[$i] .'" onclick="confirmDelete(' . $i . ')">dismiss</a></div>';
+			echo '<div id = "new'.$i .'" style="color: black;">';
+			echo '<div style="float:right"><a href="viewNotifications.php?id='. $cm->id .'&notId='. $arrayOfIDsForNotificationObjects[$i] .'" onclick="confirmDelete(' . $i . ')">dismiss</a></div>';
 			echo $arrayOfNewNotificationObjects[$i];
 			echo $OUTPUT->box_end();
 			echo "</div>";
@@ -148,6 +170,7 @@ else{
 		echo "<br/>";
 	}
 
+	echo "<h3>Dismissed Notifications</h3>";
 	if ($arrayOfOldNotificationObjects)
 	{
 		for ($i=0; $i < count($arrayOfOldNotificationObjects); $i++){
