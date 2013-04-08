@@ -31,6 +31,8 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
+//Education++ Classes
+require 'eppClasses/LeaderboardSorter.php';
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // educationplusplus instance ID - it should be named as the first character of the module
@@ -118,42 +120,53 @@ echo '	<script src="sorttable.js"></script>
 
 $allIncentives = $DB->get_records('epp_incentive');
 
-$ranking = 0;
+
+
+$arrayOfLeaderboardObjects = array();
 foreach ($studentIdsUnique as $epp_student){
 	$allRecords = $DB->get_records('epp_student',array('student_id'=>$epp_student));
-	
 	foreach ($allRecords as $firstrecord){	
-		$ranking++;
-		
-		if ($USER->id == $firstrecord->student_id){
-			echo '<tr style="background-color:#BCED91;border-bottom:thin solid black;">';
-		}
-		else {
-			echo '<tr style="border-bottom:thin solid black;">';
-		}
-		
-		echo '  <td style="font-weight:bold;text-align:center;min-width:200px;">' . $ranking . '</td>
-				<td style="font-weight:bold;min-width:300px;"><a href="leaderboardStudentProfile.php?id='. $cm->id .'&sid='. $firstrecord->student_id .'">' . $firstrecord->firstname . ' ' . $firstrecord->lastname . '</a></td>
-				<td style="text-align:left;min-width:250px;height:70px;">';
-
 		$thisStudentsBadges = $DB->get_records('epp_student_badge',array('student_id'=>$firstrecord->student_id), "datePurchased DESC");
-		echo count($thisStudentsBadges) . " "; // displays number of badges earned
-		
-		$badgeCount = 0;
-		foreach ($thisStudentsBadges as $earnedBadge){
-			if ($badgeCount >= 3){ break;}
-			foreach ($allIncentives as $incentive){
-				if ($incentive->id == $earnedBadge->incentive_id && $badgeCount < 3){
-					echo '<img class="badge" src="data:image/jpg;base64,' . $incentive->icon . '" alt="' . $incentive->name . '" />';
-					$badgeCount++;
-				}
+		//echo count($thisStudentsBadges) . " "; // displays number of badges earned
+		array_push($arrayOfLeaderboardObjects, new LeaderboardSorter($firstrecord->student_id, $firstrecord->firstname, $firstrecord->lastname, count($thisStudentsBadges)));
+		//echo "<tr><td>" . $firstrecord->firstname . "</td></tr>";
+	}
+}
+
+function leaderboardObjectSorter( $a, $b ) {
+    return intval($a->badgecount) == intval($b->badgecount) ? 0 : ( intval($a->badgecount) > intval($b->badgecount) ) ? -1 : 1;
+}
+
+usort( $arrayOfLeaderboardObjects, 'leaderboardObjectSorter');
+
+foreach ($arrayOfLeaderboardObjects as $swerve){
+	$ranking++;
+	
+	if ($USER->id == $firstrecord->student_id){
+		echo '<tr style="background-color:#BCED91;border-bottom:thin solid black;">';
+	}
+	else {
+		echo '<tr style="border-bottom:thin solid black;">';
+	}
+	
+	echo '  <td style="font-weight:bold;text-align:center;min-width:200px;">' . $ranking . '</td>
+			<td style="font-weight:bold;min-width:300px;"><a href="leaderboardStudentProfile.php?id='. $cm->id .'&sid='. $swerve->studentid .'">' . $swerve->firstname . ' ' . $swerve->lastname . '</a></td>
+			<td style="text-align:left;min-width:250px;height:70px;">';
+
+	$thisStudentsBadges = $DB->get_records('epp_student_badge',array('student_id'=>$swerve->studentid), "datePurchased DESC");
+	echo count($thisStudentsBadges) . " "; // displays number of badges earned
+	
+	$badgeCount = 0;
+	foreach ($thisStudentsBadges as $earnedBadge){
+		if ($badgeCount >= 3){ break;}
+		foreach ($allIncentives as $incentive){
+			if ($incentive->id == $earnedBadge->incentive_id && $badgeCount < 3){
+				echo '<img class="badge" src="data:image/jpg;base64,' . $incentive->icon . '" alt="' . $incentive->name . '" />';
+				$badgeCount++;
 			}
 		}
-		
-				
-		echo '</td></tr>';
-		break;
-	}
+	}			
+	echo '</td></tr>';
 }
 
 echo '</tbody>
