@@ -142,7 +142,7 @@ usort( $arrayOfLeaderboardObjects, 'leaderboardObjectSorter');
 foreach ($arrayOfLeaderboardObjects as $swerve){
 	$ranking++;
 	
-	if ($USER->id == $firstrecord->student_id){
+	if ($USER->id == $swerve->studentid){
 		echo '<tr style="background-color:#BCED91;border-bottom:thin solid black;">';
 	}
 	else {
